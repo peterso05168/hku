@@ -1,0 +1,34 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	template="../management.xhtml">
+
+	<ui:define name="breadcrumb-2">
+		<li><a title="">Applicant</a><i class="ti-angle-right"></i></li>
+	</ui:define>
+	<ui:define name="breadcrumb-3">
+		<li><a title="">Edit</a><i class="ti-angle-right"></i></li>
+	</ui:define>
+
+	<ui:define name="title">
+		<a class="ax-back-icon-url" onclick="window.history.back();" href="javascript:void(0)"> <i
+			class="ax-icon ti-arrow-left"></i> Applicant
+		</a>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<div class="ax-basic-info">
+			<div class="ax-text">
+				<h2>#{applicantProfileBean.applicantInformationVo.givenName} #{applicantProfileBean.applicantInformationVo.surname}</h2>
+				<br /> <span>#{applicantProfileBean.accountVo.personEmail}</span>
+			</div>
+		</div>
+		<p:tabView id="mainTab" widgetVar="tabForm" dynamic="true" activeIndex="0">
+			<p:tab title="Profile" titleStyle="margin-right: 4px;">
+				<ui:include src="applicant-profile.xhtml"></ui:include>
+			</p:tab>
+			<p:tab title="Applications" titleStyle="margin-right: 4px;">
+				<ui:include src="applicant-applications.xhtml"></ui:include>
+			</p:tab>
+		</p:tabView>
+	</ui:define>
+</ui:composition>

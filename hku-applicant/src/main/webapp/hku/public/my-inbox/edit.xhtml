@@ -1,0 +1,258 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	template="./my-inbox.xhtml">
+
+	<ui:define name="main-content">
+		<script type="text/javascript">
+			$(document).ready(function() {
+			});
+		</script>
+
+		<f:loadBundle basename="i18n.my-inbox.myinbox" var="inbox" />
+		<p:tabView id="tabForm">
+			<p:tab title="#{inbox['announcement']}" titleStyle="margin-right: 3px;">
+				<h:form id="formA">
+					<p:dataTable value="#{announcementBean.announcements}" var="announcement" reflow="true">
+						<f:view locale="#{language.locale}">
+							<f:loadBundle basename="i18n.my-inbox.myinbox" var="inbox" />
+							<p:column headerText="#{inbox['title']}" width="65%">
+								<h:outputLabel rendered="#{!announcement.isRead}" style="padding-right:36px;margin-bottom:15px;">
+									<i class="ti-email in-box-icon shake-me" />
+								</h:outputLabel>
+								<h:outputLabel rendered="#{announcement.isRead}" style="margin-bottom:0px;">
+									<i class="ti-email in-box-icon" />
+								</h:outputLabel>
+								<!-- 根据邮件类型弹出对应的弹窗 -->
+								<p:commandLink value="#{announcement.value}" style="font-style: normal;"
+									update="payment_anncmnt,welcome_anncmnt, tabForm:formA, common_anncmnt"
+									action="#{announcementBean.loadDetail(announcement)}" />
+							</p:column>
+
+							<p:column headerText="#{inbox['status']}">
+								<h:outputText value="#{inbox['statusNew']}" styleClass="status-label #{announcement.color}" />
+							</p:column>
+
+							<p:column headerText="#{inbox['isdTime']}">
+								<h:outputText value="#{announcementBean.formatDateYyyyMMdd(announcement.issueDate)}" />
+							</p:column>
+						</f:view>
+					</p:dataTable>
+				</h:form>
+			</p:tab>
+		</p:tabView>
+
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.my-inbox.myinbox" var="inbox" />
+			<p:dialog header="#{announcementBean.anncmnt.value}" widgetVar="common" width="70%" height="400" modal="true">
+				<h:form id="common_anncmnt">
+					<p:outputLabel value="To Mary Lee ," />
+					<br />
+					<br />
+				    #{announcementBean.anncmnt.msgContent}
+					<br />
+					<br />
+					<br />
+				  	#{inbox['offer2']}
+					<br />
+					<p:outputLabel value="Vimvncy Gnhen" />
+					<br />
+					<br />
+					<br />
+					<p:commandButton value="#{inbox['close']}" oncomplete="PF('common').hide()" styleClass="ui-priority-secondary" />
+				</h:form>
+			</p:dialog>
+
+			<p:dialog header="#{inbox['adminssion']}" widgetVar="admission" width="80%" height="550" modal="true">
+				<p:outputLabel value="Dear May Chan ," />
+				<br />
+				<br />
+			    #{inbox['ad2018s']}
+				<br />
+				<br />
+				<br />
+				<div>
+					<p:commandButton value="#{inbox['applyNow']}"
+						onclick="window.location = '../my-application/application-form.xhtml'" />
+					<p:commandButton value="#{inbox['close']}" oncomplete="PF('admission').hide()" styleClass="ui-priority-secondary" />
+				</div>
+			</p:dialog>
+
+			<p:dialog header="#{inbox['interview']}" widgetVar="interview" width="80%" height="550" modal="true">
+				<h:form id="formInter">
+					<p:outputLabel value="Dear May Chan ," />
+					<br />
+					<br />
+			    	#{inbox['interview1']}
+					<br />
+					<br />
+					<div class="ax-section-title">#{inbox['interview2']}</div>
+					<p:panelGrid columns="2" columnClasses="ui-grid-col-3,ui-grid-col-8" styleClass="ui-panelgrid-blank ui-fluid"
+						layout="grid">
+
+						<p:outputLabel value="#{inbox['date']}" />
+						<p:column>
+							<p:inputText value="12, December, 2017" readonly="true" />
+						</p:column>
+
+						<p:outputLabel value="#{inbox['time']}" />
+						<p:column>
+							<p:inputText value="14:00" readonly="true" />
+						</p:column>
+
+						<p:outputLabel value="#{inbox['country']}" />
+						<p:column>
+							<p:inputText value="China" readonly="true" />
+						</p:column>
+
+						<p:outputLabel value="#{inbox['provinceAndCity']}" />
+						<p:column>
+							<p:inputText value="Shanghai" readonly="true" />
+						</p:column>
+
+						<p:outputLabel value="#{inbox['venue']}" />
+						<p:column>
+							<p:inputText value="3/F, Shanghai High School" readonly="true" />
+						</p:column>
+					</p:panelGrid>
+					<br />
+					<br />
+					<div>
+						<p:commandButton value="#{inbox['accept']}"
+							onclick="if(confirm('Confirm to accept this offer?')){PF('interview').hide();}"></p:commandButton>
+						<p:commandButton value="#{inbox['reject1']}" styleClass="ui-priority-secondary"></p:commandButton>
+						<p:commandButton value="#{inbox['close']}" oncomplete="PF('interview').hide()" styleClass="ui-priority-secondary"></p:commandButton>
+					</div>
+				</h:form>
+			</p:dialog>
+
+			<p:dialog header="#{inbox['offer']}" widgetVar="offer" width="70%" height="400" modal="true">
+				<p:outputLabel value="To Mary Lee ," />
+				<br />
+				<br />
+			    #{inbox['offer1']}
+				<br />
+				<br />
+				<br />
+			  	#{inbox['offer2']}
+				<br />
+				<p:outputLabel value="Vimvncy Gnhen" />
+				<br />
+				<br />
+				<br />
+				<p:commandButton value="#{inbox['close']}" oncomplete="PF('offer').hide()" styleClass="ui-priority-secondary" />
+			</p:dialog>
+
+			<p:dialog header="#{inbox['scholarship']}" widgetVar="scholarship" width="70%" height="400" modal="true">
+				<p:outputLabel value="To Mary Lee ," />
+				<br />
+				<br />
+			  	#{inbox['scholarship1']}
+				<br />
+				<br />
+			  	#{inbox['scholarship2']}
+			  	#{inbox['scholarship3']}
+				<br />
+				<br />
+				<br />
+			  	#{inbox['offer2']}
+				<br />
+				<p:outputLabel value="Vimvncy Gnhen" />
+				<br />
+				<br />
+				<br />
+				<div>
+					<p:commandButton value="#{inbox['accept']}"
+						onclick="if(confirm('Confirm to accept this offer?')){PF('scholarship').hide();}" />
+					<p:commandButton value="#{inbox['reject2']}" styleClass="ui-priority-secondary"
+						onclick="if(confirm('Confirm to reject this offer?')){PF('scholarship').hide();}" />
+					<p:commandButton value="#{inbox['close']}" oncomplete="PF('scholarship').hide()" styleClass="ui-priority-secondary" />
+				</div>
+			</p:dialog>
+			
+			<h:form id="payment_anncmnt">
+				<p:dialog header="#{announcementBean.anncmnt.value}" widgetVar="payment" width="65%" height="400" modal="true">
+					<p:outputLabel
+						value="To #{announcementBean.applicantInfoVo.givenName} #{announcementBean.applicantInfoVo.surname} ," />
+					<br />
+					<br />
+				 	#{announcementBean.contents[0]}
+					<br />
+					<br />
+				 	#{announcementBean.contents[1]}
+					<br />
+					<br />
+					<br />
+				 	#{announcementBean.contents[2]}
+					<br />
+					<p:outputLabel value="Vimvncy Gnhen" />
+					<br />
+					<br />
+					<br />
+					<div>
+						<p:commandButton
+							rendered="#{'PAYMENT_SUCCESS'.equals(announcementBean.anncmnt.typeCd) and announcementBean.anncmnt.applicationNo!=null?'false':'true'}"
+							value="#{inbox['payment4']}" action="#{announcementBean.payment(announcementBean.anncmnt.applicationId)}" />
+						<p:commandButton value="#{inbox['close']}" oncomplete="PF('payment').hide()" styleClass="ui-priority-secondary" />
+					</div>
+				</p:dialog>
+			</h:form>
+
+			<p:dialog header="#{inbox['welcome']}" widgetVar="welcome" width="65%" height="400" modal="true">
+				<h:form id="welcome_anncmnt">
+					<p:outputLabel
+						value="To #{announcementBean.applicantInfoVo.givenName} #{announcementBean.applicantInfoVo.surname} ," />
+					<br />
+					<br />
+				 	#{announcementBean.contents[0]}
+					<br />
+					<br />
+				 	#{announcementBean.contents[1]}
+					<br />
+					<p:outputLabel value="Vimvncy Gnhen" />
+					<br />
+					<br />
+					<br />
+					<div>
+						<p:commandButton value="#{inbox['confirm']}" onclick="window.location = '../my-application/result.xhtml'" />
+						<p:commandButton value="#{inbox['cancel']}" oncomplete="PF('welcome').hide()" styleClass="ui-priority-secondary" />
+					</div>
+				</h:form>
+			</p:dialog>
+
+			<p:dialog header="#{inbox['acknowledgment']}" widgetVar="acknowledgment" width="75%" height="450" modal="true">
+				<strong>#{inbox['date2']}</strong>02/23/2017
+				<br />
+				<strong>#{inbox['acknowledgment1']}</strong>Mary Lee
+				<br />
+				<strong>#{inbox['acknowledgment2']}</strong>#{inbox['acknowledgment3']}
+				<br />
+				<br />
+				<p:outputLabel value="To Mary Lee ," />
+				<br />
+				<br />
+				#{inbox['acknowledgment4']}
+				#{inbox['acknowledgment5']}
+				#{inbox['acknowledgment6']}
+				#{inbox['acknowledgment7']}
+				<br />
+				<br />
+				#{inbox['acknowledgment8']}
+				<br />
+				<br />
+				#{inbox['payment3']}
+				<br />
+				<p:outputLabel value="Vimvncy Gnhen" />
+				<br />
+				<br />
+				<br />
+				<p:commandButton value="#{inbox['close']}" oncomplete="PF('acknowledgment').hide()"
+					styleClass="ui-priority-secondary" />
+			</p:dialog>
+		</f:view>
+	</ui:define>
+</ui:composition>
+
+
+
+
+

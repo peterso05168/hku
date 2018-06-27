@@ -1,0 +1,154 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="../configuration.xhtml">
+
+	<ui:define name="title">
+		<f:loadBundle basename="i18n.configuration.programme" var="program" />
+		#{program['programmeAdmissionControls']}
+	</ui:define>
+
+	<ui:define name="main-content">
+
+		<f:loadBundle basename="i18n.configuration.programme" var="program" />
+		<div>
+			<p:panel id="toggleable" header="#{program['searchProgramme']}" toggleable="true"
+				toggleSpeed="200" widgetVar="panel">
+				<h:form>
+					<div>
+						<div class="search-basic">
+							<h:panelGroup
+								rendered="#{programmeSearchBean.searchMode eq 'Basic'}">
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12"
+									styleClass="ui-panelgrid-blank ui-fluid">
+									<p:inputText value="#{programmeSearchBean.basicSearchCriteria}" />
+				
+									<p:column>
+										<label style="float: right" class="basicAdvanceLabel advance"><i
+											class="ti-search"></i> <p:spacer width="10" /> <p:commandLink
+												value="#{program['advancedSearch']}"
+												action="#{programmeSearchBean.switchSearchMode('Advance')}"
+												update="toggleable">
+											</p:commandLink> </label>
+										<div class="note">#{program['programmeCode']}, #{program['programmeTitle']}</div>
+									</p:column>
+								</p:panelGrid>
+							</h:panelGroup>
+						</div>
+				
+						<div class="search-advance">
+							<h:panelGroup
+								rendered="#{programmeSearchBean.searchMode eq 'Advance'}">
+								<p:panelGrid columns="4"
+									columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+									layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+
+								<p:outputLabel for="admissionYear" value="#{program['admissionYear']}" />
+								<p:inputText id="admissionYear" value="#{programmeSearchBean.searchVo.admissionYear}" />
+
+								<p:column></p:column>
+								<p:column></p:column>
+
+								<p:outputLabel for="programmeCode" value="#{program['programmeCode']}" />
+								<p:inputText id="programmeCode" value="#{programmeSearchBean.searchVo.programmeCode}" />
+
+								<p:outputLabel for="programmeTitle" value="#{program['programmeTitle']}" />
+								<p:inputText id="programmeTitle" value="#{programmeSearchBean.searchVo.programmeTitle}" />
+
+								<p:outputLabel for="faculty" value="#{program['faculty']}" />
+								<p:selectOneMenu id="faculty" value="#{programmeSearchBean.searchVo.faculty}">
+									<f:selectItem itemLabel="- All -" itemValue="" />
+									<f:selectItems value="#{programmeSearchBean.faculties}" var="faculty" 
+										itemLabel="#{faculty.facultyCd}" itemValue="#{faculty.facultyCd}" />
+								</p:selectOneMenu>
+
+								<p:outputLabel for="level" value="#{program['levelOfEntry']}" />
+								<p:selectOneMenu id="level" value="#{programmeSearchBean.searchVo.levelOfEntry}">
+									<f:selectItem itemLabel="- All -" itemValue="" />
+									<f:selectItems value="#{programmeSearchBean.refCds}" var="refCd" 
+										itemLabel="#{refCd.value}" itemValue="#{refCd.value}" />
+								</p:selectOneMenu>
+
+								</p:panelGrid>
+								<p:panelGrid columns="6" columnClasses="ui-grid-col-12"
+									layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+									<p:column styleClass="ui-grid-col-12">
+										<label class="basicAdvanceLabel advance" style="float: right">
+											<i class="ti-search"></i> <p:commandLink value="#{program['basicSearch']}"
+												action="#{programmeSearchBean.switchSearchMode('Basic')}"
+												update="toggleable">
+											</p:commandLink>
+										</label>
+									</p:column>
+								</p:panelGrid>
+							</h:panelGroup>
+						</div>
+					</div>
+					<div class="ax-btn-set">
+						<p:commandButton value="#{program['search']}" action="#{programmeSearchBean.search}" update="programmeResultForm" />
+						<p:commandButton value="#{program['reset']}" styleClass="ui-priority-secondary" action="#{programmeSearchBean.reset}" update="programmeResultForm,toggleable" />
+					</div>
+				</h:form>
+			</p:panel>
+		</div>
+		
+		<h:form id="programmeResultForm">
+			<p:dataTable var="programme" value="#{programmeSearchBean.formProgVos}" reflow="true" draggableColumns="true"
+				rendered="#{programmeSearchBean.result}">
+
+				<f:facet name="header">
+					#{program['searchResult']}
+				</f:facet>
+
+				<p:column headerText="#{program['admissionYear']}">
+					<p:commandLink
+						style="font-style: normal;color: #222;font-weight: bold;" 
+						action="#{programmeSearchBean.edit(programme.id)}" 
+						onclick="window.location = 'edit.xhtml'">
+						<h:outputText value="#{programme.admissionYear}" />
+					</p:commandLink>
+				</p:column>
+
+				<p:column headerText="#{program['programmeCode']}">
+					<h:outputText value="#{programme.programmeCode}" />
+				</p:column>
+
+				<p:column headerText="#{program['programmeTitle']}">
+					<p:commandLink
+						style="font-style: normal;color: #222;font-weight: bold;" 
+						action="#{programmeSearchBean.edit(programme.id)}" 
+						onclick="window.location = 'edit.xhtml'">
+						<h:outputText value="#{programme.programmeTitle}" />
+					</p:commandLink>
+				</p:column>
+
+				<p:column headerText="#{program['levelOfEntry']}">
+					<h:outputText value="#{programme.levelOfEntry}" />
+				</p:column>
+
+				<p:column headerText="#{program['faculty']}">
+					<h:outputText value="#{programme.faculty}" />
+				</p:column>
+
+				<p:column headerText="#{program['action']}" styleClass="ax-action-w dont-print">
+					<p:menuButton value="#{program['action']}">
+						<p:menuitem value="#{program['edit']}" onclick="_ACTION('edit')" actionListener="#{programmeSearchBean.edit(programme.id)}" />
+						<p:menuitem value="#{program['delete']}" actionListener="#{programmeSearchBean.delete(programme.id)}" update="programmeResultForm">
+							<p:confirm header="#{program['promat']}"
+								message="#{program['confirmDelete']}" icon="ui-icon-alert" />
+						</p:menuitem>
+					</p:menuButton>
+				</p:column>
+
+			</p:dataTable>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="#{program['yes']}" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="#{program['no']}" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+</ui:composition>

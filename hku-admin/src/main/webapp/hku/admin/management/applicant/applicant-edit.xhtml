@@ -1,0 +1,75 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	template="../management.xhtml">
+
+	<ui:define name="breadcrumb-2">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.management" var="management" />
+			<li><a title="">#{management['applicant']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+	<ui:define name="breadcrumb-3">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.management" var="management" />
+			<li><a title="">#{management['edit']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+
+	<ui:define name="title">
+		<a class="ax-back-icon-url" href="javascript:" onclick="self.location=document.referrer;">
+			<f:view locale="#{language.locale}">
+				<f:loadBundle basename="i18n.management.management" var="management" />
+				<i class="ax-icon ti-arrow-left"></i>#{management['applicant']}
+			</f:view>
+		</a>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<div class="ax-basic-info">
+			<div class="ax-text">
+				<h2>#{basicInfoBean.applicationVo.applicationNo}</h2>
+			</div>
+		</div>
+		<f:view locale="#{language.locale}">
+		<f:loadBundle basename="i18n.management.management" var="management" />
+			<p:tabView id="mainTab" widgetVar="tabForm" dynamic="true" activeIndex="0">
+				<p:tab title="#{management['title1']}" titleStyle="margin-right: 4px;">
+					<ui:include src="applicant-edit-basicInfo.xhtml" />
+				</p:tab>
+				<p:tab title="#{management['title2']}" titleStyle="margin-right: 4px;">
+					<ui:include src="applicant-edit-personalParticulars.xhtml" />
+				</p:tab>
+				<p:tab title="#{management['title3']}" titleStyle="margin-right: 4px;">
+					<ui:include src="applicant-edit-academicProfile.xhtml" />
+				</p:tab>
+				<p:tab title="#{management['title4']}" titleStyle="margin-right: 4px;">
+					<ui:include src="applicant-edit-academicQualifications.xhtml" />
+				</p:tab>
+				<p:tab title="#{management['title5']}" titleStyle="margin-right: 4px;">
+					<ui:include src="applicant-edit-choiceOfProgramme.xhtml" />
+				</p:tab>
+				<p:tab title="#{management['title6']}" titleStyle="margin-right: 4px;">
+					<ui:include src="applicant-edit-extraCurricularAchievements.xhtml" />
+				</p:tab>
+				<p:tab rendered="#{editReferenceBean.isActiceRefree}" title="#{management['title7']}" titleStyle="margin-right: 4px;">
+					<ui:include src="applicant-edit-reference.xhtml" />
+				</p:tab>
+				<p:tab title="#{management['title8']}" titleStyle="margin-right: 4px;">
+					<ui:include src="applicant-edit-other.xhtml" />
+				</p:tab>
+				<p:tab title="#{management['title9']}" titleStyle="margin-right: 4px;">
+					<ui:include src="applicant-edit-supportingDocument.xhtml" />
+				</p:tab>
+				<!-- <p:tab title="#{management['title10']}" titleStyle="margin-right: 4px;">
+					<ui:include src="applicant-edit-interview.xhtml" />
+				</p:tab>
+				<p:tab title="#{management['title11']}" titleStyle="margin-right: 4px;">
+					<ui:include src="applicant-edit-scholarship.xhtml" />
+				</p:tab> -->
+				<p:tab title="#{management['title12']}" titleStyle="margin-right: 4px;">
+					<ui:include src="applicant-edit-history.xhtml" />
+				</p:tab>
+			</p:tabView>
+		</f:view>
+	</ui:define>
+</ui:composition>

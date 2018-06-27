@@ -1,0 +1,97 @@
+<!DOCTYPE html [
+    <!ENTITY bull "&#8226;">
+]>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="../tp-container.xhtml">
+
+	<ui:define name="head">
+		<script>
+			function _ACTION(_type) {
+				switch (_type) {
+				case 'result1':
+					_popup('popup.html#/cp-cert-create', {
+						size : 22,
+						title : 'Create Certificate',
+						iframe : 'true'
+					});
+					break;
+				case 'create':
+					PF('createCourse').show();
+					break;
+				case 'edit':
+					window.location = 'course-info.xhtml';
+					break;
+				case 'save':
+					window.location = 'course-info.xhtml';
+					break;
+				case 'create-save':
+					window.location = 'course-info.xhtml';
+					break;
+				case 'search':
+					window.location = "search.xhtml";
+					break;
+				case 'result':
+					window.location = "result.xhtml";
+					break;
+				default:
+					console.log('default cp-breadcrumb.html');
+				}
+			}
+		</script>
+	</ui:define>
+
+	<ui:define name="breadcrumb-2">
+		<li><a title="" href="#{request.contextPath}/shg/cp/reports/reports.xhtml" >Reports</a><i class="ti-angle-right"></i></li>
+	</ui:define>
+
+	<ui:define name="title">
+        Reports 	
+	</ui:define>
+
+	<ui:define name="main-content">
+		<div>
+			<p:panelGrid columns="2" layout="grid"
+				styleClass="ui-panelgrid-blank">
+				<p:panel id="p1" header="Progress">
+					<div class="ax-row">
+						<i class="ti-stats-up ax-icon"></i> <a href="rpt-01/search.xhtml">Study Progress
+							Report</a>
+					</div>
+				</p:panel>
+				<p:panel id="p4" header="Management">
+					<div class="ax-row">
+						<i class="ti-bar-chart ax-icon"></i> <a href="rpt-02/search.xhtml"> KMS Course
+							Performance Summary </a>
+					</div>
+				</p:panel>
+				<p:panel id="p3" header="Course">
+					<div class="ax-row">
+						<i class="ti-files ax-icon"></i> <a href="rpt-03/search.xhtml">Published Course
+							Report</a>
+					</div>
+					<div class="ax-row">
+						<i class="ti-bar-chart-alt ax-icon"></i> <a href="rpt-04/search.xhtml">Course
+							Statistics Report</a>
+					</div>
+				</p:panel>
+
+				<p:panel id="p5" header="Enrollment">
+					<div class="ax-row">
+						<i class="ti-user ax-icon"></i> <a href="rpt-05/search.xhtml">Completed
+							Enrollment User Report</a>
+					</div>
+					<div class="ax-row">
+						<i class="ti-bookmark-alt ax-icon"></i> <a href="rpt-06/search.xhtml">Pending to
+							Enroll User List</a>
+					</div>
+				</p:panel>
+			</p:panelGrid>
+		</div>
+		<ui:insert name="main-content-2" />
+	</ui:define>
+</ui:composition>
+
+

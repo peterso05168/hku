@@ -1,0 +1,235 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:outputScript name="hku/js/updateCheckNum.js" />
+	<f:view locale="#{language.locale}">
+		<f:loadBundle basename="i18n.my-application.others" var="others" />
+		<div>
+			<h:form id="oForm">
+				<p:growl id="growlMsg" showDetail="true" />
+				<div class="ax-section-title">#{others['disabilityInformation']}</div>
+				<div class="note">#{others['noteA']}</div>
+				<p:panelGrid columns="2" columnClasses="ui-grid-col-3,ui-grid-col-9"
+					styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+					<p:outputLabel for="" value="#{others['disabilityType']}" />
+					<p:column>
+						<p:selectOneMenu value="#{othersBean.othersVo.disabilityTypeCd}">
+							<f:selectItem itemLabel="#{others['select']}" itemValue=""
+								noSelectionOption="true" />
+							<f:selectItems value="#{othersBean.disabiliTypes}"
+								var="disabiliType" itemLabel="#{disabiliType.value}"
+								itemValue="#{disabiliType.cd}" />
+						</p:selectOneMenu>
+					</p:column>
+
+					<p:outputLabel for="degOfImpairmnt" value="#{others['degree']}" />
+					<p:column>
+						<p:inputText id="degOfImpairmnt"
+							value="#{othersBean.othersVo.degOfImpairmnt}" />
+					</p:column>
+
+					<p:outputLabel for="description" value="#{others['description']}" />
+					<p:column>
+						<p:inputTextarea id="description" rows="5" autoResize="false"
+							value="#{othersBean.othersVo.description}" />
+					</p:column>
+				</p:panelGrid>
+				<div class="sep"></div>
+				<div class="ax-section-title">#{others['previous']}</div>
+				<div class="note">
+					<div class="selectManyCheckbox">
+						<table border="0" cellspacing="4"
+							class="ui-selectmanycheckbox ui-widget">
+							<tbody>
+								<tr>
+									<td><p:selectBooleanCheckbox id="deReg"
+											value="#{othersBean.othersVo.deReg}" /></td>
+									<td>&#160;&#160;<span
+										style="font-weight: bold !important; color: rgb(85, 85, 85) !important; font-size: 13px !important;">#{others['noteB']}</span></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="ui-fluid">
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-2,ui-grid-col-3"
+						styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+						<p:outputLabel for="deRegProg" value="#{others['programme']}" />
+						<p:column>
+							<p:inputText id="deRegProg"
+								value="#{othersBean.othersVo.deRegProg}" />
+						</p:column>
+
+						<p:outputLabel for="deRegYear" value="#{others['year']}" />
+						<p:column>
+							<p:inputNumber thousandSeparator="" decimalSeparator="."
+								decimalPlaces="0" id="deRegYear"
+								value="#{othersBean.othersVo.inputDeRegYear}" />
+						</p:column>
+
+						<p:outputLabel for="uniNo" value="#{others['universityNo']}" />
+						<p:column>
+							<p:inputText id="uniNo" value="#{othersBean.othersVo.uniNo}" />
+						</p:column>
+					</p:panelGrid>
+				</div>
+				<div class="note">
+					<div class="selectManyCheckbox">
+						<table border="0" cellspacing="4"
+							class="ui-selectmanycheckbox ui-widget">
+							<tbody>
+								<tr>
+									<td><p:selectBooleanCheckbox id="discontinued"
+											value="#{othersBean.othersVo.discontinued}" /></td>
+									<td>&#160;&#160;<span
+										style="font-weight: bold !important; color: rgb(85, 85, 85) !important; font-size: 13px !important;">#{others['noteC']}</span></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="ui-fluid">
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-2,ui-grid-col-3"
+						styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+						<p:outputLabel for="disconProg" value="#{others['programme']}" />
+						<p:column>
+							<p:inputText id="disconProg"
+								value="#{othersBean.othersVo.disconProg}" />
+						</p:column>
+
+						<p:outputLabel for="disconYear" value="#{others['year']}" />
+						<p:column>
+							<p:inputNumber id="disconYear" thousandSeparator=""
+								decimalSeparator="." decimalPlaces="0"
+								value="#{othersBean.othersVo.inputDisconYear}" />
+						</p:column>
+
+						<p:outputLabel for="disconUniNo" value="#{others['universityNo']}" />
+						<p:column>
+							<p:inputText id="disconUniNo"
+								value="#{othersBean.othersVo.disconUniNo}" />
+						</p:column>
+					</p:panelGrid>
+				</div>
+				<div class="note">
+					<div class="selectManyCheckbox">
+						<table border="0" cellspacing="4"
+							class="ui-selectmanycheckbox ui-widget">
+							<tbody>
+								<tr>
+									<td><p:selectBooleanCheckbox
+											value="#{othersBean.othersVo.notSuccessAppSubmit}" /></td>
+									<td>&#160;&#160;<span
+										style="font-weight: bold !important; color: rgb(85, 85, 85) !important; font-size: 13px !important;">#{others['noteD']}</span></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="ui-fluid" style="margin-bottom: 20px;">
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-2,ui-grid-col-3"
+						styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+						<p:outputLabel for="appYear" value="#{others['year']}" />
+						<p:column>
+							<p:inputNumber id="appYear" thousandSeparator=""
+								decimalSeparator="." decimalPlaces="0"
+								value="#{othersBean.othersVo.inputNotSuccessAppYear}" />
+						</p:column>
+
+						<p:outputLabel for="appUniNo" value="#{others['appNo']}" />
+						<p:column>
+							<p:inputText id="appUniNo"
+								value="#{othersBean.othersVo.notSuccessAppUniNo}" />
+						</p:column>
+					</p:panelGrid>
+				</div>
+				<!-- Transfer of Credits -->
+				<div class="ax-section-title">#{others['transferOfCredits']}</div>
+				<div style="margin-top: 10px; margin-bottom: 25px;">
+					<div style="margin-top: 1.2%;">
+						<p:selectBooleanCheckbox
+							value="#{othersBean.transCreditsVo.isApplyDirEntry}"
+							style="margin-left:10px;margin-right:5px;" />
+						<label style="color: rgb(85, 85, 85) !important;">#{others['noteE']}</label><br />
+					</div>
+
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-2,ui-grid-col-3"
+						styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+						<p:column>
+							<h:outputLink id="helpInfoF" value="#" disabled="true"
+								styleClass="ax-pf-tooltip-icon">
+								<i class="ti-help"></i>
+							</h:outputLink>
+							<p:tooltip showEvent="click" id="toolTipF" for="helpInfoF"
+								position="right" value="#{others['egetc']}" />
+							<p:outputLabel value="#{others['yearOfStudy']}" />
+						</p:column>
+						<p:inputText value="#{othersBean.transCreditsVo.yearOfStudy}" />
+
+						<p:column>
+							<h:outputLink id="helpInfoG" value="#" disabled="true"
+								styleClass="ax-pf-tooltip-icon">
+								<i class="ti-help"></i>
+							</h:outputLink>
+							<p:tooltip showEvent="click" id="toolTipG" for="helpInfoG"
+								position="right" value="#{others['egllb']}" />
+							<p:outputLabel value="#{others['curriculum']}" />
+						</p:column>
+						<p:inputText value="#{othersBean.transCreditsVo.curriculum}" />
+					</p:panelGrid>
+
+					<div style="margin-top: 1%; margin-bottom: 1%;">
+						<p:selectBooleanCheckbox
+							value="#{othersBean.transCreditsVo.isApplyTransCredits}"
+							style="margin-left:10px;margin-right:5px;" />
+						<label style="color: rgb(85, 85, 85) !important;">#{others['noteF']}</label>
+					</div>
+				</div>
+				<div class="ax-btn-set ng-scope">
+					<p:commandButton value="#{others['saveAndPrevious']}"
+						icon="ti-arrow-left" class="ui-priority-secondary"
+						action="#{othersBean.prePage(6)}" update=":mainTab">
+					</p:commandButton>
+					<p:commandButton rendered="#{othersBean.applicationVo.status == 'In Progress'}"
+						value="#{others['submit']}&#160;&#160;&#160;&#160;&#160;"
+						icon="ti-arrow-right" iconPos="right" action="#{othersBean.save}"
+						update="@form">
+					</p:commandButton>
+					<p:commandButton rendered="#{othersBean.applicationVo.status == 'Submitted'}"
+						value="#{others['save']}&#160;&#160;&#160;&#160;&#160;"
+						icon="ti-arrow-right" iconPos="right" action="#{othersBean.save}"
+						update="@form">
+					</p:commandButton>
+				</div>
+			</h:form>
+		</div>
+	</f:view>
+	<script type="text/javascript" language="javascript">
+		_initAxToolTips()
+	</script>
+</ui:composition>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

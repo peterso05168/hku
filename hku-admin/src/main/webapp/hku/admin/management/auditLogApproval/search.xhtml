@@ -1,0 +1,152 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="../management.xhtml">
+
+	<ui:define name="breadcrumb-2">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.auditLogApproval"
+				var="auditLog" />
+			<li><a title="">#{auditLog['auditLogApp']}</a><i
+				class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+	<ui:define name="title">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.auditLogApproval"
+				var="auditLog" />
+        #{auditLog['auditLogApp']}
+        </f:view>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.auditLogApproval"
+				var="auditLog" />
+			<div>
+				<p:panel id="toggleable" header="#{auditLog['searchLog']}"
+					toggleable="true" toggleSpeed="200" closeSpeed="200"
+					widgetVar="panel">
+					<h:form id="auditLogForm">
+						<div>
+							<div class="search-basic">
+								<h:panelGroup
+									rendered="#{auditLogApprovalBean.searchMode eq 'Basic'}">
+									<p:panelGrid columns="1" layout="grid"
+										columnClasses="ui-grid-col-12"
+										styleClass="ui-panelgrid-blank ui-fluid">
+										<p:inputText
+											value="#{auditLogApprovalBean.basicSearchCriteria}" />
+										<p:column>
+											<label style="float: right" class="basicAdvanceLabel advance"><i
+												class="ti-search"></i> <p:commandLink
+													value="#{auditLog['advancedSearch']}"
+													action="#{auditLogApprovalBean.switchSearchMode('Advance')}"
+													update="toggleable">
+												</p:commandLink></label>
+											<div class="note">#{auditLog['appNoAppName']}</div>
+										</p:column>
+									</p:panelGrid>
+								</h:panelGroup>
+							</div>
+							<div class="search-advance">
+								<h:panelGroup
+									rendered="#{auditLogApprovalBean.searchMode eq 'Advance'}">
+									<p:panelGrid columns="4"
+										columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+										layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+										<p:outputLabel for="applicantNo" value="#{auditLog['appNo']}" />
+										<p:inputText id="applicantNo"
+											value="#{auditLogApprovalBean.searchVo.applicationNo}" />
+
+										<p:outputLabel for="applicant"
+											value="#{auditLog['applicant']}" />
+										<p:inputText id="applicant"
+											value="#{auditLogApprovalBean.searchVo.applicantName}" />
+
+										<p:outputLabel for="type" value="#{auditLog['type']}" />
+										<p:selectOneMenu id="type"
+											value="#{auditLogApprovalBean.searchVo.type}">
+											<f:selectItem itemLabel="#{auditLog['all']}" itemValue="" />
+											<f:selectItem itemLabel="#{auditLog['removeQuali']}"
+												itemValue="Remove Qualification" />
+											<f:selectItem itemLabel="#{auditLog['removeProg']}"
+												itemValue="Remove Programme Choice" />
+										</p:selectOneMenu>
+									</p:panelGrid>
+									<p:panelGrid columns="6" columnClasses="ui-grid-col-12"
+										layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+										<p:column styleClass="ui-grid-col-12">
+											<label style="float: right" class="basicAdvanceLabel advance"><i
+												class="ti-search"></i> <p:commandLink
+													value="#{auditLog['basicSearch']}"
+													action="#{auditLogApprovalBean.switchSearchMode('Basic')}"
+													update="toggleable">
+												</p:commandLink> </label>
+										</p:column>
+									</p:panelGrid>
+								</h:panelGroup>
+							</div>
+						</div>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{auditLog['search']}"
+								action="#{auditLogApprovalBean.search}" update="formAuditLogs" />
+							<p:commandButton value="#{auditLog['reset']}"
+								styleClass="ui-priority-secondary"
+								action="#{auditLogApprovalBean.reset}"
+								update="formAuditLogs,toggleable" />
+						</div>
+					</h:form>
+				</p:panel>
+			</div>
+			<h:form id="formAuditLogs">
+				<p:growl id="growl1" showDetail="true" />
+				<p:dataTable id="auditLogDataTable" reflow="true"
+					selection="#{auditLogApprovalBean.selectApplicationVos}"
+					rowKey="#{applicationVo.approvalId}"
+					rendered="#{auditLogApprovalBean.result}"
+					value="#{auditLogApprovalBean.applicationVos}" var="applicationVo">
+					<f:facet name="header">
+					#{auditLog['searchResult']}
+					</f:facet>
+					<p:column selectionMode="multiple"
+						style="width:45px;text-align:center" />
+
+					<p:column headerText="#{auditLog['appNo']}"
+						sortBy="#{applicationVo.applicationNo}">
+						<p:commandLink
+							action="#{applicantApplicationsBean.toEditApplicant(applicationVo.id)}">
+							<h:outputText value="#{applicationVo.applicationNo}" />
+						</p:commandLink>
+					</p:column>
+
+					<p:column headerText="#{auditLog['applicant']}"
+						sortBy="#{applicationVo.applicantName}">
+						<h:outputText value="#{applicationVo.applicantName}" />
+					</p:column>
+
+					<p:column headerText="#{auditLog['type']}"
+						sortBy="#{applicationVo.type}">
+						<h:outputText value="#{applicationVo.type}" />
+					</p:column>
+
+					<p:column headerText="#{auditLog['action']}"
+						styleClass="ax-action-w dont-print">
+						<p:menuButton value="#{auditLog['action']}">
+							<p:menuitem value="#{auditLog['approve']}"
+								action="#{auditLogApprovalBean.singleApproval(applicationVo.approvalId,applicationVo.isRemoveQualification,applicationVo.isRemoveProgChoice)}"
+								update="formAuditLogs" />
+						</p:menuButton>
+					</p:column>
+				</p:dataTable>
+				<div class="ax-btn-set">
+					<p:commandButton value="#{auditLog['approve']}"
+						rendered="#{auditLogApprovalBean.result}"
+						action="#{auditLogApprovalBean.batchApproval()}"
+						update="formAuditLogs" />
+				</div>
+			</h:form>
+		</f:view>
+	</ui:define>
+</ui:composition>

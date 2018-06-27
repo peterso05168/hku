@@ -1,0 +1,209 @@
+<!DOCTYPE html [
+    <!ENTITY bull "&#8226;">
+]>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="../tp-container.xhtml">
+
+	<ui:define name="breadcrumb">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.my-application.supporting"
+				var="supporting" />
+			<li><a title="">#{supporting['supportingDocument']}</a><i
+				class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+	<ui:define name="title">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.my-application.supporting"
+				var="supporting" />
+			<li>#{supporting['title']}</li>
+		</f:view>
+	</ui:define>
+	<ui:define name="main-content">
+		<h:head>
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.my-application.supporting"
+				var="supporting" />
+			<div>
+				<h:form id="supPISForm">
+					<p:growl id="growlMsg" showDetail="true" globalOnly="true" />
+					<div class="ax-section-title">#{supporting['personal']}</div>
+					<p:dataTable value="#{supportingDocumentBean.pisReqDocVos}" var="reqDoc" lazy="true" sortBy="#{reqDoc.reqDocName}">
+						<p:column headerText="#{supporting['documentType']}" width="16%" groupRow="true">
+							<h:outputText value="#{reqDoc.reqDocName}" />
+							<h:panelGroup>
+								<div class="ax-tooltip">
+									<div class="icon" data-toggle="popover" data-trigger="focus"
+										tabindex="0" role="button">
+										<i class="ti-help"></i>
+									</div>
+									<div class="content">
+										<div class="info-popover">
+											<h:outputText value="#{reqDoc.toolTipMsg}" />
+										</div>
+									</div>
+								</div>
+							</h:panelGroup>
+						</p:column>
+
+						<p:column headerText="#{supporting['fileName']}">
+							<p:commandLink value="#{reqDoc.displayFileName}" ajax="false"
+								style="font-style: italic;color: #222;font-weight: bold;"
+								onmouseover="this.style.cssText='font-style: normal;'" actionListener="#{supportingDocumentBean.download(reqDoc)}"
+								onmouseout="this.style.cssText='font-style: italic;color: #222;font-weight: bold;'">
+								<p:fileDownload value="#{supportingDocumentBean.downloadFile}" />
+							</p:commandLink>
+						</p:column>
+
+						<p:column headerText="#{supporting['submissionDate']}" width="13%">
+							<h:outputText value="#{supportingDocumentBean.formatDateYyyyMMdd(reqDoc.submissionDate)}" />
+						</p:column>
+
+						<p:column headerText="#{supporting['submissionDueDate']}" width="13%">
+							<h:outputText value="#{supportingDocumentBean.formatDateYyyyMMdd(reqDoc.submissionDueDate)}" />
+						</p:column>
+
+						<p:column headerText="#{supporting['status']}" width="12%">
+							<h:outputText value="#{supporting[reqDoc.statusCd]}" styleClass="status-label #{reqDoc.statusBgColor}" />
+						</p:column>
+
+						<p:column headerText="#{supporting['action']}" width="8%" />
+						
+						<p:summaryRow>
+				            <p:column colspan="6" style="text-align:right">
+				                <p:commandButton value="#{supporting['upload']}" styleClass="ui-confirmdialog-yes" oncomplete="PF('supDialog').show();" 
+				                	action="#{supportingDocumentBean.loadUploadDialog(reqDoc)}" update="supDialog" />
+				            </p:column>
+				        </p:summaryRow>
+					</p:dataTable>
+				</h:form>
+				<h:form id="othPISForm">
+					<div class="ax-section-title">#{supporting['others']}</div>
+					<p:dataTable value="#{supportingDocumentBean.othersReqDocVos}" var="reqDoc" lazy="true" sortBy="#{reqDoc.reqDocName}">
+						<p:column headerText="#{supporting['documentType']}" width="16%" groupRow="true">
+							<h:outputText value="#{reqDoc.reqDocName}" />
+							<h:panelGroup>
+								<div class="ax-tooltip">
+									<div class="icon" data-toggle="popover" data-trigger="focus"
+										tabindex="0" role="button">
+										<i class="ti-help"></i>
+									</div>
+									<div class="content">
+										<div class="info-popover">
+											<h:outputText value="#{reqDoc.toolTipMsg}" />
+										</div>
+									</div>
+								</div>
+							</h:panelGroup>
+						</p:column>
+
+						<p:column headerText="#{supporting['fileName']}">
+							<p:commandLink value="#{reqDoc.displayFileName}" ajax="false"
+								style="font-style: italic;color: #222;font-weight: bold;"
+								onmouseover="this.style.cssText='font-style: normal;'" actionListener="#{supportingDocumentBean.download(reqDoc)}"
+								onmouseout="this.style.cssText='font-style: italic;color: #222;font-weight: bold;'">
+								<p:fileDownload value="#{supportingDocumentBean.downloadFile}" />
+							</p:commandLink>
+						</p:column>
+
+						<p:column headerText="#{supporting['submissionDate']}" width="13%">
+							<h:outputText value="#{supportingDocumentBean.formatDateYyyyMMdd(reqDoc.submissionDate)}" />
+						</p:column>
+
+						<p:column headerText="#{supporting['submissionDueDate']}" width="13%">
+							<h:outputText value="#{supportingDocumentBean.formatDateYyyyMMdd(reqDoc.submissionDueDate)}" />
+						</p:column>
+
+						<p:column headerText="#{supporting['status']}" width="12%">
+							<h:outputText value="#{supporting[reqDoc.statusCd]}" styleClass="status-label #{reqDoc.statusBgColor}" />
+						</p:column>
+
+						<p:column headerText="#{supporting['action']}" width="8%" />
+						
+						<p:summaryRow>
+				            <p:column colspan="6" style="text-align:right">
+				                <p:commandButton value="#{supporting['upload']}" styleClass="ui-confirmdialog-yes" oncomplete="PF('supDialog').show();" 
+				                	action="#{supportingDocumentBean.loadUploadDialog(reqDoc)}" update="supDialog" />
+				            </p:column>
+				        </p:summaryRow>
+					</p:dataTable>
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+						<p:commandButton value="#{supporting['yes']}" type="button"
+							styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+						<p:commandButton value="#{supporting['no']}" type="button"
+							styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</p:confirmDialog>
+				</h:form>
+				<p:dialog header="#{supporting['supDialogHeader']}" widgetVar="supDialog"
+					id="supDialog" width="72%" modal="true">
+					<div class="ng-scope">
+						<h:form id="supDialogForm" enctype="multipart/form-data">
+							<p:remoteCommand name="reuploadResetFiles" action="#{supportingDocumentBean.reuploadResetFiles}" />
+							<p:panelGrid columns="2"
+								columnClasses="ui-grid-col-3,ui-grid-col-7"
+								styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+								<p:outputLabel for="reqDocName" value="#{supporting['documentType']}" />
+								<p:column>
+									<p:inputText id="reqDocName" disabled="true" value="#{supportingDocumentBean.reqDocVo.reqDocName}" />
+								</p:column>
+
+								<p:column>
+									<h:outputLink id="helpInfoTe" value="#" disabled="true"
+										styleClass="ax-pf-tooltip-icon">
+										<i class="ti-help"></i>
+									</h:outputLink>
+									<p:tooltip id="toolTipTe" showEvent="click" for="helpInfoTe" position="right">
+										#{supporting['below']}
+										<ol class="list">
+											<li>#{supporting['li1']}</li>
+											<li>#{supporting['li2']}</li>
+											<li>#{supporting['li3']}</li>
+										</ol>
+									</p:tooltip>
+									<p:outputLabel value="#{supporting['selectFile']}" />
+								</p:column>
+								<p:column>
+									<p:fileUpload fileUploadListener="#{supportingDocumentBean.handleFileUpload}" mode="advanced" onstart="reuploadResetFiles()"
+										dragDropSupport="false" multiple="true" value="#{supportingDocumentBean.uploadedFile}" update="supPISForm" />
+								</p:column>
+							</p:panelGrid>
+							<div class="ax-btn-set ng-scope">
+								<p:commandButton value="#{supporting['confirm']}" update="supPISForm, othPISForm"
+									class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover" role="button"
+									aria-disabled="false" transformed="true" action="#{supportingDocumentBean.upload}">
+								</p:commandButton>
+								<div class="ax-button type-a">
+									<p:commandButton value="#{supporting['cancel']}"
+										class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+										onclick="PF('supDialog').hide()" role="button"
+										aria-disabled="false" transformed="true">
+									</p:commandButton>
+								</div>
+							</div>
+						</h:form>
+					</div>
+				</p:dialog>
+				<p:dialog header="#{supporting['prompt']}" widgetVar="downDialog" resizable="false"
+					modal="true" showEffect="fade" hideEffect="fade">
+					<div class="ui-fluid">
+						<p:outputLabel value="#{supporting['downDialogMsg']}" />
+					</div>
+					<div class="ax-btn-set">
+						<p:commandButton value="#{supporting['yes']}" type="button"
+							styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+							onclick="window.open('http://www.accentrix.com/prototype/hku/njs/doc/doc_dummy.pdf');PF('downDialog').hide();" />
+						<p:commandButton value="#{supporting['no']}" type="button"
+							styleClass="ui-confirmdialog-no" icon="ui-icon-close"
+							onclick="PF('downDialog').hide()" />
+					</div>
+				</p:dialog>
+			</div>
+		</f:view>
+		</h:head>
+	</ui:define>
+</ui:composition>
+
+

@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.3.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bill_report" pageWidth="800" pageHeight="350" columnWidth="600" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="0" uuid="bf9ffc67-5cd0-4b3e-8327-0cb88b523cf4">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="IS_PAYMENT" class="java.lang.Boolean"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="paymentMethod" class="java.lang.String">
+		<fieldDescription><![CDATA[结算方式]]></fieldDescription>
+	</field>
+	<field name="receiverUser" class="java.lang.String">
+		<fieldDescription><![CDATA[收款人]]></fieldDescription>
+	</field>
+	<field name="invoiceNo" class="java.lang.String">
+		<fieldDescription><![CDATA[票据编号]]></fieldDescription>
+	</field>
+	<field name="identityType" class="java.lang.String">
+		<fieldDescription><![CDATA[有效证件]]></fieldDescription>
+	</field>
+	<field name="identityNo" class="java.lang.String">
+		<fieldDescription><![CDATA[证件号]]></fieldDescription>
+	</field>
+	<field name="memo" class="java.lang.String"/>
+	<field name="amountTotal" class="java.lang.String"/>
+	<field name="offsetAmountTotal" class="java.lang.String"/>
+	<field name="amountPaidTotal" class="java.lang.String"/>
+	<field name="subDataSource" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<field name="isPayment" class="java.lang.Boolean"/>
+	<field name="payor" class="java.lang.String"/>
+	<field name="invoiceType" class="java.lang.String"/>
+	<field name="invoiceDate" class="java.util.Date"/>
+	<title>
+		<band height="28" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField isStretchWithOverflow="true" pattern="yyyy-MM-dd HH:mm:ss" isBlankWhenNull="true" hyperlinkType="" hyperlinkTarget="">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="390" y="0" width="390" height="27" isPrintWhenDetailOverflows="true" uuid="fa8c146a-4193-4787-9400-48f97d79b306">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="390" height="27" isPrintWhenDetailOverflows="true" uuid="d4737c0d-58c3-4461-8714-6b1cdbafcf72">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="黑体" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{isPayment}?"收款单":"付款单" + "信息"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="249">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<subreport>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="178" width="780" height="70" isPrintWhenDetailOverflows="true" uuid="f56ad765-aef0-4663-a0b8-d68f517d1051">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<subreportParameter name="IS_PAYMENT">
+					<subreportParameterExpression><![CDATA[$P{IS_PAYMENT}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[$F{subDataSource}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "bill_sub_report.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="290" y="119" width="100" height="20" isPrintWhenDetailOverflows="true" uuid="b577a0bf-ed2f-43c2-a3b8-72e968efd94e"/>
+				<textElement>
+					<font fontName="黑体" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[调整金额:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="90" height="20" isPrintWhenDetailOverflows="true" uuid="fc655ea0-4738-4137-b292-239b230c9357"/>
+				<textElement>
+					<font fontName="黑体" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[票据编号:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="90" y="30" width="300" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="5cbb72e9-0511-4a48-b065-86597c9bdc43">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="黑体" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{isPayment}?null:$F{identityType}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="390" y="30" width="390" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="b49e920d-cd34-402f-9c40-658e2b5965d1">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="黑体" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{isPayment}?null:$F{identityNo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="90" y="119" width="200" height="20" isPrintWhenDetailOverflows="true" uuid="c2b5af59-d39a-4338-b441-380bf27ca267"/>
+				<textElement>
+					<font fontName="黑体" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amountTotal}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="91" width="90" height="20" isPrintWhenDetailOverflows="true" uuid="dc6eb789-064f-408f-a4d2-a613d893b686"/>
+				<textElement>
+					<font fontName="黑体" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[结算方式:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="490" y="91" width="290" height="20" isPrintWhenDetailOverflows="true" uuid="0f285322-a520-44e9-afe6-53a4bff77c3e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="黑体" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{isPayment}?$F{payor}:$F{receiverUser}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="630" y="119" width="150" height="20" isPrintWhenDetailOverflows="true" uuid="10ce822f-c184-4a9e-aa4d-8d089fa0929f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="黑体" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amountPaidTotal}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="90" y="0" width="690" height="20" isPrintWhenDetailOverflows="true" uuid="c150049a-c852-4418-9ff6-2f7c8dce01fd">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="黑体" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{invoiceNo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="90" y="91" width="300" height="20" isPrintWhenDetailOverflows="true" uuid="54a10bff-a5e1-4d81-8856-16c86e1a7efa">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="黑体" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{paymentMethod}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="148" width="90" height="20" isPrintWhenDetailOverflows="true" uuid="a5c20559-7cd3-4ed7-9efe-f6735f50e2db">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="黑体" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[备注:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="90" y="148" width="690" height="20" isPrintWhenDetailOverflows="true" uuid="f24cf7e4-381c-491f-b8d6-0a2d2c71f8f2">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="黑体" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{memo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="390" y="119" width="140" height="20" isPrintWhenDetailOverflows="true" uuid="f2ea9492-6a14-4c2e-928d-b2e229abc9df"/>
+				<textElement>
+					<font fontName="黑体" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{offsetAmountTotal}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="30" width="90" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="d509d09e-5ca0-4689-8538-aa5d26b0fe53">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="黑体" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{isPayment}?null:"有效证件:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="390" y="91" width="100" height="20" uuid="3e2b6002-9474-42c2-9a65-d30f87ced142"/>
+				<textElement>
+					<font fontName="黑体" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{isPayment}?"付款人:":"收款人"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="119" width="90" height="20" uuid="38141e95-02fb-48c9-aacf-d0734314bf2c"/>
+				<textElement>
+					<font fontName="黑体" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{isPayment}?"应收金额:":"应付金额:"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="530" y="119" width="100" height="20" uuid="3d7b5e5c-7e22-4ec7-a3cf-e345f4fa19ad"/>
+				<textElement>
+					<font fontName="黑体" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{isPayment}?"实收金额:":"实付金额:"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="yyyy年MM月dd日" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="490" y="60" width="290" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="0da1419e-1db2-483b-91d2-896b5101bdcb">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="黑体" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{isPayment}?$F{invoiceDate}:null]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="90" y="60" width="300" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="03958a82-3383-4ee0-aa60-78ea4bc16fc9">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="黑体" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{isPayment}?$F{invoiceType}:null]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="60" width="90" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="10681673-285d-4aae-97b9-d8e05c634c33">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="黑体" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{isPayment}?"开票类型:":null]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="390" y="60" width="100" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="4051edc9-88d5-49c2-921b-66b1ba39a10b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="黑体" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{isPayment}?"开票日期:":null]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,63 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="./my-application.xhtml">
+
+	<ui:define name="breadcrumb-2">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.my-application.myapplication"
+				var="myapp" />
+			<li><a title="">#{myapp['result']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+	<ui:define name="main-content">
+		<f:view locale="#{language.locale}">
+			<h:form id="formB">
+				<p:dataTable value="#{applicationBean.formVos}" var="formVo"
+					reflow="true" sortBy="#{formVo.description}" sortOrder="descending">
+					<f:loadBundle basename="i18n.my-application.myapplication"
+						var="app" />
+					<p:column headerText="#{app['form']}" width="48%">
+						<p:commandLink
+							value="#{formVo.description}#{formVo.applicationNo}"
+							action="#{applicationBean.editApplicantApplication(formVo.id)}"
+							style="font-style: normal;color: #222;font-weight: bold;" />
+					</p:column>
+
+					<p:column headerText="#{app['progress']}">
+						<div class="ax-progress-bar">
+							<p:outputPanel class="green" style="width: #{formVo.num}%">
+								<div>#{formVo.num}%</div>
+							</p:outputPanel>
+						</div>
+					</p:column>
+
+					<p:column headerText="#{app['status']}">
+						<h:outputText value="#{formVo.status}"
+							styleClass="status-label #{formVo.statusColor}" />
+					</p:column>
+
+					<p:column headerText="#{app['action']}" width="25%">
+						<p:commandButton value="#{app['applyNow']}"
+							rendered="#{formVo.status == 'New'}"
+							action="#{applicationBean.editApplicantApplication(formVo.id)}" />
+
+						<p:commandButton value="#{app['edit']}"
+							rendered="#{formVo.status == 'In Progress' or formVo.status == 'Submitted'}"
+							action="#{applicationBean.editApplicantApplication(formVo.id)}" />
+						<p:commandButton value="#{app['uploadDoc']}"
+							rendered="#{formVo.status == 'In Progress' or formVo.status == 'Submitted'}"
+							action="#{applicationBean.redirectToSupportingDocument(formVo.id)}"
+							onclick="window.location = 'supporting-document.xhtml'" />
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</f:view>
+	</ui:define>
+</ui:composition>
+
+
+
+
+

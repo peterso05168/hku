@@ -1,0 +1,153 @@
+<!DOCTYPE html [
+    <!ENTITY bull "&#8226;"> 
+]>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="./tp-base.xhtml">
+	<ui:define name="page-content">
+		<script>
+			_initMenuCheckbox('mainLayout')
+		</script>
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.index.index" var="index" />
+		</f:view>
+		<div class="menu-layout" data-layout-id="mainLayout"
+			data-layout-type="side-menu">
+			<div class="tx-menu accordion lv1 rwd" data-menu-id="mainMenu"
+				data-menu-collasped="true">
+				<ul>
+					<li><a
+						href="#{request.contextPath}/hku/public/my-inbox/edit.xhtml"
+						title="My Inbox"><i class="ti-comment-alt"></i><span>My
+								Inbox</span></a></li>
+					<li><a
+						href="#{request.contextPath}/hku/public/my-application/result.xhtml"
+						title="My Application"><i class="ti-check-box"></i><span>My
+								Application</span></a></li>
+					<li><a
+						href="#{request.contextPath}/hku/public/my-application/application-status.xhtml"
+						title="Application Status"><i class="ti-pulse"></i><span>Application
+								Status</span></a></li>
+					<li><a
+						href="#{request.contextPath}/hku/public/my-profile/edit.xhtml"
+						title="My Profile"><i class="ti-user"></i><span>My
+								Profile </span></a></li>
+					<li><a href="#" onclick="PF('indexDialog').show()"
+						title="Logout"><i class="ti-share"></i><span> Logout </span></a></li>
+				</ul>
+				<div class="extra-top">
+					<div class="logo">logo</div>
+				</div>
+			</div>
+			<div class="menu-content">
+				<div class="body-header">
+					<div class="header">
+						<div class="logo">
+							<a href="#{request.contextPath}/hku/public/my-inbox/edit.xhtml"
+								title=""><img
+								src="#{request.contextPath}/resources/hku/images/logo.png"
+								alt="" /></a>
+						</div>
+						<div class="app-name">
+							<div class="sep"></div>
+							<div class="text">
+								<div class="row-01">Non-Jupas Online Application System</div>
+								<div class="row-02">The University of Hong Kong</div>
+							</div>
+						</div>
+						<div class="ax-printing">
+							<ul>
+								<li class="printer" onClick="_printPreview()"
+									title="Print Preview"><i class="ti-printer"></i></li>
+								<li class="print-now" onClick="_printNow()" title="Print Now"><i
+									class="ti-printer"></i></li>
+								<li class="print-cancel" onClick="_printCancel()" title="Cancel"><i
+									class="ti-close"></i></li>
+							</ul>
+						</div>
+						<div class="lang" id="lang_selection">
+							<ul>
+								<li class="#{language.engSeleted}"><h:form>
+										<h:commandLink value="Eng"
+											actionListener="#{language.setEnglish}" immediate="true" />
+									</h:form></li>
+								<li class="sep">
+									<div></div>
+								</li>
+								<li class="#{language.chiSeleted}"><h:form>
+										<h:commandLink value="中文"
+											actionListener="#{language.setChinese}" immediate="true" />
+									</h:form></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="body-content">
+					<div>
+						<ui:insert name="page-view-container" />
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			_initAllTxMenu();
+		</script>
+		<p:dialog header="Notification" widgetVar="notiDialogAtMenu"
+			modal="true" width="920" minHeight="50">
+			<div>
+				<div class="title type-b">
+					<h1>
+						<span class="ax-list-icon"><i class="ti-crown green"></i></span>
+						Profile of Mobile development is be created.
+					</h1>
+				</div>
+				<div>
+					<br /> If athe notification letter carries unpleasant news, the
+					recommended action is to give a detailed and honest explanation of
+					the reason behind the t Typically, a notification letter ends by
+					thanking the recipient.<br />
+				</div>
+			</div>
+			<div class="ax-btn-set">
+				<p:commandButton value="Close" styleClass="ui-priority-secondary"
+					onclick="PF('notiDialogAtMenu').hide();" />
+			</div>
+		</p:dialog>
+
+		<p:dialog header="#{index['prompt']}" widgetVar="indexDialog"
+			modal="true" width="300" minHeight="50">
+			<h:form id="indexFormE">
+				<div class="ui-fluid">
+					<H5>#{index['message']}</H5>
+				</div>
+				<div class="ax-btn-set">
+					<p:commandButton value="#{index['confirm']}" type="submit"
+						action="#{loginBean.logout}" styleClass="ui-confirmdialog-yes"
+						icon="ui-icon-check" />
+					<p:commandButton value="#{index['cancel']}" type="button"
+						styleClass="ui-confirmdialog-no"
+						onclick="PF('indexDialog').hide()" icon="ui-icon-close" />
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:idleMonitor timeout="#{indexBean.getUserExp()}"
+			onidle="PF('prompt').show();" />
+
+		<p:dialog widgetVar="prompt" modal="true" closable="false" width="300"
+			minHeight="50">
+			<h:form id="indexFormF">
+				<div class="ui-fluid">
+					<H5>#{index['timedOut']}</H5>
+				</div>
+				<div class="ax-btn-set">
+					<p:commandButton value="#{index['confirm']}" type="submit"
+						onclick="window.location = '../../../index.xhtml'"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				</div>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

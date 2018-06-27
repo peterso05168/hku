@@ -1,0 +1,66 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="../configuration.xhtml">
+
+	<ui:define name="title">
+		<f:loadBundle basename="i18n.configuration.announcement" var="announcement" />
+		#{announcement['sysAnncmntTemplate']}
+	</ui:define>
+
+	<ui:define name="main-content">
+
+		<f:loadBundle basename="i18n.configuration.announcement" var="announcement" />
+		<div>
+			<p:panel id="toggleable" header="#{announcement['searchTemplate']}"
+				toggleable="true" toggleSpeed="200" widgetVar="panel">
+				<h:form>
+					<div>
+						<div class="search-advance">
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+
+								<p:outputLabel for="templateNameFind"
+									value="#{announcement['templateName']}" />
+								<p:inputText id="templateNameFind"
+									value="#{announcementSearchBean.templateName}" />
+							</p:panelGrid>
+						</div>
+					</div>
+					<div class="ax-btn-set">
+						<p:commandButton value="#{announcement['search']}" action="#{announcementSearchBean.search}" update="announcementForm" />
+						<p:commandButton value="#{announcement['reset']}" styleClass="ui-priority-secondary" action="#{announcementSearchBean.reset}" 
+							update="announcementForm,toggleable" />
+					</div>
+				</h:form>
+			</p:panel>
+		</div>
+		<h:form id="announcementForm">
+			<p:dataTable var="anncmntVo" value="#{announcementSearchBean.anncmntVos}" reflow="true" draggableColumns="true"
+				rendered="#{announcementSearchBean.renderedResult}">
+
+				<f:facet name="header">
+					#{announcement['searchResult']}
+				</f:facet>
+
+				<p:column headerText="#{announcement['templateName']}">
+					<p:commandLink
+						style="font-style: normal;color: #222;font-weight: bold;"
+						action="#{announcementSearchBean.edit(anncmntVo.id)}"
+						onclick="window.location = 'edit.xhtml'">
+						<h:outputText value="#{anncmntVo.templateName}" />
+					</p:commandLink>
+				</p:column>
+
+				<p:column headerText="#{announcement['action']}" styleClass="ax-action-w dont-print">
+					<p:menuButton value="#{announcement['action']}">
+						<p:menuitem value="#{announcement['edit']}" onclick="_ACTION('edit')" actionListener="#{announcementSearchBean.edit(anncmntVo.id)}" />
+					</p:menuButton>
+				</p:column>
+
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>

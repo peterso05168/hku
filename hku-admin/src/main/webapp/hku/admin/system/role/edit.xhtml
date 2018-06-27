@@ -1,0 +1,109 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	template="./role.xhtml">
+
+	<ui:define name="breadcrumb-3">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.system-role.rolemanage" var="roleEdit" />
+			<li><a title="">#{roleEdit['edit']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+
+	<ui:define name="title">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.system-role.rolemanage" var="role" />
+			<a class="ax-back-icon-url" onclick="_ACTION('search')" href="javascript:void(0)"> <i
+				class="ax-icon ti-arrow-left"></i> #{role['roleManagement']}
+			</a>
+		</f:view>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.system-role.rolemanage" var="rolemanage" />
+			<div class="extra-info aR">
+				<button type="button" class="info-btn" data-toggle="popover" data-trigger="focus" data-placement="left">
+					<i class="ti-more-alt"></i>
+				</button>
+				<div id="info-box-01" style="display: none">
+					<div class="info-popover">
+						<div>
+							<b>#{rolemanage['createdBy']}</b>Mary Lee
+						</div>
+						<div>
+							<b>#{rolemanage['createdDate']}</b>2016-09-02 18:55:16
+						</div>
+						<div>
+							<b>#{rolemanage['modifiedBy']}</b>Winnie Chan
+						</div>
+						<div>
+							<b>#{rolemanage['modifiedDate']}</b>2017-05-10 15:45:12
+						</div>
+					</div>
+				</div>
+				<script>
+					_axPopover({
+						content : 'info-box-01'
+					});
+				</script>
+			</div>
+			<p:tabView activeIndex="0" id="roleTabView">
+				<p:tab title="#{rolemanage['general']}" titleStyle="margin-right: 3px;">
+					<h:form id="formRole">
+						<p:growl id="growlMsg" showDetail="true" />
+						<p:panelGrid columns="2" columnClasses="ui-grid-col-2,ui-grid-col-4" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+							<p:outputLabel for="roleName" value="#{rolemanage['roleName']}">
+								<span style="color: red;">*</span>
+							</p:outputLabel>
+							<p:inputText id="roleName" value="#{editRoleBean.roleVo.roleName}" />
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" columnClasses="ui-grid-col-2,ui-grid-col-10" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+							<p:outputLabel for="desc" value="#{rolemanage['desc']}" />
+							<p:inputText id="desc" value="#{editRoleBean.roleVo.description}" />
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" columnClasses="ui-grid-col-2,ui-grid-col-4" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+							<p:outputLabel for="status" value="#{rolemanage['status']}" />
+							<p:inputText id="status" disabled="true" value="#{editRoleBean.roleVo.isActive?'active':'inactive'}" />
+						</p:panelGrid>
+
+						<div class="ax-btn-set">
+							<p:commandButton value="#{rolemanage['back']}" styleClass="ui-priority-secondary" icon="ti-arrow-left"
+								onclick="_ACTION('search')" />
+							<p:commandButton value="#{rolemanage['save']}" action="#{editRoleBean.save}" update="roleTabView:formRole" />
+						</div>
+					</h:form>
+				</p:tab>
+
+				<p:tab title="#{rolemanage['function']}" titleStyle="margin-right: 3px;">
+					<h:form id="formPrivilege">
+						<p:growl id="growlMsg1" showDetail="true" />
+						<p:dataTable var="privilege" value="#{editRoleBean.privileges}" reflow="true" paginator="false">
+
+							<p:column headerText="#{rolemanage['moduleName']}">
+								<h:outputText value="#{privilege.module}" />
+							</p:column>
+
+							<p:column headerText="#{rolemanage['rolePrivilege']}">
+								<p:selectManyCheckbox value="#{privilege.privilegeIds}">
+									<f:selectItems value="#{privilege.vos}" var="vo" itemLabel="#{vo.privilegeDesc}" itemValue="#{vo.id}" />
+								</p:selectManyCheckbox>
+							</p:column>
+
+						</p:dataTable>
+
+						<div class="ax-btn-set">
+							<p:commandButton value="#{rolemanage['back']}" styleClass="ui-priority-secondary" icon="ti-arrow-left"
+								action="#{editRoleBean.savePrivilege}" />
+							<p:commandButton value="#{rolemanage['save']}" action="#{editRoleBean.savePrivilege}" update="formPrivilege" />
+						</div>
+					</h:form>
+				</p:tab>
+			</p:tabView>
+		</f:view>
+	</ui:define>
+</ui:composition>

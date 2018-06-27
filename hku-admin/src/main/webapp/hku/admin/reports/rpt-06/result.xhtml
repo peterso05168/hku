@@ -1,0 +1,43 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="./search.xhtml">
+
+	<ui:define name="breadcrumb-4">
+		<li><a title="">Generate</a><span>/</span></li>
+	</ui:define>
+
+	<ui:define name="main-content-2">
+		<h:form>
+			<p:dataTable var="car" value="#{dtBasicView.cars}" rows="10"
+				reflow="true" paginator="true" paginatorPosition="bottom"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15">
+				<p:column headerText="Profile" sortBy="#{car.brand}">
+					<h:outputText value="#{car.brand}" />
+				</p:column>
+				<p:column headerText="First Name" sortBy="#{car.brand}">
+					<h:outputText value="#{car.year}" />
+				</p:column>
+				<p:column headerText="Last Name" sortBy="#{car.brand}">
+					<h:outputText value="#{car.year}" />
+				</p:column>
+				<p:column headerText="Email Address" sortBy="#{car.brand}">
+					<h:outputText value="#{car.year}" />
+				</p:column>
+				<p:column headerText="Status" sortBy="#{car.brand}" styleClass="ax-status-w" >
+					<h:outputText value="#{car.year}" />
+				</p:column>
+			</p:dataTable>
+			<div class="ax-btn-set">
+				<p:selectOneMenu id="fileType">
+					<f:selectItem itemLabel="PDF" itemValue="0" />
+					<f:selectItem itemLabel="Excel" itemValue="1" />
+					<f:selectItem itemLabel="CSV" itemValue="2" />
+				</p:selectOneMenu>
+				<p:commandButton value="Export" onclick="_ACTION('result')" />
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

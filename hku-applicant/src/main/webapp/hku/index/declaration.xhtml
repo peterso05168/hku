@@ -1,0 +1,45 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="../public/tp-header-login.xhtml">
+	
+	<ui:define name="breadcrumb">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.index.declaration" var="declaration"/>
+			<li><a title="" >#{declaration['registration']}</a><i class="ti-angle-right"></i></li>
+			<li><a title="" >#{declaration['declaration']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+	<ui:define name="main-content">
+		<!-- Load local properties for different languages -->
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.index.declaration" var="declaration"/>
+			<div>
+				<div class="content-sec">
+					<div class="title">
+						<h1><a class="ax-back-icon-url" href="javascript:void(0)" onClick="window.location='#{request.contextPath}/hku/index/login.xhtml'" ><i class="ax-icon ti-arrow-left" />#{declaration['declaration']}</a></h1>
+					</div>
+					<div class="main-content" style="background-color: #FFF; padding: 10px;">
+						<div>
+							<ul class="list type-01">
+								<li><h:outputText value="#{declaration['line1']}" /></li>
+								<li><h:outputText value="#{declaration['line2']}" /></li>
+								<li><h:outputText value="#{declaration['line3']}" /></li>
+								<li><h:outputText value="#{declaration['line4']}" /></li>
+								<li><h:outputText value="#{declaration['line5']}" /></li>
+							</ul>
+						</div>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{declaration['accept']}" onclick="window.location='#{request.contextPath}/hku/index/registration-form.xhtml'" />
+							<div class="ax-button type-a" >
+								<p:commandButton value="#{declaration['notAccept']}" onclick="window.location='#{request.contextPath}/hku/index/login.xhtml'" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</f:view>
+	</ui:define>
+</ui:composition>

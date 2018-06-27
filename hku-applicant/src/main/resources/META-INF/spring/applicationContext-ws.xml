@@ -1,0 +1,904 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cxf="http://cxf.apache.org/core"
+	xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:jaxrs="http://cxf.apache.org/jaxrs-client"
+	xmlns:http-conf="http://cxf.apache.org/transports/http/configuration"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+        http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+        http://cxf.apache.org/jaxrs-client http://cxf.apache.org/schemas/jaxrs-client.xsd
+        http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd">
+
+
+	<bean id="auditorAware" class="com.accentrix.hku.util.web.AuditorAwareImpl" />
+	<bean id="setCurrentUserInterceptor"
+		class="com.accentrix.nttca.dcms.common.interceptor.SetCurrentUserInterceptor">
+		<property name="auditorAware" ref="auditorAware"></property>
+	</bean>
+
+	<cxf:bus>
+		<cxf:properties>
+			<entry key="javax.ws.rs.ext.ExceptionMapper" value-ref="systemExceptionMapper" />
+			<entry key="org.apache.cxf.jaxrs.client.ResponseExceptionMapper"
+				value-ref="systemExceptionMapper" />
+
+			<entry key="javax.ws.rs.ext.MessageBodyReader" value-ref="jsonProvider" />
+			<entry key="javax.ws.rs.ext.MessageBodyWriter" value-ref="jsonProvider" />
+		</cxf:properties>
+
+		<cxf:outInterceptors>
+			<ref bean="setCurrentUserInterceptor" />
+		</cxf:outInterceptors>
+	</cxf:bus>
+
+	<!-- cxf restful client -->
+
+	<!-- <bean id="jsonProvider" class="org.apache.cxf.jaxrs.provider.json.JSONProvider"> -->
+	<bean id="dateParameterConverterProvider" class="com.accentrix.hku.jaxrs.DateParameterConverterProvider" />
+
+	<bean id="jsonProvider" class="com.accentrix.hku.jaxrs.JsonProvider">
+		<property name="dropRootElement" value="false" />
+		<property name="extraClass">
+			<list>
+				<!--adm -->
+				<value>com.accentrix.hku.vo.adm.AdmAnncmntVo</value>
+				<value>com.accentrix.hku.vo.adm.ExeVo</value>
+				<value>com.accentrix.hku.vo.adm.FormProgReqVo</value>
+				<value>com.accentrix.hku.vo.adm.FormProgVo</value>
+				<value>com.accentrix.hku.vo.adm.FormVo</value>
+				<value>com.accentrix.hku.vo.adm.GpaFormulaItmVo</value>
+				<value>com.accentrix.hku.vo.adm.GpsScoringSubjectVo</value>
+				<value>com.accentrix.hku.vo.adm.ScoringFormulaVo</value>
+
+				<!--app -->
+				<value>com.accentrix.hku.vo.app.AcadBgVo</value>
+				<value>com.accentrix.hku.vo.app.AcadQualHousingMgmtVo</value>
+				<value>com.accentrix.hku.vo.app.AcadQualNursingVo</value>
+				<value>com.accentrix.hku.vo.app.CounselorVo</value>
+				<value>com.accentrix.hku.vo.app.ExpAndAchievementsVo</value>
+				<value>com.accentrix.hku.vo.app.FacultyVo</value>
+				<value>com.accentrix.hku.vo.app.HkuProgrammeVo</value>
+				<value>com.accentrix.hku.vo.app.InstitutionVo</value>
+				<value>com.accentrix.hku.vo.app.InterviewSectionVo</value>
+				<value>com.accentrix.hku.vo.app.OthersVo</value>
+				<value>com.accentrix.hku.vo.app.PersonalParticularsVo</value>
+				<value>com.accentrix.hku.vo.app.PrevStudiesVo</value>
+				<value>com.accentrix.hku.vo.app.ProgrammeChoiceVo</value>
+				<value>com.accentrix.hku.vo.app.ProgRequirementVo</value>
+				<value>com.accentrix.hku.vo.app.QualificationRsltVo</value>
+				<value>com.accentrix.hku.vo.app.QualificationVo</value>
+				<value>com.accentrix.hku.vo.app.RefereeVo</value>
+				<value>com.accentrix.hku.vo.app.ReferenceVo</value>
+				<value>com.accentrix.hku.vo.app.ReqDocConfVo</value>
+				<value>com.accentrix.hku.vo.app.ReqDocVo</value>
+				<value>com.accentrix.hku.vo.app.RequirementRelationshipVo</value>
+				<value>com.accentrix.hku.vo.app.RequirementVo</value>
+				<value>com.accentrix.hku.vo.app.SpecialSchemeVo</value>
+				<value>com.accentrix.hku.vo.app.TelNoVo</value>
+				<value>com.accentrix.hku.vo.app.UploadedDocVo</value>
+				<value>com.accentrix.hku.vo.app.ProgressVo</value>
+				<value>com.accentrix.hku.vo.app.MfeSchemeVo</value>
+				<value>com.accentrix.hku.vo.app.AcadQualHousingMgmtPqVo</value>
+				<value>com.accentrix.hku.vo.app.AcadQualHousingMgmtRweVo</value>
+				<value>com.accentrix.hku.vo.app.AcadQualNursingExpVo</value>
+				<value>com.accentrix.hku.vo.app.AcadQualNursingNrVo</value>
+				<value>com.accentrix.hku.vo.app.AcadQualNursingPrqVo</value>
+				<value>com.accentrix.hku.vo.app.AppNjceeScoringSystemVo</value>
+				<value>com.accentrix.hku.vo.app.AppNjceeSubjectStructureVo</value>
+				<value>com.accentrix.hku.vo.app.AppProgChoiceGpsRsltVo</value>
+
+				<!--applicant -->
+				<value>com.accentrix.hku.vo.applicant.AccountVo</value>
+				<value>com.accentrix.hku.vo.applicant.AnncmntVo</value>
+				<value>com.accentrix.hku.vo.applicant.ApplicantInformationVo</value>
+				<value>com.accentrix.hku.vo.applicant.ApplicationVo</value>
+				<value>com.accentrix.hku.vo.applicant.MessageVo</value>
+
+				<!--cpc -->
+				<value>com.accentrix.hku.vo.cpc.ProvinceCityVo</value>
+				<value>com.accentrix.hku.vo.cpc.CityVo</value>
+				<value>com.accentrix.hku.vo.cpc.CountryVo</value>
+				<value>com.accentrix.hku.vo.cpc.ProvinceVo</value>
+
+				<!--exam -->
+				<value>com.accentrix.hku.vo.exam.GradeVo</value>
+				<value>com.accentrix.hku.vo.exam.SubjectVo</value>
+				<value>com.accentrix.hku.vo.exam.TypeVo</value>
+
+				<!--general -->
+				<value>com.accentrix.hku.vo.general.RefCdVo</value>
+
+				<!--staff -->
+				<value>com.accentrix.hku.vo.staff.PrivilegeVo</value>
+				<value>com.accentrix.hku.vo.staff.ProgVo</value>
+				<value>com.accentrix.hku.vo.staff.RolePrivilegeVo</value>
+				<value>com.accentrix.hku.vo.staff.RoleVo</value>
+				<value>com.accentrix.hku.vo.staff.StaffInformationVo</value>
+				<value>com.accentrix.hku.vo.staff.RoleRelVo</value>
+
+				<!--audit -->
+				<value>com.accentrix.hku.vo.audit.AuditLogVo</value>
+
+				<!-- scholar -->
+				<value>com.accentrix.hku.vo.scholar.ScholarDtlRequirementVo</value>
+				<value>com.accentrix.hku.vo.scholar.ScholarDtlVo</value>
+				<value>com.accentrix.hku.vo.scholar.ScholarVo</value>
+
+				<!--email -->
+				<value>com.accentrix.hku.vo.email.MailAuthenticator</value>
+				<value>com.accentrix.hku.vo.email.MailInfo</value>
+				
+				<!--payment  -->
+				<value>com.accentrix.hku.vo.payment.PaymentDR</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="systemExceptionMapper" class="com.accentrix.hku.exception.SystemExceptionMapper" />
+
+	<!-- layout management ws -->
+
+	<http-conf:conduit name="*.http-conduit">
+		<http-conf:client ConnectionTimeout="${ws.connectionTimeout}"
+			ReceiveTimeout="${ws.receiveTimeout}" />
+	</http-conf:conduit>
+
+	<!-- WS -->
+	<!--adm -->
+	<jaxrs:client id="exeService" address="${hku-ws.address}/api/rest/exe/"
+		serviceClass="com.accentrix.hku.service.adm.ExeService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="formProgReqService" address="${hku-ws.address}/api/rest/formProgReq/"
+		serviceClass="com.accentrix.hku.service.adm.FormProgReqService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="formProgService" address="${hku-ws.address}/api/rest/formProg/"
+		serviceClass="com.accentrix.hku.service.adm.FormProgService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="formService" address="${hku-ws.address}/api/rest/form/"
+		serviceClass="com.accentrix.hku.service.adm.FormService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="gpaFormulaItmService"
+		address="${hku-ws.address}/api/rest/gpaFormulaItm/" serviceClass="com.accentrix.hku.service.adm.GpaFormulaItmService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="gpsScoringSubjectService"
+		address="${hku-ws.address}/api/rest/gpsScoringSubject/" serviceClass="com.accentrix.hku.service.adm.GpsScoringSubjectService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="scoringFormulaService"
+		address="${hku-ws.address}/api/rest/scoringFormula/" serviceClass="com.accentrix.hku.service.adm.ScoringFormulaService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<!--app -->
+	<jaxrs:client id="institutionService" address="${hku-ws.address}/api/rest/institution/"
+		serviceClass="com.accentrix.hku.service.app.InstitutionService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="acadBgService" address="${hku-ws.address}/api/rest/acadBg/"
+		serviceClass="com.accentrix.hku.service.app.AcadBgService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="counselorService" address="${hku-ws.address}/api/rest/counselor/"
+		serviceClass="com.accentrix.hku.service.app.CounselorService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="expAndAchievementsService"
+		address="${hku-ws.address}/api/rest/expAndAchievements/" serviceClass="com.accentrix.hku.service.app.ExpAndAchievementsService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="facultyService" address="${hku-ws.address}/api/rest/faculty/"
+		serviceClass="com.accentrix.hku.service.app.FacultyService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="hkuProgrammeService"
+		address="${hku-ws.address}/api/rest/hkuProgramme/" serviceClass="com.accentrix.hku.service.app.HkuProgrammeService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="personalParticularsService"
+		address="${hku-ws.address}/api/rest/personalParticulars/"
+		serviceClass="com.accentrix.hku.service.app.PersonalParticularsService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="prevStudiesService" address="${hku-ws.address}/api/rest/prevStudies/"
+		serviceClass="com.accentrix.hku.service.app.PrevStudiesService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="programmeChoiceService"
+		address="${hku-ws.address}/api/rest/programmeChoice/" serviceClass="com.accentrix.hku.service.app.ProgrammeChoiceService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="progRequirementService"
+		address="${hku-ws.address}/api/rest/progRequirement/" serviceClass="com.accentrix.hku.service.app.ProgRequirementService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="qualificationRsltService"
+		address="${hku-ws.address}/api/rest/qualificationRslt/" serviceClass="com.accentrix.hku.service.app.QualificationRsltService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="qualificationService"
+		address="${hku-ws.address}/api/rest/qualification/" serviceClass="com.accentrix.hku.service.app.QualificationService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="refereeService" address="${hku-ws.address}/api/rest/referee/"
+		serviceClass="com.accentrix.hku.service.app.RefereeService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="referenceService" address="${hku-ws.address}/api/rest/reference/"
+		serviceClass="com.accentrix.hku.service.app.ReferenceService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="reqDocConfService" address="${hku-ws.address}/api/rest/reqDocConf/"
+		serviceClass="com.accentrix.hku.service.app.ReqDocConfService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="reqDocService" address="${hku-ws.address}/api/rest/reqDoc/"
+		serviceClass="com.accentrix.hku.service.app.ReqDocService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="requirementService" address="${hku-ws.address}/api/rest/requirement/"
+		serviceClass="com.accentrix.hku.service.app.RequirementService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="specialSchemeService"
+		address="${hku-ws.address}/api/rest/specialScheme/" serviceClass="com.accentrix.hku.service.app.SpecialSchemeService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="telNoService" address="${hku-ws.address}/api/rest/telNo/"
+		serviceClass="com.accentrix.hku.service.app.TelNoService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="uploadedDocService" address="${hku-ws.address}/api/rest/uploadedDoc/"
+		serviceClass="com.accentrix.hku.service.app.UploadedDocService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="acadQualHousingMgmtService"
+		address="${hku-ws.address}/api/rest/acadQualHousingMgmt/"
+		serviceClass="com.accentrix.hku.service.app.AcadQualHousingMgmtService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="acadQualOthersService"
+		address="${hku-ws.address}/api/rest/acadQualOthers/" serviceClass="com.accentrix.hku.service.app.AcadQualOthersService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="transCreditsService"
+		address="${hku-ws.address}/api/rest/transCredits/" serviceClass="com.accentrix.hku.service.app.TransCreditsService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="progressService" address="${hku-ws.address}/api/rest/progress/"
+		serviceClass="com.accentrix.hku.service.app.ProgressService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="othersService" address="${hku-ws.address}/api/rest/others/"
+		serviceClass="com.accentrix.hku.service.app.OthersService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="mfeSchemeService" address="${hku-ws.address}/api/rest/mfeScheme/"
+		serviceClass="com.accentrix.hku.service.app.MfeSchemeService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="acadQualNursingService"
+		address="${hku-ws.address}/api/rest/acadQualNursing/" serviceClass="com.accentrix.hku.service.app.AcadQualNursingService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="acadQualHousingMgmtPqService"
+		address="${hku-ws.address}/api/rest/acadQualHousingMgmtPq/"
+		serviceClass="com.accentrix.hku.service.app.AcadQualHousingMgmtPqService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="acadQualHousingMgmtRweService"
+		address="${hku-ws.address}/api/rest/acadQualHousingMgmtRwe/"
+		serviceClass="com.accentrix.hku.service.app.AcadQualHousingMgmtRweService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="acadQualNursingExpService"
+		address="${hku-ws.address}/api/rest/acadQualNursingExp/" serviceClass="com.accentrix.hku.service.app.AcadQualNursingExpService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="acadQualNursingNrService"
+		address="${hku-ws.address}/api/rest/acadQualNursingNr/" serviceClass="com.accentrix.hku.service.app.AcadQualNursingNrService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="acadQualNursingPrqService"
+		address="${hku-ws.address}/api/rest/acadQualNursingPrq/" serviceClass="com.accentrix.hku.service.app.AcadQualNursingPrqService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="appNjceeScoringSystemService"
+		address="${hku-ws.address}/api/rest/appNjceeScoringSystem/"
+		serviceClass="com.accentrix.hku.service.app.AppNjceeScoringSystemService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+	
+	<jaxrs:client id="appNjceeSubjectStructureService"
+		address="${hku-ws.address}/api/rest/appNjceeSubjectStructure/"
+		serviceClass="com.accentrix.hku.service.app.AppNjceeSubjectStructureService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+	
+	<jaxrs:client id="appProgChoiceGpsRsltService"
+		address="${hku-ws.address}/api/rest/appProgChoiceGpsRslt/"
+		serviceClass="com.accentrix.hku.service.app.AppProgChoiceGpsRsltService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<!--applicant -->
+	<jaxrs:client id="accountService" address="${hku-ws.address}/api/rest/account/"
+		serviceClass="com.accentrix.hku.service.applicant.AccountService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="anncmntService" address="${hku-ws.address}/api/rest/anncmnt/"
+		serviceClass="com.accentrix.hku.service.applicant.AnncmntService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="anncmntTemplateService" address="${hku-ws.address}/api/rest/admAnncmnt/"
+		serviceClass="com.accentrix.hku.service.adm.AnncmntTemplateService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="applicantInformationService"
+		address="${hku-ws.address}/api/rest/applicantInformation/"
+		serviceClass="com.accentrix.hku.service.applicant.ApplicantInformationService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="applicationService" address="${hku-ws.address}/api/rest/application/"
+		serviceClass="com.accentrix.hku.service.applicant.ApplicationService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="messageService" address="${hku-ws.address}/api/rest/message/"
+		serviceClass="com.accentrix.hku.service.applicant.MessageService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<!--cpc -->
+	<jaxrs:client id="cityService" address="${hku-ws.address}/api/rest/city/"
+		serviceClass="com.accentrix.hku.service.cpc.CityService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="provinceService" address="${hku-ws.address}/api/rest/province/"
+		serviceClass="com.accentrix.hku.service.cpc.ProvinceService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="countryService" address="${hku-ws.address}/api/rest/country/"
+		serviceClass="com.accentrix.hku.service.cpc.CountryService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<!--exam -->
+	<jaxrs:client id="gradeService" address="${hku-ws.address}/api/rest/grade/"
+		serviceClass="com.accentrix.hku.service.exam.GradeService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="subjectService" address="${hku-ws.address}/api/rest/subject/"
+		serviceClass="com.accentrix.hku.service.exam.SubjectService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="typeService" address="${hku-ws.address}/api/rest/type/"
+		serviceClass="com.accentrix.hku.service.exam.TypeService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<!--general -->
+	<jaxrs:client id="refCdService" address="${hku-ws.address}/api/rest/refCd/"
+		serviceClass="com.accentrix.hku.service.general.RefCdService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<!--staff -->
+	<jaxrs:client id="progService" address="${hku-ws.address}/api/rest/prog/"
+		serviceClass="com.accentrix.hku.service.staff.ProgService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="rolePrivilegeService"
+		address="${hku-ws.address}/api/rest/rolePrivilege/" serviceClass="com.accentrix.hku.service.staff.RolePrivilegeService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="roleService" address="${hku-ws.address}/api/rest/role/"
+		serviceClass="com.accentrix.hku.service.staff.RoleService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="staffInformationService"
+		address="${hku-ws.address}/api/rest/staffInformation/" serviceClass="com.accentrix.hku.service.staff.StaffInformationService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="privilegeService" address="${hku-ws.address}/api/rest/privilege/"
+		serviceClass="com.accentrix.hku.service.staff.PrivilegeService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="roleRelService" address="${hku-ws.address}/api/rest/roleRel/"
+		serviceClass="com.accentrix.hku.service.staff.RoleRelService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<!--audit -->
+	<jaxrs:client id="auditLogService" address="${hku-ws.address}/api/rest/auditLog/"
+		serviceClass="com.accentrix.hku.service.audit.AuditLogService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<!--scholar -->
+	<jaxrs:client id="scholarDtlRequirementService"
+		address="${hku-ws.address}/api/rest/scholarDtlRequirement/"
+		serviceClass="com.accentrix.hku.service.scholar.ScholarDtlRequirementService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="scholarDtlService" address="${hku-ws.address}/api/rest/scholarDtl/"
+		serviceClass="com.accentrix.hku.service.scholar.ScholarDtlService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<jaxrs:client id="scholarService" address="${hku-ws.address}/api/rest/scholar/"
+		serviceClass="com.accentrix.hku.service.scholar.ScholarService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<!--email -->
+	<jaxrs:client id="mailSenderService" address="${hku-ws.address}/api/rest/mailSender/"
+		serviceClass="com.accentrix.hku.service.email.MailSenderService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+	
+	<!--report -->
+	<jaxrs:client id="reportGenerationService" address="${hku-report.address}/api/rest/report/"
+		serviceClass="com.accentrix.hku.service.report.ReportGenerationService"
+		inheritHeaders="true">
+		<jaxrs:headers>
+			<entry key="Accept" value="application/json" />
+		</jaxrs:headers>
+		<jaxrs:providers>
+			<ref bean="dateParameterConverterProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+</beans>

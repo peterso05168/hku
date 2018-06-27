@@ -1,0 +1,414 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="../configuration.xhtml">
+
+	<ui:define name="breadcrumb-2">
+		<f:loadBundle basename="i18n.configuration.requirement"
+			var="requirement" />
+		<li><a title="">#{requirement['entranceRequirement']}</a><i
+			class="ti-angle-right"></i></li>
+	</ui:define>
+
+	<ui:define name="title">
+		<f:loadBundle basename="i18n.configuration.requirement"
+			var="requirement" />
+		<a class="ax-back-icon-url" onclick="_ACTION('search')"
+			href="javascript:void(0)"> <i class="ax-icon ti-arrow-left"></i>
+			#{requirement['entranceRequirement']}
+		</a>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<f:loadBundle basename="i18n.configuration.requirement"
+			var="requirement" />
+		<div class="ax-tab">
+			<p:panel id="toggleable" header="#{requirement['basicInfo']}"
+				toggleable="true" toggleSpeed="200" widgetVar="panel">
+				<div>
+					<div class="ui-fluid">
+						<p:panelGrid columns="2"
+							columnClasses="ui-grid-col-2,ui-grid-col-10" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+							<p:outputLabel for="requirementName"
+								value="#{requirement['requirementName']}" />
+							<p:inputText id="requirementName"
+								value="#{requirementEditBean.requirementVo.description}" />
+						</p:panelGrid>
+						<p:panelGrid columns="4"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+							layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+
+							<p:outputLabel for="type" value="#{requirement['type']}" />
+							<p:inputText id="type"
+								value="#{requirementEditBean.requirementVo.type}"
+								styleClass="ui-state-disabled" readonly="true" />
+
+							<p:outputLabel for="status" value="#{requirement['status']}" />
+							<p:inputText id="status"
+								value="#{requirementEditBean.requirementVo.isPublished?'Active':'Inactive'}"
+								styleClass="ui-state-disabled" readonly="true" />
+						</p:panelGrid>
+					</div>
+				</div>
+			</p:panel>
+			<h:form id="requirementDetails">
+				<p:growl id="growlMsg" showDetail="true" globalOnly="true" />
+				<p:tabView id="requirementTab" activeIndex="0">
+					<p:tab title="#{requirement['details']}"
+						rendered="#{requirementEditBean.activeComposite}">
+						<p:panelGrid columns="2"
+							columnClasses="ui-grid-col-2,ui-grid-col-8" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+
+							<p:outputLabel for="composite"
+								value="#{requirement['composite']}">
+								<span style="color: red">*</span>
+							</p:outputLabel>
+							<h:panelGroup>
+								<span>#{requirement['relationship']} </span>
+								<p:selectOneMenu id="composite" style="width:100px;"
+									value="#{requirementEditBean.requirementVo.relationship}">
+									<f:selectItem itemLabel="- Select -" itemValue=""
+										noSelectionOption="true" />
+									<f:selectItem itemLabel="OR" itemValue="or" />
+									<f:selectItem itemLabel="AND" itemValue="and" />
+								</p:selectOneMenu>
+							</h:panelGroup>
+						</p:panelGrid>
+
+						<p:dataTable value="#{requirementEditBean.childRequirements}"
+							var="childRequirement" reflow="true" draggableColumns="true"
+							style="margin-top: 10px">
+							<f:facet name="header">
+								#{requirement['requirementList']}
+							</f:facet>
+
+							<p:column headerText="#{requirement['name']}"
+								sortBy="#{childRequirement.description}">
+								<p:commandLink
+									action="#{requirementEditBean.edit(childRequirement.id)}"
+									onclick="window.location = 'edit.xhtml'"
+									style="font-style: normal;color: #222;font-weight: bold;"
+									oncomplete="PF('scoringFormulaDialog').show()">
+									<h:outputText value="#{childRequirement.description}" />
+								</p:commandLink>
+							</p:column>
+
+							<p:column headerText="#{requirement['type']}">
+								<h:outputText value="#{childRequirement.type}" />
+							</p:column>
+
+							<p:column headerText="#{requirement['action']}"
+								styleClass="ax-action-w dont-print">
+								<p:menuButton value="Action">
+									<p:menuitem value="Delete"
+										actionListener="#{requirementEditBean.removeSubRequirement(childRequirement.id)}"
+										update="requirementDetails,addRequirement">
+										<p:confirm header="Promat"
+											message="Confirm to delete the selected record?"
+											icon="ui-icon-alert" />
+									</p:menuitem>
+								</p:menuButton>
+							</p:column>
+						</p:dataTable>
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							<p:commandButton value="Yes" type="button"
+								styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+							<p:commandButton value="No" type="button"
+								styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+						</p:confirmDialog>
+						<div class="ax-btn-set">
+							<p:commandButton value=" #{requirement['requirement']} "
+								icon="ti-plus" styleClass="ui-priority-primary"
+								update="addRequirement"
+								oncomplete="PF('requirementDialog').show()" />
+						</div>
+					</p:tab>
+					<p:tab title="#{requirement['details']}"
+						rendered="#{requirementEditBean.activePubExam}">
+						<!-- public details -->
+						<p:panelGrid columns="2"
+							columnClasses="ui-grid-col-2,ui-grid-col-4" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+							<p:outputLabel for="relationship"
+								value="#{requirement['relationship']}">
+								<span style="color: red">*</span>
+							</p:outputLabel>
+							<p:selectOneMenu id="relationship"
+								value="#{requirementEditBean.requirementVo.relationship}">
+								<f:selectItem itemLabel="- Select -" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="OR" itemValue="or" />
+								<f:selectItem itemLabel="AND" itemValue="and" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="examination" value="#{requirement['exam']}">
+								<span style="color: red">*</span>
+							</p:outputLabel>
+							<p:selectOneMenu id="examination"
+								value="#{requirementEditBean.requirementVo.examination.examination}"
+								disabled="#{requirementEditBean.disableExamination}">
+								<p:ajax event="change"
+									listener="#{requirementEditBean.cleanSubjectRequirements(requirementEditBean.requirementVo)}"
+									update="subjectRequirementsTable" />
+								<f:selectItem itemLabel="- Select -" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{requirementEditBean.examTypes}"
+									var="examType" itemLabel="#{examType.examDesc}"
+									itemValue="#{examType.id}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+
+						<p:dataTable id="subjectRequirementsTable"
+							value="#{requirementEditBean.requirementVo.examination.subjectRequirements}"
+							var="subject" reflow="true" draggableColumns="true"
+							style="margin-top: 10px">
+							<p:column headerText="#{requirement['subject']}"
+								sortBy="#{subject.subject}">
+								<p:commandLink
+									action="#{requirementEditBean.loadSubjectRequirementDialog(subject)}"
+									style="font-style: normal;color: #222;font-weight: bold;"
+									oncomplete="PF('subjectRequirementDialog').show()"
+									update="subjectRequirementDialog">
+									<h:outputText value="#{subject.subject}" />
+								</p:commandLink>
+							</p:column>
+
+							<p:column headerText="#{requirement['relationship']}">
+								<h:outputText value="-" rendered="#{subject.relationship == '' or subject.relationship == null}" />
+								<h:outputText value="#{subject.relationship}" rendered="#{subject.relationship != '' and subject.relationship != null}" />
+							</p:column>
+
+							<p:column headerText="#{requirement['grade']}">
+								<h:outputText value="#{subject.grade}" />
+							</p:column>
+
+							<p:column headerText="#{requirement['action']}"
+								styleClass="ax-action-w dont-print">
+								<p:menuButton value="#{requirement['action']}">
+									<p:menuitem value="#{requirement['edit']}"
+										action="#{requirementEditBean.loadSubjectRequirementDialog(subject)}"
+										oncomplete="PF('subjectRequirementDialog').show()"
+										update="subjectRequirementDialog" />
+									<p:menuitem value="#{requirement['delete']}"
+										actionListener="#{requirementEditBean.removeSubjectRequirement(subject)}"
+										update="requirementDetails">
+										<p:confirm header="#{requirement['promat']}"
+											message="#{requirement['confirmDelete']}"
+											icon="ui-icon-alert" />
+									</p:menuitem>
+								</p:menuButton>
+							</p:column>
+						</p:dataTable>
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							<p:commandButton value="#{requirement['yes']}" type="button"
+								styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+							<p:commandButton value="#{requirement['no']}" type="button"
+								styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+						</p:confirmDialog>
+						<div class="ax-btn-set">
+							<p:commandButton value=" #{requirement['subjectRequirement']} "
+								icon="ti-plus" styleClass="ui-priority-primary"
+								action="#{requirementEditBean.loadSubjectRequirementDialog(null)}"
+								update="requirementDetails, subjectRequirementDialog" />
+						</div>
+					</p:tab>
+					<p:tab title="#{requirement['details']}"
+						rendered="#{requirementEditBean.activeGps}">
+						<p:panelGrid columns="2"
+							columnClasses="ui-grid-col-2,ui-grid-col-4" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+							<p:outputLabel for="examForGps" value="#{requirement['exam']}">
+								<span style="color: red">*</span>
+							</p:outputLabel>
+							<p:selectOneMenu id="examForGps"
+								value="#{requirementEditBean.requirementVo.gpsVo.examination}">
+								<p:ajax event="change"
+									listener="#{requirementEditBean.renderedOutOf45}"
+									update="requirementDetails" />
+								<f:selectItem itemLabel="- Select -" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{requirementEditBean.examTypes}"
+									var="examType" itemLabel="#{examType.examDesc}"
+									itemValue="#{examType.id}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="outOf45" value="#{requirement['outOf45']}"
+								rendered="#{requirementEditBean.showOutOf45}" />
+							<p:selectBooleanCheckbox id="outOf45"
+								value="#{requirementEditBean.requirementVo.gpsVo.outOf45}"
+								rendered="#{requirementEditBean.showOutOf45}" />
+
+							<p:outputLabel value="#{requirement['minScore']}">
+								<span style="color: red">*</span>
+							</p:outputLabel>
+							<p:inputText id="minScore"
+								value="#{requirementEditBean.requirementVo.gpsVo.minScore}" />
+						</p:panelGrid>
+					</p:tab>
+					<p:tab title="#{requirement['details']}"
+						rendered="#{requirementEditBean.activeAge}">
+						<p:panelGrid columns="2"
+							columnClasses="ui-grid-col-2,ui-grid-col-8" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+
+							<p:outputLabel value="#{requirement['ageRange']}" />
+							<h:panelGroup>
+								<span>#{requirement['from']} </span>
+								<p:inputText id="ageFrom" style="width:15%"
+									value="#{requirementEditBean.requirementVo.ageRange.ageFrom}" />
+								<span>#{requirement['to']} </span>
+								<p:inputText id="ageTo" style="width:15%"
+									value="#{requirementEditBean.requirementVo.ageRange.ageTo}" />
+							</h:panelGroup>
+						</p:panelGrid>
+					</p:tab>
+				</p:tabView>
+
+				<div class="ax-btn-set">
+					<p:commandButton value="#{requirement['back']}"
+						styleClass="ui-priority-secondary" icon="ti-arrow-left"
+						onclick="_ACTION('search')" />
+					<p:commandButton value="#{requirement['save']}"
+						action="#{requirementEditBean.save}" update="requirementDetails" />
+				</div>
+			</h:form>
+			<p:dialog header="#{requirement['requirement']}"
+				widgetVar="requirementDialog" modal="true" width="40%">
+				<h:form id="addRequirement">
+					<div class="ui-fluid">
+						<p:panelGrid columns="1" columnClasses="ui-grid-col-12"
+							layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+							<p:outputLabel for="requirementName"
+								value="#{requirement['requirementName']}"
+								style="text-align:left;">
+								<span style="color: red">*</span>
+							</p:outputLabel>
+							<p:selectOneMenu id="requirementName"
+								value="#{requirementEditBean.addRequirementId}">
+								<f:selectItem itemLabel="- Select -" itemValue="" />
+								<f:selectItems value="#{requirementEditBean.allRequirements}"
+									var="req" itemLabel="#{req.description}" itemValue="#{req.id}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+					</div>
+					<div class="ax-btn-set">
+						<p:commandButton value="#{requirement['save']}"
+							action="#{requirementEditBean.addSubRequirement}"
+							update="requirementDetails,addRequirement" />
+						<p:commandButton value="#{requirement['cancel']}"
+							styleClass="ui-priority-secondary"
+							oncomplete="PF('requirementDialog').hide()" />
+					</div>
+				</h:form>
+			</p:dialog>
+			<p:dialog header="#{requirement['subjectRequirement']}" height="300"
+				maximizable="true" widgetVar="subjectRequirementDialog" modal="true"
+				width="50%">
+				<h:form id="subjectRequirementDialog">
+					<div class="ui-fluid">
+						<p:panelGrid columns="2"
+							columnClasses="ui-grid-col-2,ui-grid-col-4" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+							<p:outputLabel for="examLevel"
+								value="#{requirement['examLevel']}"
+								rendered="#{requirementEditBean.showExamLevel}">
+								<span style="color: red">*</span>
+							</p:outputLabel>
+							<p:selectOneMenu id="examLevel"
+								value="#{requirementEditBean.subjectRequirement.examLevel}"
+								rendered="#{requirementEditBean.showExamLevel}">
+								<p:ajax event="change"
+									listener="#{requirementEditBean.renderedMultiSelectSubjects}"
+									update="subjectRequirementDialog:examBoard,subjectRequirementDialog:subjects,subjectRequirementDialog:grade" />
+								<f:selectItem itemLabel="- Select -" itemValue="" />
+								<f:selectItems value="#{requirementEditBean.examLevels}"
+									var="level" itemLabel="#{level}" itemValue="#{level}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="examBoard"
+								value="#{requirement['examBoard']}"
+								rendered="#{requirementEditBean.showExamBoard}">
+								<span style="color: red">*</span>
+							</p:outputLabel>
+							<p:selectOneMenu id="examBoard"
+								value="#{requirementEditBean.subjectRequirement.examBoard}"
+								rendered="#{requirementEditBean.showExamBoard}">
+								<p:ajax event="change"
+									listener="#{requirementEditBean.renderedMultiSelectSubjects}"
+									update="subjectRequirementDialog:examLevel,subjectRequirementDialog:subjects" />
+								<f:selectItem itemLabel="- Select -" itemValue="" />
+								<f:selectItems value="#{requirementEditBean.examBoards}"
+									var="board" itemLabel="#{board}" itemValue="#{board}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+						<p:panelGrid columns="2"
+							columnClasses="ui-grid-col-2,ui-grid-col-10" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+							<p:outputLabel for="subjects" value="#{requirement['subjects']}">
+								<span style="color: red">*</span>
+							</p:outputLabel>
+							<p:selectCheckboxMenu id="subjects"
+								value="#{requirementEditBean.multiSubjectStrList}"
+								multiple="true" filter="true" filterMatchMode="startsWith"
+								disabled="#{requirementEditBean.disableSubjects}"
+								panelStyle="width:250px">
+								<f:selectItems value="#{requirementEditBean.subjects}"
+									var="subject" itemLabel="#{subject.examSubjectDesc}"
+									itemValue="#{subject.examSubjectDesc}" />
+							</p:selectCheckboxMenu>
+						</p:panelGrid>
+						<p:panelGrid columns="2"
+							columnClasses="ui-grid-col-2,ui-grid-col-4" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+							<p:outputLabel for="relationship"
+								value="#{requirement['relationship']}">
+								<span style="color: red">*</span>
+							</p:outputLabel>
+							<p:selectOneMenu id="relationship"
+								value="#{requirementEditBean.subjectRequirement.relationship}">
+								<f:selectItem itemLabel="- Select -" itemValue="" />
+								<f:selectItem itemLabel="OR" itemValue="OR" />
+								<f:selectItem itemLabel="AND" itemValue="AND" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="grade" value="#{requirement['grade']}"
+								rendered="#{!requirementEditBean.examSatOrIeTo}">
+								<span style="color: red">*</span>
+							</p:outputLabel>
+							<p:selectOneMenu id="grade"
+								value="#{requirementEditBean.subjectRequirement.grade}"
+								rendered="#{!requirementEditBean.examSatOrIeTo}"
+								disabled="#{requirementEditBean.disableGrades}">
+								<f:selectItem itemLabel="- Select -" itemValue="" />
+								<f:selectItems value="#{requirementEditBean.grades}" var="grade"
+									itemLabel="#{grade.gradeCd}" itemValue="#{grade.gradeCd}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="score"
+								value="#{requirement['achievedScore']}"
+								rendered="#{requirementEditBean.examSatOrIeTo}">
+								<span style="color: red">*</span>
+							</p:outputLabel>
+							<p:inputText id="score"
+								value="#{requirementEditBean.subjectRequirement.grade}"
+								rendered="#{requirementEditBean.examSatOrIeTo}" />
+						</p:panelGrid>
+					</div>
+					<div class="ax-btn-set">
+						<p:commandButton value="#{requirement['save']}"
+							action="#{requirementEditBean.addSubjectRequirement}"
+							update="requirementDetails,subjectRequirementDialog" />
+						<p:commandButton value="#{requirement['cancel']}"
+							styleClass="ui-priority-secondary"
+							oncomplete="PF('subjectRequirementDialog').hide()"
+							immediate="true" />
+					</div>
+				</h:form>
+			</p:dialog>
+		</div>
+		<ui:insert name="main-content-2" />
+	</ui:define>
+</ui:composition>

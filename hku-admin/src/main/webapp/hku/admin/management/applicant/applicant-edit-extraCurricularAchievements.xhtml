@@ -1,0 +1,346 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<f:view locale="#{language.locale}">
+		<f:loadBundle basename="i18n.my-application.experienceachievement"
+			var="experience" />
+		<div class="ax-tab-02">
+			<h:form id="expForm">
+				<div class="ax-section-title">#{experience['leadership']}</div>
+				<p:dataTable style="margin-bottom:20px;"
+					value="#{editExrtaAndAchievementsBean.leadershipAchievementsVos}"
+					var="expAndAchievementsVo" reflow="true">
+					<p:column headerText="#{experience['name']}">
+						<p:commandLink value="#{expAndAchievementsVo.name}"
+							action="#{editExrtaAndAchievementsBean.edit(expAndAchievementsVo.id,'LEADERSHIP')}"
+							update=":mainTab:expDialogForm" resetValues="true"
+							oncomplete="PF('expDialog').show()"
+							style="font-style: normal;color: #222;font-weight: bold;"
+							onmouseover="this.style.cssText='font-style: normal;'"
+							onmouseout="this.style.cssText='font-style: normal;color: #222;font-weight: bold;'" />
+					</p:column>
+
+					<p:column headerText="#{experience['fromTo']}">
+						<h:outputText value="#{expAndAchievementsVo.from}" />
+						-
+						<h:outputText value="#{expAndAchievementsVo.to}" />
+					</p:column>
+
+					<p:column headerText="#{experience['organizer']}">
+						<h:outputText value="#{expAndAchievementsVo.organizer}" />
+					</p:column>
+
+					<p:column headerText="#{experience['role']}">
+						<h:outputText value="#{expAndAchievementsVo.role}" />
+					</p:column>
+
+					<p:column headerText="#{experience['action']}"
+						styleClass="ax-action-w">
+						<p:menuButton value="#{experience['action']}">
+							<p:menuitem value="#{experience['edit']}"
+								action="#{editExrtaAndAchievementsBean.edit(expAndAchievementsVo.id,'LEADERSHIP')}"
+								oncomplete="PF('expDialog').show()" resetValues="true"
+								update=":mainTab:expDialogForm" />
+							<p:menuitem value="#{experience['delete']}"
+								action="#{editExrtaAndAchievementsBean.delete(expAndAchievementsVo.id)}"
+								update=":mainTab:expForm">
+								<p:confirm header="#{experience['prompt']}"
+									message="#{experience['delMessage']}" icon="ui-icon-alert" />
+							</p:menuitem>
+						</p:menuButton>
+					</p:column>
+				</p:dataTable>
+
+				<div class="ax-section-title">#{experience['communication']}</div>
+				<p:dataTable style="margin-bottom:20px;"
+					value="#{editExrtaAndAchievementsBean.commAchievementsVos}"
+					var="expAndAchievementsVo" reflow="true">
+					<p:column headerText="#{experience['name']}">
+						<p:commandLink value="#{expAndAchievementsVo.name}"
+							action="#{editExrtaAndAchievementsBean.edit(expAndAchievementsVo.id,'COMM')}"
+							update=":mainTab:expDialogForm" resetValues="true"
+							oncomplete="PF('expDialog').show()"
+							style="font-style: normal;color: #222;font-weight: bold;"
+							onmouseover="this.style.cssText='font-style: normal;'"
+							onmouseout="this.style.cssText='font-style: normal;color: #222;font-weight: bold;'" />
+					</p:column>
+
+					<p:column headerText="#{experience['fromTo']}">
+						<h:outputText value="#{expAndAchievementsVo.from}" />
+						-
+						<h:outputText value="#{expAndAchievementsVo.to}" />
+					</p:column>
+
+					<p:column headerText="#{experience['organizer']}">
+						<h:outputText value="#{expAndAchievementsVo.organizer}" />
+					</p:column>
+
+					<p:column headerText="#{experience['role']}">
+						<h:outputText value="#{expAndAchievementsVo.role}" />
+					</p:column>
+
+					<p:column headerText="#{experience['action']}"
+						styleClass="ax-action-w">
+						<p:menuButton value="#{experience['action']}">
+							<p:menuitem value="#{experience['edit']}"
+								action="#{editExrtaAndAchievementsBean.edit(expAndAchievementsVo.id,'COMM')}"
+								oncomplete="PF('expDialog').show()" resetValues="true"
+								update=":mainTab:expDialogForm" />
+							<p:menuitem value="#{experience['delete']}"
+								action="#{editExrtaAndAchievementsBean.delete(expAndAchievementsVo.id)}"
+								update=":mainTab:expForm">
+								<p:confirm header="#{experience['prompt']}"
+									message="#{experience['delMessage']}" icon="ui-icon-alert" />
+							</p:menuitem>
+						</p:menuButton>
+					</p:column>
+				</p:dataTable>
+
+				<div class="ax-section-title">#{experience['globalMindedness']}</div>
+				<p:dataTable style="margin-bottom:20px;"
+					value="#{editExrtaAndAchievementsBean.gmAchievementsVos}"
+					var="expAndAchievementsVo" reflow="true">
+					<p:column headerText="#{experience['name']}">
+						<p:commandLink value="#{expAndAchievementsVo.name}"
+							action="#{editExrtaAndAchievementsBean.edit(expAndAchievementsVo.id,'GM')}"
+							update=":mainTab:expDialogForm" resetValues="true"
+							oncomplete="PF('expDialog').show()"
+							style="font-style: normal;color: #222;font-weight: bold;"
+							onmouseover="this.style.cssText='font-style: normal;'"
+							onmouseout="this.style.cssText='font-style: normal;color: #222;font-weight: bold;'" />
+					</p:column>
+
+					<p:column headerText="#{experience['fromTo']}">
+						<h:outputText value="#{expAndAchievementsVo.from}" />
+						-
+						<h:outputText value="#{expAndAchievementsVo.to}" />
+					</p:column>
+
+					<p:column headerText="#{experience['organizer']}">
+						<h:outputText value="#{expAndAchievementsVo.organizer}" />
+					</p:column>
+
+					<p:column headerText="#{experience['role']}">
+						<h:outputText value="#{expAndAchievementsVo.role}" />
+					</p:column>
+
+					<p:column headerText="#{experience['action']}"
+						styleClass="ax-action-w">
+						<p:menuButton value="#{experience['action']}">
+							<p:menuitem value="#{experience['edit']}"
+								action="#{editExrtaAndAchievementsBean.edit(expAndAchievementsVo.id,'GM')}"
+								oncomplete="PF('expDialog').show()" resetValues="true"
+								update=":mainTab:expDialogForm" />
+							<p:menuitem value="#{experience['delete']}"
+								action="#{editExrtaAndAchievementsBean.delete(expAndAchievementsVo.id)}"
+								update=":mainTab:expForm">
+								<p:confirm header="#{experience['prompt']}"
+									message="#{experience['delMessage']}" icon="ui-icon-alert" />
+							</p:menuitem>
+						</p:menuButton>
+					</p:column>
+				</p:dataTable>
+
+				<div class="ax-section-title">#{experience['outsideOfSchool']}</div>
+				<p:dataTable style="margin-bottom:20px;"
+					value="#{editExrtaAndAchievementsBean.aaosAchievementsVos}"
+					var="expAndAchievementsVo" reflow="true">
+					<p:column headerText="#{experience['name']}">
+						<p:commandLink value="#{expAndAchievementsVo.name}"
+							action="#{editExrtaAndAchievementsBean.edit(expAndAchievementsVo.id,'AAOS')}"
+							update=":mainTab:expDialogForm" resetValues="true"
+							oncomplete="PF('expDialog').show()"
+							style="font-style: normal;color: #222;font-weight: bold;"
+							onmouseover="this.style.cssText='font-style: normal;'"
+							onmouseout="this.style.cssText='font-style: normal;color: #222;font-weight: bold;'" />
+					</p:column>
+
+					<p:column headerText="#{experience['fromTo']}">
+						<h:outputText value="#{expAndAchievementsVo.from}" />
+						-
+						<h:outputText value="#{expAndAchievementsVo.to}" />
+					</p:column>
+
+					<p:column headerText="#{experience['organizer']}">
+						<h:outputText value="#{expAndAchievementsVo.organizer}" />
+					</p:column>
+
+					<p:column headerText="#{experience['role']}">
+						<h:outputText value="#{expAndAchievementsVo.role}" />
+					</p:column>
+
+					<p:column headerText="#{experience['action']}"
+						styleClass="ax-action-w">
+						<p:menuButton value="#{experience['action']}">
+							<p:menuitem value="#{experience['edit']}"
+								action="#{editExrtaAndAchievementsBean.edit(expAndAchievementsVo.id,'AAOS')}"
+								oncomplete="PF('expDialog').show()" resetValues="true"
+								update=":mainTab:expDialogForm" />
+							<p:menuitem value="#{experience['delete']}"
+								action="#{editExrtaAndAchievementsBean.delete(expAndAchievementsVo.id)}"
+								update=":mainTab:expForm">
+								<p:confirm header="#{experience['prompt']}"
+									message="#{experience['delMessage']}" icon="ui-icon-alert" />
+							</p:menuitem>
+						</p:menuButton>
+					</p:column>
+				</p:dataTable>
+
+				<div class="ax-section-title">#{experience['others']}</div>
+				<p:dataTable
+					value="#{editExrtaAndAchievementsBean.othersAchievementsVos}"
+					style="margin-bottom:25px;" var="expAndAchievementsVo"
+					reflow="true">
+					<p:column headerText="#{experience['name']}">
+						<p:commandLink value="#{expAndAchievementsVo.name}"
+							action="#{editExrtaAndAchievementsBean.edit(expAndAchievementsVo.id,'OTHERS')}"
+							update=":mainTab:expDialogForm" resetValues="true"
+							oncomplete="PF('expDialog').show()"
+							style="font-style: normal;color: #222;font-weight: bold;"
+							onmouseover="this.style.cssText='font-style: normal;'"
+							onmouseout="this.style.cssText='font-style: normal;color: #222;font-weight: bold;'" />
+					</p:column>
+
+					<p:column headerText="#{experience['fromTo']}">
+						<h:outputText value="#{expAndAchievementsVo.from}" />
+						-
+						<h:outputText value="#{expAndAchievementsVo.to}" />
+					</p:column>
+
+					<p:column headerText="#{experience['organizer']}">
+						<h:outputText value="#{expAndAchievementsVo.organizer}" />
+					</p:column>
+
+					<p:column headerText="#{experience['role']}">
+						<h:outputText value="#{expAndAchievementsVo.role}" />
+					</p:column>
+
+					<p:column headerText="#{experience['action']}"
+						styleClass="ax-action-w">
+						<p:menuButton value="#{experience['action']}">
+							<p:menuitem value="#{experience['edit']}" resetValues="true"
+								action="#{editExrtaAndAchievementsBean.edit(expAndAchievementsVo.id,'OTHERS')}"
+								oncomplete="PF('expDialog').show()"
+								update=":mainTab:expDialogForm" />
+							<p:menuitem value="#{experience['delete']}"
+								action="#{editExrtaAndAchievementsBean.delete(expAndAchievementsVo.id)}"
+								update=":mainTab:expForm">
+								<p:confirm header="#{experience['prompt']}"
+									message="#{experience['delMessage']}" icon="ui-icon-alert" />
+							</p:menuitem>
+						</p:menuButton>
+					</p:column>
+				</p:dataTable>
+				<!--delete confirm -->
+				<p:confirmDialog widgetVar="deleteConfirm" global="true"
+					showEffect="fade" hideEffect="fade">
+					<p:commandButton value="#{experience['yes']}" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="#{experience['no']}" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</h:form>
+			<p:dialog header="#{experience['extraCurricularAchievements']}"
+				widgetVar="expDialog" modal="true" width="70%" height="450">
+				<h:form id="expDialogForm">
+					<p:growl id="expGrowlMsg" showDetail="true" globalOnly="true" />
+					<p:growl id="expFormatGrowlMsg" showDetail="true" />
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-3,ui-grid-col-8"
+						styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+						<p:outputLabel for="name" value="#{experience['name']}">
+							<span style="color: red">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:inputText id="name" placeholder="201220-Lang"
+								value="#{editExrtaAndAchievementsBean.expAndAchievementsVo.name}" />
+						</p:column>
+
+						<p:outputLabel for="dateFrom" value="#{experience['fromTo']}">
+							<span style="color: red">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:calendar id="dateFrom" readonlyInput="true"
+								onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+								navigator="true" maxlength="10" mindate="#{commonBean.minDate}"
+								maxdate="#{commonBean.maxDate}"
+								value="#{editExrtaAndAchievementsBean.expAndAchievementsVo.dateFrom}"
+								showOn="button" pattern="dd-MM-yyyy" yearRange="c-35:c+35"
+								converterMessage="#{editExrtaAndAchievementsBean.fromFormat}" />
+							<p:watermark id="dateFromWm" for="dateFrom" value="From" />
+							<p:calendar id="dateTo" readonlyInput="true"
+								onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+								navigator="true" maxlength="10" yearRange="c-35:c+35"
+								mindate="#{commonBean.minDate}" maxdate="#{commonBean.maxDate}"
+								value="#{editExrtaAndAchievementsBean.expAndAchievementsVo.dateTo}"
+								showOn="button" pattern="dd-MM-yyyy"
+								converterMessage="#{editExrtaAndAchievementsBean.toFormat}" />
+							<p:watermark id="dateToWm" for="dateTo" value="To" />
+						</p:column>
+
+						<p:outputLabel for="organizer" value="#{experience['organizer']}">
+							<span style="color: red">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:inputText id="organizer"
+								value="#{editExrtaAndAchievementsBean.expAndAchievementsVo.organizer}"
+								placeholder="2009" />
+						</p:column>
+
+						<p:outputLabel for="role" value="#{experience['role']}">
+							<span style="color: red">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:inputTextarea autoResize="false" id="role" rows="5"
+								value="#{editExrtaAndAchievementsBean.expAndAchievementsVo.role}"
+								placeholder="A" />
+						</p:column>
+					</p:panelGrid>
+					<div class="ax-btn-set ng-scope">
+						<p:commandButton value="#{experience['save']}"
+							class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover"
+							action="#{editExrtaAndAchievementsBean.save()}"
+							update=":mainTab:expForm :mainTab:expDialogForm" role="button">
+						</p:commandButton>
+						<div class="ax-button type-a">
+							<p:commandButton value="#{experience['cancel']}"
+								class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+								onclick="PF('expDialog').hide()" role="button">
+							</p:commandButton>
+						</div>
+					</div>
+				</h:form>
+			</p:dialog>
+			<!-- edit confirm -->
+			<p:confirmDialog widgetVar="messageDialog"
+				header="#{experience['prompt']}" message="#{experience['editMsg']}"
+				showEffect="fade" hideEffect="fade">
+				<p:commandButton value="#{experience['yes']}" type="button"
+					onclick="PF('messageDialog').hide();"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+			</p:confirmDialog>
+		</div>
+	</f:view>
+	<script type="text/javascript" language="javascript">_initAxToolTips() </script>
+</ui:composition>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,149 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	template="./campaign.xhtml">
+
+	<ui:define name="breadcrumb-2">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.configuration.campaign" var="cpgn" />
+			<li><a title="">#{cpgn['campaign']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+	<ui:define name="breadcrumb-3">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.configuration.campaign" var="cpgn" />
+			<li><a title="">#{cpgn['enquiry']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+	<ui:define name="title">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.configuration.campaign" var="cpgn" />#{cpgn['campaignMaintenance']}
+        </f:view>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.configuration.campaign" var="campaign" />
+			<div>
+				<p:panel id="toggleable" header="#{campaign['searchCampaigns']}" toggleable="true" toggleSpeed="200"
+					closeSpeed="200" widgetVar="panel">
+					<h:form id="campaignForm">
+						<div>
+							<input type="checkbox" id="basicAdvance" name="basicAdvance" class="basicAdvance hidden-checkbox" />
+							<div>
+								<p:panelGrid columns="1" layout="grid" columnClasses="ui-grid-col-12" styleClass="ui-panelgrid-blank ui-fluid" rendered="#{!campaignBean.divStatus}">
+									<p:inputText value="#{campaignBean.campaignVo.combination}" />
+									<p:column>
+										<label for="basicAdvance" class="basicAdvanceLabel advance" style="margin-top: -0.3%; float: right; margin-right: 3px;"><i
+											class="ti-search"></i>
+											<p:commandLink action="#{campaignBean.clickSearch('true')}" update="campaignForm"> 
+											#{campaign['advancedSearch']}
+											</p:commandLink>
+										</label>
+										<div class="note" style="margin-top: -0.6%; margin-bottom: -1%;">#{campaign['campaignCodeCampaignName']}</div>
+									</p:column>
+								</p:panelGrid>
+							</div>
+							<div>
+								<p:panelGrid columns="4" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" layout="grid"
+									styleClass="ui-panelgrid-blank ui-fluid" rendered="#{campaignBean.divStatus}">
+
+									<p:outputLabel value="#{campaign['campaignCode']}" />
+									<p:inputText value="#{campaignBean.campaignVo.cpgnCd}" />
+
+									<p:outputLabel value="#{campaign['campaignName']}" />
+									<p:inputText value="#{campaignBean.campaignVo.cpgnName}" />
+
+									<p:outputLabel value="#{campaign['status']}" />
+									<p:selectOneMenu value="#{campaignBean.campaignVo.statusCd}">
+										<f:selectItem itemLabel="#{campaign['all']}" itemValue="" />
+										<f:selectItem itemLabel="#{campaign['configuring']}" itemValue="#{campaign['configuring']}" />
+										<f:selectItem itemLabel="#{campaign['readyToRun']}" itemValue="#{campaign['readyToRun']}" />
+										<f:selectItem itemLabel="#{campaign['running']}" itemValue="#{campaign['running']}" />
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+								<p:panelGrid rendered="#{campaignBean.divStatus}" columns="6" columnClasses="ui-grid-col-12" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+									<p:column styleClass="ui-grid-col-12">
+										<label for="basicAdvance" class="basicAdvanceLabel advance" style="margin-top: -0.3%; float: right; margin-right: 3px;"><i
+											class="ti-search"></i>
+											<p:commandLink action="#{campaignBean.clickSearch('false')}" update="campaignForm">
+											#{campaign['basicSearch']}
+											</p:commandLink>
+											</label>
+									</p:column>
+								</p:panelGrid>
+							</div>
+						</div>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{campaign['search']}" action="#{campaignBean.search}" update="formCampaignResult" />
+							<p:commandButton value="#{campaign['reset']}" styleClass="ui-priority-secondary" action="#{campaignBean.reset}"
+								update="formCampaignResult" />
+							<p:commandButton value="#{campaign['campaign']}" icon="ti-plus" styleClass="ui-priority-primary"
+								onclick="_ACTION('create')" action="#{campaignBean.toCreateCampaign}" update=":formCampaign" />
+						</div>
+					</h:form>
+				</p:panel>
+
+				<h:form id="formCampaignResult">
+					<p:dataTable value="#{campaignBean.lazyDataModel}" var="cpgn" reflow="true" paginator="true"
+						paginatorPosition="bottom" rendered="#{campaignBean.status}" lazy="true" rows="15" rowKey="#{cpgn.id}"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+
+						<p:column headerText="#{campaign['campaignCode']}" width="15%" sortBy="#{cpgn.cpgnCd}">
+							<p:commandLink href="javascript:void(0)" action="#{campaignBean.formEdit(cpgn.id)}"
+								style="font-style: normal; font-size: 12px !important;">
+								<h:outputText value="#{cpgn.cpgnCd}" />
+							</p:commandLink>
+						</p:column>
+
+						<p:column headerText="#{campaign['campaignName']}" width="55%" sortBy="#{cpgn.cpgnName}">
+							<h:outputText value="#{cpgn.cpgnName}" />
+						</p:column>
+
+						<p:column headerText="#{campaign['status']}" sortBy="#{cpgn.statusCd}">
+							<h:outputText styleClass="status-label green" value="#{cpgn.statusCd}" />
+						</p:column>
+
+						<p:column headerText="#{campaign['action']}" styleClass="ax-action-w">
+							<p:menuButton value="#{campaign['action']}">
+								<p:menuitem value="#{campaign['edit']}" onclick="_ACTION('edit')" action="#{campaignBean.formEdit(cpgn.id)}" />
+							</p:menuButton>
+						</p:column>
+					</p:dataTable>
+				</h:form>
+
+				<p:dialog header="#{campaign['createCampaign']}" height="270" widgetVar="createDialog" modal="true" width="500"
+					minHeight="50">
+					<h:form id="formCampaign">
+						<p:growl id="campaignGrowl" showDetail="true" globalOnly="true" />
+						<div class="ui-fluid">
+							<p:panelGrid columns="1" columnClasses="ui-grid-col-12" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+
+								<p:column>
+									<p:outputLabel for="campaignName" value="#{campaign['campaignName']}" style="text-align:left;">
+										<span style="color: red;">*</span>
+									</p:outputLabel>
+									<p:inputText id="campaignName" value="#{campaignBean.saveCampaign.cpgnName}" />
+									
+									<p:outputLabel for="campaignYear" value="#{campaign['campaignYear']}" style="text-align:left;">
+										<span style="color: red;">*</span>
+									</p:outputLabel>
+									<p:selectOneMenu id="campaignYear" value="#{campaignBean.saveCampaign.cpgnYear}">
+										<f:selectItem itemLabel="#{campaign['all']}" itemValue="" />
+										<f:selectItems value="#{campaignBean.admissionYears}" var="admissionYear" itemLabel="#{admissionYear}" itemValue="#{admissionYear}" />
+									</p:selectOneMenu>
+								</p:column>
+
+							</p:panelGrid>
+						</div>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{campaign['create']}" action="#{campaignBean.save}" update="formCampaign" />
+							<p:commandButton value="#{campaign['cancel']}" styleClass="ui-priority-secondary"
+								onclick="_ACTION('create-cancel')" />
+						</div>
+					</h:form>
+				</p:dialog>
+			</div>
+		</f:view>
+	</ui:define>
+</ui:composition>

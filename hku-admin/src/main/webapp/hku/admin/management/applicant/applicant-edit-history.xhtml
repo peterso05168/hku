@@ -1,0 +1,31 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<div class="ax-tab-02">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.my-application.history" var="history" />
+			<h:form id="history_form">
+				<div class="ax-section-title">#{history['history']}</div>
+				<p:dataTable value="#{historyBean.auditLogVos}" var="auditLogVo"
+					reflow="true">
+					<p:column headerText="#{history['action']}" width="65%">
+						<h:outputText value="#{auditLogVo.msg}" />
+					</p:column>
+					
+					<p:column headerText="#{history['updatedDateTime']}">
+						<h:outputText value="#{historyBean.dateFormat(auditLogVo.updateDate)}" />
+					</p:column>
+					
+					<p:column headerText="#{history['status']}"
+						styleClass="ax-action-w">
+						<h:outputText value="#{auditLogVo.statusCd}"
+							styleClass="status-label red" />
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</f:view>
+	</div>
+</ui:composition>

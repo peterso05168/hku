@@ -1,0 +1,276 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	template="../application.xhtml">
+
+	<ui:define name="breadcrumb-3">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.applicationApproval" var="appApproval" />
+			<li><a title="">#{appApproval['approval']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+	<ui:define name="title">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.applicationApproval" var="appApproval" />
+        #{appApproval['appApproval']}
+        </f:view>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.applicationApproval" var="appApproval" />
+			<p:panel id="toggleable" header="#{appApproval['searchApps']}" toggleable="true" toggleSpeed="200" closeSpeed="200"
+				widgetVar="panel">
+				<h:form id="appApprovalForm">
+					<p:growl id="growl1" showDetail="true" globalOnly="true" />
+					<p:panelGrid columns="2" columnClasses="ui-grid-col-2,ui-grid-col-10" layout="grid"
+						styleClass="ui-panelgrid-blank ui-fluid">
+						<p:outputLabel for="faculty" value="#{appApproval['faculty']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:selectOneMenu id="faculty" value="#{offerApprovalBean.facultyCode}">
+							<p:ajax event="change" listener="#{offerApprovalBean.searchProgrammes}" update="appApprovalForm:programme" />
+							<f:selectItem itemLabel="#{appApproval['select']}" itemValue="" />
+							<f:selectItems value="#{offerApprovalBean.facultyCodes}" var="facultyCode" itemLabel="#{facultyCode}"
+								itemValue="#{facultyCodes}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="programme" value="#{appApproval['programme']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:selectOneMenu id="programme" value="#{offerApprovalBean.programmeChoiceVo.hkuProgrammeId}">
+							<f:selectItem itemLabel="#{appApproval['select']}" itemValue="" />
+							<f:selectItems value="#{offerApprovalBean.hkuProgrammeVos}" var="hkuProgramme"
+								itemLabel="#{hkuProgramme.hkuProgrammeCd} #{hkuProgramme.hkuProgrammeDesc}" itemValue="#{hkuProgramme.id}" />
+						</p:selectOneMenu>
+					</p:panelGrid>
+
+					<p:panelGrid columns="4" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" layout="grid"
+						styleClass="ui-panelgrid-blank ui-fluid">
+						<p:outputLabel for="searchStatus" value="#{appApproval['status']}" />
+						<p:selectOneMenu id="searchStatus" value="#{offerApprovalBean.programmeChoiceVo.offerStatusCd}">
+							<f:selectItem itemLabel="#{appApproval['all']}" itemValue="" />
+							<f:selectItems value="#{offerApprovalBean.refCdVos}" var="refCd" itemLabel="#{refCd.value}"
+								itemValue="#{refCd.cd}" />
+						</p:selectOneMenu>
+						
+						<p:outputLabel for="region" value="#{appApproval['region']}" />
+						<p:selectOneMenu id="region" value="#{offerApprovalBean.programmeChoiceVo.region}">
+							<f:selectItem itemLabel="#{appApproval['all']}" itemValue="" />
+							<f:selectItem itemLabel="Local" itemValue="L" />
+							<f:selectItem itemLabel="Non-Local" itemValue="O" />
+							<f:selectItem itemLabel="Mainland" itemValue="N" />
+						</p:selectOneMenu>
+					</p:panelGrid>
+
+					<div class="ax-btn-set">
+						<p:commandButton value="#{appApproval['search']}" update="appApprovalForm formShortList"
+							action="#{offerApprovalBean.search}" />
+						<p:commandButton value="#{appApproval['reset']}" styleClass="ui-priority-secondary"
+							update="appApprovalForm formShortList" action="#{offerApprovalBean.reset}" />
+					</div>
+				</h:form>
+			</p:panel>
+			<h:form id="formShortList">
+				<p:growl id="formShortMsg" showDetail="true" />
+				<h:panelGroup rendered="#{offerApprovalBean.status}" layout="block" id="viewPanelGroup">
+					<div class="ax-section-title">#{appApproval['targetProgramme']}#{offerApprovalBean.hkuProgrammeDesc}</div>
+					<p:dataTable id="shortlistingDataTable" reflow="true" value="#{offerApprovalBean.lazyDataModel}" var="shortlist"
+						paginator="true" paginatorPosition="bottom" rows="15" lazy="true"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						draggableColumns="true" selection="#{offerApprovalBean.programmeChoiceVos}">
+						<f:facet name="header">
+						#{appApproval['shortList']}
+						<p:commandButton id="toggler" type="button" value="Columns" style="float:right" icon="ui-icon-calculator" />
+							<p:columnToggler datasource="shortlistingDataTable" trigger="toggler" />
+						</f:facet>
+
+						<p:column selectionMode="multiple" style="width:40px;text-align:center" />
+
+						<p:column headerText="#{appApproval['appNo']}">
+							<p:commandLink action="#{applicantApplicationsBean.toEditApplicant(shortlist.applicationId)}">
+								<h:outputText value="#{shortlist.applicationNo}" />
+							</p:commandLink>
+						</p:column>
+
+						<p:column headerText="#{appApproval['assignedToStaff']}">
+							<h:outputText value="" />
+						</p:column>
+
+						<p:column headerText="#{appApproval['universityMeet']}">
+							<span class="status-label #{shortlist.engReq?'green':'grey'}"> <span
+								class="#{shortlist.engReq?'ti-check':'ti-close'}"></span>
+							</span>
+						</p:column>
+
+						<p:column headerText="#{appApproval['offerType']}">
+							<h:outputText
+								value="#{shortlist.offerType=='Firm' and shortlist.offerType!=null?'Firm offer':shortlist.offerType!=null?'Conditional Offer by ':''}#{shortlist.conditionalType}" />
+						</p:column>
+
+						<p:column headerText="#{appApproval['status']}">
+							<h:outputText styleClass="status-label green" value="#{shortlist.offerStatusCd}" />
+						</p:column>
+
+						<p:column headerText="#{appApproval['action']}" styleClass="ax-action-w dont-print">
+							<p:menuButton value="#{appApproval['action']}">
+								<p:menuitem value="#{appApproval['view']}" onclick="window.location = '../../applicant/applicant-edit.xhtml';" />
+								<p:menuitem value="#{appApproval['addDocument']}" oncomplete="PF('addSupDocDialog').show()" />
+								<p:menuitem value="#{appApproval['assignScholarship']}" oncomplete="PF('assignScholarshipDialog').show()" />
+								<p:menuitem value="#{appApproval['assignOffer']}" oncomplete="PF('assignOfferDialog').show()" />
+								<p:menuitem value="#{appApproval['cancelOffer']}" />
+							</p:menuButton>
+						</p:column>
+					</p:dataTable>
+					<div class="ax-btn-set">
+						<p:commandButton value="#{appApproval['confirmOffer']}" action="#{offerApprovalBean.changeStatus}"
+							update="formShortList" />
+						<p:commandButton value="#{appApproval['issueOffer']}" action="#{offerApprovalBean.multiIssueOffer}"
+							update="formShortList" />
+					</div>
+				</h:panelGroup>
+			</h:form>
+			<p:dialog header="#{appApproval['addSupDoc']}" widgetVar="addSupDocDialog" modal="true" width="40%" height="300">
+				<div class="ng-scope">
+					<h:form id="supDocDialogForm">
+						<p:growl id="appOfferGrowlMsg" showDetail="true" />
+						<p:panelGrid columns="1" columnClasses="ui-grid-col-12" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+							<p:outputLabel for="documentType" value="#{appApproval['docType']}" style="text-align:left;">
+							</p:outputLabel>
+
+							<p:selectOneMenu id="documentType">
+								<f:selectItem itemLabel="#{appApproval['select']}" itemValue="" />
+								<f:selectItem itemLabel="#{appApproval['personalIdenti']}" itemValue="1" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{appApproval['add']}" role="button" />
+							<p:commandButton value="#{appApproval['cancel']}" onclick="PF('addSupDocDialog').hide()"
+								styleClass="ui-priority-secondary" />
+						</div>
+					</h:form>
+				</div>
+			</p:dialog>
+			<p:dialog header="#{appApproval['assignOffer']}" widgetVar="assignOfferDialog" modal="true" width="80%" height="550">
+				<div class="ng-scope">
+					<h:form id="assignOfferDialogForm">
+						<p:growl id="assignOfferGrowlMsg" showDetail="true" />
+						<div style="margin-bottom: 2.2%;">
+							<p:dataTable id="selectedAppDataTable" reflow="true" value="" var="" lazy="true">
+								<f:facet name="header">#{appApproval['selectApps']}</f:facet>
+
+								<p:column headerText="#{appApproval['appNo']}">
+									<h:outputText value="APP2017S10019" />
+								</p:column>
+
+								<p:column headerText="#{appApproval['interScore']}">
+									<h:outputText value="50" />
+								</p:column>
+
+								<p:column headerText="#{appApproval['status']}">
+									<h:outputText styleClass="status-label green" value="#{appApproval['submitted']}" />
+								</p:column>
+
+								<p:column headerText="#{appApproval['action']}" styleClass="ax-action-w dont-print">
+									<p:menuButton value="#{appApproval['action']}">
+										<p:menuitem value="#{appApproval['remove']}" />
+									</p:menuButton>
+								</p:column>
+							</p:dataTable>
+						</div>
+						<div class="ax-section-title">#{appApproval['assignOffer']}</div>
+						<div class="ui-fluid" style="margin-top: 1%;">
+							<p:panelGrid columns="4" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" layout="grid"
+								styleClass="ui-panelgrid-blank ui-fluid">
+								<p:outputLabel for="offerType" value="#{appApproval['offerType']}">
+								</p:outputLabel>
+								<p:selectOneMenu id="offerType">
+									<f:selectItem itemLabel="#{appApproval['select']}" itemValue="" />
+									<f:selectItem itemLabel="#{appApproval['firmOffer']}" itemValue="1" />
+									<f:selectItem itemLabel="#{appApproval['condOffer']}" itemValue="2" />
+								</p:selectOneMenu>
+
+								<p:outputLabel for="byGrading" value="#{appApproval['byGrading']}">
+								</p:outputLabel>
+								<p:selectOneMenu id="byGrading">
+									<f:selectItem itemLabel="#{appApproval['select']}" itemValue="" />
+									<f:selectItem itemLabel="#{appApproval['predictedGrade']}" itemValue="1" />
+									<f:selectItem itemLabel="#{appApproval['actualGrade']}" itemValue="2" />
+								</p:selectOneMenu>
+							</p:panelGrid>
+						</div>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{appApproval['assign']}" />
+							<p:commandButton value="#{appApproval['cancel']}" onclick="PF('assignOfferDialog').hide()"
+								styleClass="ui-priority-secondary" />
+						</div>
+					</h:form>
+				</div>
+			</p:dialog>
+			<p:dialog header="#{appApproval['assignScholarship']}" widgetVar="assignScholarshipDialog" modal="true" width="80%"
+				height="550">
+				<div class="ng-scope">
+					<h:form id="assignScholarshipForm">
+						<p:growl id="assignOfferGrowlMsg" showDetail="true" />
+						<div style="margin-bottom: 1.5%;">
+							<p:panelGrid columns="4" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" layout="grid"
+								styleClass="ui-panelgrid-blank ui-fluid">
+								<p:outputLabel value="#{appApproval['appNo']}" />
+								<p:inputText disabled="true" value="APP2017S10019" />
+
+								<p:outputLabel value="#{appApproval['applicant']}" />
+								<p:inputText disabled="true" value="Mary Chan" />
+							</p:panelGrid>
+						</div>
+						<div class="ax-section-title">#{appApproval['scholarshipReqMet']}</div>
+						<div style="margin-bottom: 1.5%;">
+							<p:dataTable id="reqMetDataTable" reflow="true" value="" var="" lazy="true">
+								<!-- <p:column selectionMode="multiple" style="width:40px;text-align:center" /> -->
+
+								<p:column headerText="#{appApproval['scholarshipName']}">
+									<h:outputText value="Scholarship A" />
+								</p:column>
+
+								<p:column headerText="#{appApproval['type']}">
+									<h:outputText value="Firm" />
+								</p:column>
+
+								<p:column headerText="#{appApproval['tier']}">
+									<h:outputText value="Tier 1" />
+								</p:column>
+
+								<p:column headerText="#{appApproval['amount']}">
+									<h:outputText value="3,000" />
+								</p:column>
+							</p:dataTable>
+						</div>
+						<div class="ax-section-title">#{appApproval['letterContent']}</div>
+						<div style="margin-bottom: 1.5%;">
+							<p:panelGrid columns="2" columnClasses="ui-grid-col-2,ui-grid-col-10" layout="grid"
+								styleClass="ui-panelgrid-blank ui-fluid">
+								<p:outputLabel value="#{appApproval['scholarshipA']}" />
+								<p:column>
+									<p:inputTextarea rows="3" autoResize="false" />
+								</p:column>
+
+								<p:outputLabel value="#{appApproval['scholarshipB']}" />
+								<p:column>
+									<p:inputTextarea rows="3" autoResize="false" />
+								</p:column>
+
+								<p:outputLabel value="#{appApproval['scholarshipC']}" />
+								<p:column>
+									<p:inputTextarea rows="3" autoResize="false" />
+								</p:column>
+							</p:panelGrid>
+						</div>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{appApproval['assign']}" />
+							<p:commandButton value="#{appApproval['cancel']}" onclick="PF('assignScholarshipDialog').hide()"
+								styleClass="ui-priority-secondary" />
+						</div>
+					</h:form>
+				</div>
+			</p:dialog>
+		</f:view>
+	</ui:define>
+</ui:composition>

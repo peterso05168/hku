@@ -1,0 +1,219 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	template="../management.xhtml">
+
+	<ui:define name="breadcrumb-2">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.applicantEnquiry" var="enquiry" />
+			<li><a title="">#{enquiry['applicant']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+	<ui:define name="breadcrumb-3">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.applicantEnquiry" var="enquiry" />
+			<li><a title="">#{enquiry['enquiry']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+	<ui:define name="title">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.applicantEnquiry" var="enquiry" />
+        #{enquiry['applicantEnquiry']}
+        </f:view>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.applicantEnquiry" var="enquiry" />
+			<div>
+				<p:panel id="toggleable" header="#{enquiry['searchApplication']}" toggleable="true" toggleSpeed="200"
+					closeSpeed="200" widgetVar="panel">
+					<h:form id="enquiryForm">
+						<div>
+							<input type="checkbox" id="basicAdvance" name="basicAdvance" class="basicAdvance hidden-checkbox"
+								checked="checked" />
+							<div>
+								<p:panelGrid rendered="#{!applicantEnquiryBean.divStatus}" columns="1" layout="grid" columnClasses="ui-grid-col-12" styleClass="ui-panelgrid-blank ui-fluid">
+									<p:inputText value="#{applicantEnquiryBean.applicantInformationVo.searchName}" />
+									<p:column>
+										<label for="basicAdvance" class="basicAdvanceLabel advance" style="margin-top: -0.3%; float: right; margin-right: 3px;"><i class="ti-search"></i>
+											<p:commandLink action="#{applicantEnquiryBean.clickSearch('true')}" update="enquiryForm"> 
+											#{enquiry['advancedSearch']}
+											</p:commandLink>
+										</label>
+										<div class="note">#{enquiry['searchName']}</div>
+									</p:column>
+								</p:panelGrid>
+							</div>
+							<div>
+								<p:panelGrid rendered="#{applicantEnquiryBean.divStatus}" columns="4" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" layout="grid"
+									styleClass="ui-panelgrid-blank ui-fluid">
+
+									<p:outputLabel for="admissionYear" value="#{enquiry['admissionYear']}" />
+									<p:selectOneMenu id="admissionYear" value="#{applicantEnquiryBean.applicantInformationVo.admissionYearStr}">
+										<f:selectItem itemLabel="#{enquiry['all']}" itemValue="" />
+										<f:selectItem itemLabel="2016" itemValue="2016" />
+										<f:selectItem itemLabel="2017" itemValue="2017" />
+										<f:selectItem itemLabel="2018" itemValue="2018" />
+									</p:selectOneMenu>
+
+									<p:outputLabel for="applicantName" value="#{enquiry['applicantName']}" />
+									<p:inputText id="applicantName" value="#{applicantEnquiryBean.applicantInformationVo.name}" />
+
+									<p:outputLabel for="applicationNo" value="#{enquiry['applicationNo']}" />
+									<p:inputText id="applicationNo" value="#{applicantEnquiryBean.applicantInformationVo.applicationNo}" />
+
+									<p:outputLabel for="registeredEmail" value="#{enquiry['registeredEmail']}" />
+									<p:inputText id="registeredEmail" value="#{applicantEnquiryBean.applicantInformationVo.registeredEmail}" />
+									
+								</p:panelGrid>
+								<p:panelGrid rendered="#{applicantEnquiryBean.divStatus}" id="provinceOrCity" columns="4" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" layout="grid"
+									styleClass="ui-panelgrid-blank ui-fluid">
+
+									<p:outputLabel for="country" value="#{enquiry['country']}" />
+									<p:selectOneMenu id="country" value="#{applicantEnquiryBean.applicantInformationVo.nationalityCountryId}">
+										<p:ajax event="change" listener="#{applicantEnquiryBean.loadProvinceOrCityList}" update="enquiryForm:provinceOrCity" />
+										<f:selectItem itemLabel="#{enquiry['all']}" itemValue="" />
+										<f:selectItems value="#{applicantEnquiryBean.countryVos}" var="country" itemLabel="#{country.description}" itemValue="#{country.id}" />
+									</p:selectOneMenu>
+									
+									<p:outputLabel for="province" rendered="#{applicantEnquiryBean.isActiveProvinceOrCity}" value="#{enquiry['provinceCity']}" />
+									<p:selectOneMenu id="province" rendered="#{applicantEnquiryBean.isActiveProvinceOrCity}" value="#{applicantEnquiryBean.applicantInformationVo.nationalityProvinceId}">
+										<f:selectItem itemLabel="#{enquiry['all']}" itemValue="" />
+										<f:selectItems value="#{applicantEnquiryBean.provinces}" var="province" itemLabel="#{province.description}" itemValue="#{province.id}" />
+									</p:selectOneMenu>
+									<p:outputLabel for="city" rendered="#{!applicantEnquiryBean.isActiveProvinceOrCity}" value="#{enquiry['provinceCity']}" />
+									<p:selectOneMenu id="city" rendered="#{!applicantEnquiryBean.isActiveProvinceOrCity}" value="#{applicantEnquiryBean.applicantInformationVo.nationalityCityId}">
+										<f:selectItem itemLabel="#{enquiry['all']}" itemValue="" />
+										<f:selectItems value="#{applicantEnquiryBean.citys}" var="city" itemLabel="#{city.description}" itemValue="#{city.id}" />
+									</p:selectOneMenu>
+									
+								</p:panelGrid>
+								<p:panelGrid rendered="#{applicantEnquiryBean.divStatus}" columns="4" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" layout="grid"
+									styleClass="ui-panelgrid-blank ui-fluid">
+									<p:outputLabel for="mobile" value="#{enquiry['mobile']}" />
+									<p:inputText id="mobile" value="#{applicantEnquiryBean.applicantInformationVo.mobile}" />
+
+									<p:outputLabel for="tagForInclude" value="#{enquiry['tagForInclude']}" />
+									<p:inputText id="tagForInclude" value="#{applicantEnquiryBean.applicantInformationVo.includeTag}" />
+
+									<p:outputLabel for="tagForExclude" value="#{enquiry['tagForExclude']}" />
+									<p:inputText id="tagForExclude" value="#{applicantEnquiryBean.applicantInformationVo.excludeTag}" />
+
+								</p:panelGrid>
+								<p:panelGrid rendered="#{applicantEnquiryBean.divStatus}" columns="6" columnClasses="ui-grid-col-12" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+									<p:column styleClass="ui-grid-col-12">
+										<label for="basicAdvance" class="basicAdvanceLabel advance" style="margin-top: -0.3%; float: right; margin-right: 3px;"><i class="ti-search"></i>
+											<p:commandLink action="#{applicantEnquiryBean.clickSearch('false')}" update="enquiryForm">
+											#{enquiry['basicSearch']}
+											</p:commandLink>
+										</label>
+									</p:column>
+								</p:panelGrid>
+							</div>
+						</div>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{enquiry['search']}" update="enquiryDataForm" action="#{applicantEnquiryBean.search}" />
+							<p:commandButton value="#{enquiry['reset']}" action="#{applicantEnquiryBean.reset}" update="enquiryForm enquiryDataForm" styleClass="ui-priority-secondary" />
+						</div>
+					</h:form>
+				</p:panel>
+			</div>
+			<h:form id="enquiryDataForm">
+				<p:growl id="growlForm" showDetail="true" globalOnly="true" />
+				<p:dataTable id="enquiryDataTable" rendered="#{applicantEnquiryBean.status}" reflow="true" paginator="true" paginatorPosition="bottom" rows="15"
+					value="#{applicantEnquiryBean.lazyDataModel}" var="applicantInfo" rowKey="#{applicantInfo.id}" lazy="true"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					draggableColumns="true" selection="#{applicantEnquiryBean.applicantInfo}">
+					<f:facet name="header">
+					#{enquiry['searchResult']}
+					</f:facet>
+
+					<p:column selectionMode="multiple" style="width:40px;text-align:center" />
+
+					<p:column headerText="#{enquiry['registeredEmailAddress']}">
+						<p:commandLink action="#{applicantEnquiryBean.toApplicant(applicantInfo.id)}" oncomplete="window.location = '../applicant/applicant.xhtml';">
+							<h:outputText value="#{applicantInfo.registeredEmail}" />
+						</p:commandLink>
+					</p:column>
+
+					<p:column headerText="#{enquiry['applicantName']}">
+						<h:outputText value="#{applicantInfo.givenName} #{applicantInfo.surname}" />
+					</p:column>
+
+					<p:column headerText="#{enquiry['tag']}">
+						<h:outputText value="#{applicantInfo.tags}" />
+					</p:column>
+
+					<p:column headerText="#{enquiry['batchAnnouncementDate']}">
+						<h:outputText value="#{applicantEnquiryBean.formatDateYyyyMMdd(applicantInfo.batchAnncmntDate)}" />
+					</p:column>
+
+					<p:column headerText="#{enquiry['action']}" styleClass="ax-action-w dont-print">
+						<p:menuButton value="#{enquiry['action']}">
+							<p:menuitem value="#{enquiry['edit']}" action="#{applicantEnquiryBean.toApplicant(applicantInfo.id)}" oncomplete="window.location = '../applicant/applicant.xhtml';" />
+							<p:menuitem value="#{enquiry['delete']}" />
+						</p:menuButton>
+					</p:column>
+
+				</p:dataTable>
+				<div class="ax-btn-set">
+					<p:commandButton rendered="#{applicantEnquiryBean.status}" value="#{enquiry['addBatchTag']}" action="#{applicantEnquiryBean.toApplicantToTags('tag')}" update="tagForm" />
+					<p:commandButton rendered="#{applicantEnquiryBean.status}" value="#{enquiry['sendBatchAnnouncement']}" action="#{applicantEnquiryBean.toApplicantToTags('anncmnt')}" update="batchAnncmntForm" />
+					<p:commandButton rendered="#{applicantEnquiryBean.status}" value="#{enquiry['importApplicant']}" />
+				</div>
+			</h:form>
+
+			<!-- Add Batch Tag Dialog -->
+			<p:dialog header="Add Batch Tag" height="auto" widgetVar="tagDialog" modal="true" width="525" minHeight="50">
+				<h:form id="tagForm">
+					<p:growl id="growl" showDetail="true" globalOnly="true" />
+					<div class="ui-fluid" style="margin-bottom: 10px;">
+						<span>Add Batch Tag to selected Records</span>
+						<p:panelGrid columns="1" columnClasses="ui-grid-col-12" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+							<p:column>
+								<p:outputLabel for="tag" value="Tag" style="text-align:left;">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:inputText id="tag" value="#{applicantEnquiryBean.tags}" />
+							</p:column>
+						</p:panelGrid>
+					</div>
+					<div class="ax-btn-set">
+						<p:commandButton value="Add" action="#{applicantEnquiryBean.saveApplicantToTags}" update="enquiryDataForm tagForm" />
+						<p:commandButton value="Cancel" styleClass="ui-priority-secondary" onclick="PF('tagDialog').hide();" />
+					</div>
+				</h:form>
+			</p:dialog>
+
+			<!-- Batch Announcement Dialog -->
+			<p:dialog header="Batch Announcement" height="400" widgetVar="batchAnncmntDialog" modal="true" width="800" minHeight="50">
+				<h:form id="batchAnncmntForm">
+					<p:growl id="growlMsg" showDetail="true" globalOnly="true" />
+					<div class="ui-fluid" style="margin-bottom: 10px;">
+						<p:panelGrid columns="1" columnClasses="ui-grid-col-12" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+							<p:column>
+								<p:outputLabel for="title" value="Title" style="text-align:left;">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:inputText id="title" value="#{applicantEnquiryBean.title}" />
+							</p:column>
+							<p:column>
+								<p:outputLabel for="msgContent" value="Message Content" style="text-align:left;">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:inputTextarea id="msgContent" value="#{applicantEnquiryBean.msgContent}" autoResize="true" rows="10" />
+							</p:column>
+						</p:panelGrid>
+						<br/>
+						<p:selectBooleanCheckbox value="#{applicantEnquiryBean.sendEmail}" style="margin-left:10px" /><span>   </span>
+						<p:outputLabel for="msgContent" value="Email Notification" style="text-align:left;" />
+					</div>
+					<div class="ax-btn-set">
+						<p:commandButton value="Send" action="#{applicantEnquiryBean.sendBatchAnnouncement}" update="enquiryDataForm batchAnncmntForm" />
+						<p:commandButton value="Cancel" styleClass="ui-priority-secondary" onclick="PF('batchAnncmntDialog').hide();" />
+					</div>
+				</h:form>
+			</p:dialog>
+		</f:view>
+	</ui:define>
+</ui:composition>

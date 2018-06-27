@@ -1,0 +1,240 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	template="../application.xhtml">
+
+	<ui:define name="breadcrumb-3">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.shortlisting" var="shortlisting" />
+			<li><a title="">#{shortlisting['shortlisting']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+	<ui:define name="title">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.shortlisting" var="shortlisting" />
+        #{shortlisting['title']}
+        </f:view>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.shortlisting" var="shortlisting" />
+			<p:panel id="toggleable" header="#{shortlisting['searchApplication']}" toggleable="true" toggleSpeed="200"
+				closeSpeed="200" widgetVar="panel">
+				<h:form id="shortlistingForm">
+					<p:growl id="growl1" showDetail="true" globalOnly="true" />
+					<p:panelGrid columns="2" columnClasses="ui-grid-col-2,ui-grid-col-10" layout="grid"
+						styleClass="ui-panelgrid-blank ui-fluid">
+						<p:outputLabel for="faculty" value="#{shortlisting['faculty']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:selectOneMenu id="faculty" value="#{shortlistingBean.facultyCode}">
+							<p:ajax event="change" listener="#{shortlistingBean.searchProgrammes}" update="shortlistingForm:programme" />
+							<f:selectItem itemLabel="#{shortlisting['select']}" itemValue="" />
+							<f:selectItems value="#{shortlistingBean.facultyCodes}" var="facultyCode" itemLabel="#{facultyCode}"
+								itemValue="#{facultyCodes}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="programme" value="#{shortlisting['programme']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:selectOneMenu id="programme" value="#{shortlistingBean.programmeChoiceVo.hkuProgrammeId}">
+							<f:selectItem itemLabel="#{shortlisting['select']}" itemValue="" />
+							<f:selectItems value="#{shortlistingBean.hkuProgrammeVos}" var="hkuProgramme"
+								itemLabel="#{hkuProgramme.hkuProgrammeCd} #{hkuProgramme.hkuProgrammeDesc}" itemValue="#{hkuProgramme.id}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="qualification" value="#{shortlisting['qualification']}" />
+						<p:selectCheckboxMenu id="qualification" multiple="true" filter="true"
+							value="#{shortlistingBean.selectedQualifications}">
+							<p:ajax event="change" update="shortlistingFormPage" />
+							<p:ajax event="toggleSelect" update="shortlistingFormPage" />
+							<f:selectItems value="#{shortlistingBean.opQualifications}" var="qualification"
+								itemLabel="#{qualification.value}" itemValue="#{qualification.cd}" />
+						</p:selectCheckboxMenu>
+					</p:panelGrid>
+					<p:panelGrid columns="4" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" layout="grid"
+						styleClass="ui-panelgrid-blank ui-fluid">
+						<p:outputLabel for="englishRequirement" value="#{shortlisting['englishRequirement']}" />
+						<p:selectOneMenu id="englishRequirement" value="#{shortlistingBean.programmeChoiceVo.engReqStr}">
+							<f:selectItem itemLabel="#{shortlisting['all']}" itemValue="" />
+							<f:selectItem itemLabel="Fulfilled" itemValue="true" />
+							<f:selectItem itemLabel="Not Fulfilled" itemValue="false" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="programmeEntranceRequirement" value="#{shortlisting['programmeEntranceRequirement']}" />
+						<p:selectOneRadio id="programmeEntranceRequirement" value="#{shortlistingBean.programmeChoiceVo.meetReqStr}">
+				            <f:selectItem itemLabel="All" itemValue="" />
+				            <f:selectItem itemLabel="Fulfilled" itemValue="true" />
+				            <f:selectItem itemLabel="Not Fulfilled" itemValue="false" />
+				        </p:selectOneRadio>
+
+						<p:outputLabel for="interviewScore" value="#{shortlisting['interviewScore']}" />
+						<h:panelGroup layout="block">
+							<p:inputText id="interviewScore" style="width:25%;" />
+							<i class="ti-angle-left" />
+							<span style="font-size: 15px; font-weight: bold; margin: 5px"> #{shortlisting['score']} </span>
+							<i class="ti-angle-left" />
+							<p:inputText style="width:25%;" />
+						</h:panelGroup>
+
+						<p:outputLabel for="localOverseasMainland" value="#{shortlisting['localOverseasMainland']}" />
+						<p:selectOneMenu id="localOverseasMainland" value="#{shortlistingBean.programmeChoiceVo.region}">
+							<f:selectItem itemLabel="#{shortlisting['all']}" itemValue="" />
+							<f:selectItem itemLabel="Local" itemValue="L" />
+							<f:selectItem itemLabel="Non-Local" itemValue="O" />
+							<f:selectItem itemLabel="Mainland" itemValue="N" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="status" value="#{shortlisting['status']}" />
+						<p:selectOneMenu id="status" value="#{shortlistingBean.programmeChoiceVo.offerStatusCd}">
+							<f:selectItem itemLabel="#{shortlisting['all']}" itemValue="" />
+							<f:selectItems value="#{shortlistingBean.offerStatus}" var="offerStatu" itemLabel="#{offerStatu.value}"
+								itemValue="#{offerStatu.cd}" />
+						</p:selectOneMenu>
+					</p:panelGrid>
+					<div class="ax-btn-set">
+						<p:commandButton value="#{shortlisting['search']}" update="shortlistingForm viewForm shortlistingFormPage"
+							action="#{shortlistingBean.search}" />
+						<p:commandButton value="#{shortlisting['reset']}" styleClass="ui-priority-secondary"
+							update="shortlistingForm viewForm shortlistingFormPage" action="#{shortlistingBean.reset}" />
+					</div>
+				</h:form>
+			</p:panel>
+			<h:form id="viewForm">
+				<h:panelGroup rendered="#{shortlistingBean.status}" layout="block"
+					id="viewPanelGroup">
+					<div style="padding: 25px 0px 10px 0px;" align="right">
+						<h:panelGrid columns="2" cellpadding="5">
+							<p:outputLabel for="view">
+								<label style="font-weight: bold; color: black;">#{shortlisting['view']}
+									:&#160;</label>
+							</p:outputLabel>
+							<p:selectOneButton id="view" value="#{shortlistingBean.predictedActual}">
+								<p:ajax event="change" update="shortlistingFormPage" />
+								<f:selectItem itemLabel="#{shortlisting['actual']}" itemValue="A" />
+								<f:selectItem itemLabel="#{shortlisting['preAndActual']}" itemValue="PA" />
+							</p:selectOneButton>
+						</h:panelGrid>
+					</div>
+				</h:panelGroup>
+			</h:form>
+			<h:form id="shortlistingFormPage">
+				<p:growl id="growlMsg" showDetail="true" globalOnly="true" />
+				<p:dataTable rendered="#{shortlistingBean.status}" id="shortlistingDataTable" reflow="true" paginator="true"
+					paginatorPosition="bottom" rows="15" value="#{shortlistingBean.lazyDataModel}" var="shortlist" lazy="true"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					draggableColumns="true" selection="#{shortlistingBean.programmeChoiceVos}">
+					
+					<p:ajax event="rowSelect" listener="#{shortlistingBean.rowSelectCheckbox}" update="shortlistingFormPage" />
+					<p:ajax event="rowSelectCheckbox" listener="#{shortlistingBean.rowSelectCheckbox}" update="shortlistingFormPage" />
+					<p:ajax event="rowUnselectCheckbox" listener="#{shortlistingBean.rowSelectCheckbox}" update="shortlistingFormPage" />
+					<p:ajax event="toggleSelect" listener="#{shortlistingBean.rowSelectCheckbox}" update="shortlistingFormPage" />
+					
+					<f:facet name="header">
+					#{shortlisting['shortList']}
+					#{shortlistingBean.hkuProgrammeDesc},
+					#{shortlisting['asof']}
+					#{shortlistingBean.searchDate}
+						<p:commandButton id="toggler" type="button" value="Columns"
+							style="float:right" icon="ui-icon-calculator" />
+						<p:columnToggler datasource="shortlistingDataTable"
+							trigger="toggler" />
+					</f:facet>
+
+					<p:column selectionMode="multiple" style="width:40px;text-align:center" />
+
+					<p:column headerText="#{shortlisting['applicationNo']}">
+						<p:commandLink action="#{applicantApplicationsBean.toEditApplicant(shortlist.applicationId)}">
+							<h:outputText value="#{shortlist.applicationNo}" />
+						</p:commandLink>
+					</p:column>
+
+					<p:column headerText="#{shortlisting['lom']}">
+						<h:outputText rendered="#{shortlist.region == 'L'}" value="#{shortlisting['local']}" />
+						<h:outputText rendered="#{shortlist.region == 'O'}" value="#{shortlisting['overseas']}" />
+						<h:outputText rendered="#{shortlist.region == 'N'}" value="#{shortlisting['mainland']}" />
+					</p:column>
+
+					<p:column headerText="#{shortlisting['sat']}" rendered="#{shortlistingBean.selectedQualifications.contains('SAT')}">
+						<h:outputText value="" />
+					</p:column>
+
+					<p:column headerText="#{shortlisting['gcea']}" rendered="#{shortlistingBean.predictedActual eq 'A' and shortlistingBean.selectedQualifications.contains('GCE')}">
+						<ui:repeat var="gce" value="#{shortlist.actualGCEs}">
+							<h:outputText value="#{gce.examGradeCd} " title="#{gce.examSubjectDesc}/ #{shortlistingBean.formatMonthNumToStr(gce.examTypeMonth)} #{gce.examTypeYear}" />
+						</ui:repeat>
+					</p:column>
+					<p:column headerText="#{shortlisting['gcea']}" rendered="#{shortlistingBean.predictedActual eq 'PA' and shortlistingBean.selectedQualifications.contains('GCE')}">
+						<ul class="ax-data">
+							<ui:repeat var="gce" value="#{shortlist.predictedActualGCEs}">
+								<li class="#{gce.rsltType eq 'Predicted'?'box grey':''}" style="#{gce.rsltType eq 'Predicted'?'padding:2px 5px;margin:1px 0px;border-radius:5px;':''}">
+									<h:outputText value="#{gce.examGradeCd} " title="#{gce.examSubjectDesc}/ #{shortlistingBean.formatMonthNumToStr(gce.examTypeMonth)} #{gce.examTypeYear}" />
+								</li>
+							</ui:repeat>
+						</ul>
+					</p:column>
+
+					<p:column headerText="#{shortlisting['iBOutOf42']}" rendered="#{shortlistingBean.selectedQualifications.contains('IB42')}">
+						<h:outputText rendered="#{shortlistingBean.predictedActual eq 'A'}" value="#{shortlist.actualIbd42.totalRslt}" />
+						<h:outputText rendered="#{shortlistingBean.predictedActual eq 'PA'}" value="#{shortlist.predictedActualIbd42.totalRslt}" />
+					</p:column>
+
+					<p:column headerText="#{shortlisting['iBOutOf45']}" rendered="#{shortlistingBean.selectedQualifications.contains('IB45')}">
+						<h:outputText rendered="#{shortlistingBean.predictedActual eq 'A'}" value="#{shortlist.actualIbd45.totalRslt}" />
+						<h:outputText rendered="#{shortlistingBean.predictedActual eq 'PA'}" value="#{shortlist.predictedActualIbd45.totalRslt}" />
+					</p:column>
+
+					<p:column headerText="#{shortlisting['englishRequirement']}">
+						<span class="status-label #{shortlist.engReq?'green':'grey'}"> <span class="#{shortlist.engReq?'ti-check':'ti-close'}"></span> 
+						</span>
+					</p:column>
+
+					<p:column headerText="#{shortlisting['cCAIGroupInterview']}">
+						<h:outputText value="#{shortlist.ccaigInterview}" />
+					</p:column>
+
+					<p:column headerText="#{shortlisting['cCAIIndividualInterview']}">
+						<h:outputText value="#{shortlist.ccaiiInterview}" />
+					</p:column>
+
+					<p:column headerText="#{shortlisting['programmeInterview']}">
+						<h:outputText value="#{shortlist.progInterviewScore}" />
+					</p:column>
+
+					<p:column headerText="#{shortlisting['otherProgrammeInterview']}">
+						<h:outputText value="#{shortlist.otherInterview}" />
+					</p:column>
+
+					<p:column headerText="#{shortlisting['status']}">
+						<h:outputText styleClass="status-label #{shortlist.offerStatusCd=='Submitted'?'green':'blue'}" value="#{shortlist.offerStatusCd}" />
+					</p:column>
+
+					<!-- <p:column headerText="#{shortlisting['action']}" styleClass="ax-action-w dont-print">
+						<p:menuButton value="#{shortlisting['action']}">
+							<p:menuitem value="#{shortlisting['removeFromShortlist']}" rendered="#{shortlist.offerStatusCd=='Submitted'?'false':'true'}" action="#{shortlistingBean.removeFromShortlist(shortlist.id)}" update="shortlistingFormPage" />
+							<p:menuitem value="#{shortlisting['shortlist']}" rendered="#{shortlist.offerStatusCd=='Submitted'?'true':'false'}" action="#{shortlistingBean.shortlist(shortlist.id)}" update="shortlistingFormPage" />
+							<p:menuitem value="#{shortlisting['reCalculateScore']}" />
+							<p:menuitem value="#{shortlisting['unselectForInterview']}" />
+						</p:menuButton>
+					</p:column> -->
+
+				</p:dataTable>
+				<div class="ax-btn-set">
+					<p:commandButton rendered="#{shortlistingBean.status}" value="#{shortlisting['readyForOffer']}" 
+						action="#{shortlistingBean.updateProgrammeChoiceStatus('RFO')}" update="shortlistingFormPage" />
+					<p:commandButton rendered="#{shortlistingBean.status}" value="#{shortlisting['reCalculateScore']}" 
+						action="#{shortlistingBean.reCalculateScore}" update="shortlistingFormPage" />
+					<p:commandButton rendered="#{shortlistingBean.status}" value="#{shortlisting['selectForInterview']}" 
+						disabled="#{shortlistingBean.disableSelect}" action="#{shortlistingBean.updateProgrammeChoiceStatus('SFI')}" update="shortlistingFormPage" />
+					<p:commandButton rendered="#{shortlistingBean.status}" value="#{shortlisting['deselectForInterview']}" 
+						disabled="#{shortlistingBean.disableDeselect}" action="#{shortlistingBean.updateProgrammeChoiceStatus('SHORTLISTED')}" 
+						update="shortlistingFormPage" />
+					<p:commandButton rendered="#{shortlistingBean.status}" value="#{shortlisting['waitlist']}" 
+						action="#{shortlistingBean.updateProgrammeChoiceStatus('WAITLIST')}" update="shortlistingFormPage" />
+					<p:commandButton rendered="#{shortlistingBean.status}" value="#{shortlisting['reject']}" 
+						action="#{shortlistingBean.updateProgrammeChoiceStatus('REJECTED')}" update="shortlistingFormPage" />
+				</div>
+			</h:form>
+		</f:view>
+	</ui:define>
+</ui:composition>

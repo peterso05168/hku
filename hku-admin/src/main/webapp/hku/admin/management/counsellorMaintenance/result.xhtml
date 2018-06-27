@@ -1,0 +1,79 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="./search.xhtml">
+
+	<ui:define name="breadcrumb-3">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.counsellor" var="counsellor" />
+			<li><a title="">#{counsellor['enquiry']}</a><i
+				class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+
+	<ui:define name="main-content-2">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.counsellor" var="counsellor" />
+			<h:form id="formResults">
+				<p:dataTable id="counsellorTable" var="" value="" reflow="true"
+					paginator="true" paginatorPosition="bottom"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					draggableColumns="true">
+					<f:facet name="header">
+						#{counsellor['searchResult']}
+					</f:facet>
+
+					<!-- <p:column selectionMode="multiple" style="width:40px;text-align:center" /> -->
+
+					<p:column headerText="#{counsellor['counsellorName']}">
+						<p:commandLink href="javascript:void(0)">
+							<h:outputText value="BJohn Chan" />
+						</p:commandLink>
+					</p:column>
+
+					<p:column headerText="#{counsellor['counsellorEmail']}">
+						<h:outputText value="bjohnchan@ydmo.com" />
+					</p:column>
+
+					<p:column headerText="#{counsellor['school']}">
+						<h:outputText value="School A" />
+					</p:column>
+
+					<p:column headerText="#{counsellor['country']}">
+						<h:outputText value="China" />
+					</p:column>
+
+					<p:column headerText="#{counsellor['provinceCity']}">
+						<h:outputText value="Shanghai" />
+					</p:column>
+
+					<p:column headerText="#{counsellor['appNo']}">
+						<p:commandLink onclick="window.location = '../applicant/applicant-edit.xhtml';">
+							<h:outputText value="APP2017S10025" />
+						</p:commandLink>
+					</p:column>
+
+					<p:column headerText="#{counsellor['status']}"
+						styleClass="ax-status-w-b">
+						<span class="status-label blue">#{counsellor['pending']}</span>
+					</p:column>
+
+					<p:column headerText="#{counsellor['action']}" styleClass="ax-action-w dont-print">
+						<p:menuButton value="#{counsellor['action']}">
+							<p:menuitem value="#{counsellor['abandoned']}" />
+							<p:menuitem value="#{counsellor['sendNotification']}" />
+						</p:menuButton>
+					</p:column>
+				</p:dataTable>
+				<div class="ax-btn-set">
+					<p:commandButton value="#{counsellor['combineEmail']}" />
+				</div>
+			</h:form>
+		</f:view>
+	</ui:define>
+</ui:composition>
+
+
+
+

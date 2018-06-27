@@ -1,0 +1,39 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<f:view locale="#{language.locale}">
+		<f:loadBundle basename="i18n.management.basicInfo" var="basicInfo" />
+		<div class="ax-tab-02">
+			<h:form id="basicInfo_form">
+				<p:panelGrid columns="4"
+					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+					layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+
+					<p:outputLabel for="applicationNo"
+						value="#{basicInfo['applicationNo']}" />
+					<p:inputText id="applicationNo" disabled="true"
+						value="#{basicInfoBean.applicationVo.applicationNo}" />
+
+					<p:outputLabel for="progress" value="#{basicInfo['progress']}" />
+					<p:column id="progress">
+						<div class="ax-progress-bar">
+							<p:outputPanel class="green"
+								style="width: #{basicInfoBean.applicationVo.progress}%">
+								<div>(#{basicInfoBean.applicationVo.num}/7)
+									#{basicInfoBean.applicationVo.progress}%</div>
+							</p:outputPanel>
+						</div>
+					</p:column>
+
+					<p:outputLabel for="status" value="#{basicInfo['status']}" />
+					<p:inputText id="status" disabled="true"
+						value="#{basicInfoBean.applicationVo.status}" />
+
+				</p:panelGrid>
+			</h:form>
+		</div>
+	</f:view>
+</ui:composition>

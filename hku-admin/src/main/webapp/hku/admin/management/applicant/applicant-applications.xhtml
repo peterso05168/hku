@@ -1,0 +1,32 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<div class="ax-tab-02">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.my-application.applicatapplication" var="app" />
+			<h:form id="applications_form">
+				<p:dataTable id="applicationsDataTable"
+					value="#{applicantApplicationsBean.applicationVos}" var="a">
+					<p:column headerText="#{app['admissionYear']}" styleClass="ax-num-w-b">
+						<h:outputText value="#{a.admissionYear}" />
+					</p:column>
+
+					<p:column headerText="#{app['applicationNo']}">
+						<p:commandLink
+							action="#{applicantApplicationsBean.toEditApplicant(a.id)}">
+							<h:outputText value="#{a.applicationNo}" />
+						</p:commandLink>
+					</p:column>
+
+					<p:column headerText="#{app['status']}" styleClass="ax-status-w-c">
+						<h:outputText styleClass="status-label blue" value="#{a.status}" />
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+		</f:view>
+	</div>
+</ui:composition>

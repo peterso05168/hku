@@ -1,0 +1,846 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<div class="ax-tab-02">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.my-application.choiceofcurriculum"
+				var="choiceofcurriculum" />
+		</f:view>
+		<h:form id="formChoice">
+			<p:growl showDetail="true" />
+			<div style="margin: 15px 0px 15px 7px;">
+				#{choiceofcurriculum['pleaseNote']}
+				<h:outputText
+					value="#{editChoiceOfProgrammeBean.choiceEndDateFormat()}" />
+			</div>
+			<div>
+				<!--1 st Choice-->
+				<div class="ax-section-title">
+					1&#160;<sup>st</sup>&#160;Choice
+				</div>
+				<div>
+					<p:dataTable var="firstProg" id="firstChoiceTable"
+						value="#{editChoiceOfProgrammeBean.firstProgChoice}" reflow="true">
+						<p:column headerText="#{choiceofcurriculum['programme']}"
+							id="firstChoiceColumn">
+							<p:selectOneMenu value="#{firstProg.admFormProgId}"
+								disabled="#{editChoiceOfProgrammeBean.isChoiceEndDate}"
+								style="width:80%;" id="firstChoiceMenu">
+								<p:ajax event="change"
+									listener="#{editChoiceOfProgrammeBean.loadFaculty}"
+									update="facultyValue firstActionBtn firstChoiceTable :mainTab:formChoice:otherProgTable" />
+								<f:selectItem itemLabel="#{choiceofcurriculum['select']}"
+									itemValue="0"
+									itemDisabled="#{firstProg.statusValue == 'Submitted' and firstProg.admFormProgId !=null}" />
+								<f:selectItems value="#{editChoiceOfProgrammeBean.formProgs}"
+									var="formProg" itemDisabled="#{formProg.progDisabled}"
+									itemLabel="#{formProg.programmeCode} - #{formProg.programmeTitle}"
+									itemValue="#{formProg.id}" />
+							</p:selectOneMenu>
+						</p:column>
+
+						<p:column>
+							<h:panelGroup id="facultyValue">
+								<p:outputLabel
+									rendered="#{firstProg.isWithdrawn and !firstProg.isWithdrawnApproved}"
+									styleClass="status-label red" value="#{firstProg.statusValue}" />
+							</h:panelGroup>
+						</p:column>
+
+						<p:column filterBy="#{commonBean.hkuProgrammes}"
+							headerText="#{choiceofcurriculum['action']}"
+							styleClass="ax-tooltip-header ax-action-w">
+							<f:facet name="filter">
+								<h:outputLink id="LinkA" value="#" disabled="true"
+									styleClass="ax-pf-tooltip-icon">
+									<i class="ti-help"></i>
+								</h:outputLink>
+								<p:tooltip id="toolTipLinkA" for="LinkA" showEvent="click"
+									style="font-size: 12px !important;"
+									value="#{choiceofcurriculum['awardHelp']}" position="left" />
+							</f:facet>
+							<p:menuButton value="#{choiceofcurriculum['action']}"
+								id="firstActionBtn">
+								<p:menuitem value="#{choiceofcurriculum['withDraw']}"
+									action="#{editChoiceOfProgrammeBean.withDraw(firstProg.id)}"
+									update=":mainTab:formChoice:firstChoiceTable :mainTab:formChoice:otherProgTable"
+									rendered="#{(firstProg.admFormProgId!='0' and firstProg.admFormProgId!=null) and firstProg.id!=null}">
+									<p:confirm header="#{choiceofcurriculum['prompt']}"
+										message="#{choiceofcurriculum['withDrawMessage']}"
+										icon="ui-icon-alert" />
+								</p:menuitem>
+							</p:menuButton>
+						</p:column>
+					</p:dataTable>
+				</div>
+
+				<!-- Other Choice -->
+				<div class="ax-section-title">#{choiceofcurriculum['otherChoice']}</div>
+				<div style="margin-bottom: 35px;">
+					<p:dataTable var="otherProg" id="otherProgTable"
+						rowIndexVar="otherChoiceIndex"
+						value="#{editChoiceOfProgrammeBean.othersProgChoices}" reflow="true">
+						<p:column headerText="#{choiceofcurriculum['programme']}">
+							<p:selectOneMenu value="#{otherProg.admFormProgId}"
+								disabled="#{editChoiceOfProgrammeBean.isChoiceEndDate}"
+								style="width:80%;" id="otherChoiceMenu">
+								<f:attribute name="otherChoiceIndex" value="#{otherChoiceIndex}" />
+								<p:ajax event="change"
+									listener="#{editChoiceOfProgrammeBean.loadFaculty}"
+									update="otherFacultyValue otherActionBtn otherProgTable :mainTab:formChoice:firstChoiceTable" />
+								<f:selectItem itemLabel="#{choiceofcurriculum['select']}"
+									itemValue="0"
+									itemDisabled="#{otherProg.statusValue == 'Submitted' and otherProg.admFormProgId !=null}" />
+								<f:selectItems value="#{editChoiceOfProgrammeBean.formProgs}"
+									var="formProg" itemDisabled="#{formProg.progDisabled}"
+									itemLabel="#{formProg.programmeCode} - #{formProg.programmeTitle}"
+									itemValue="#{formProg.id}" />
+							</p:selectOneMenu>
+						</p:column>
+
+						<p:column>
+							<h:panelGroup id="otherFacultyValue">
+								<p:outputLabel
+									rendered="#{otherProg.isWithdrawn and !otherProg.isWithdrawnApproved}"
+									styleClass="status-label red" value="#{otherProg.statusValue}" />
+							</h:panelGroup>
+						</p:column>
+
+						<p:column headerText="#{choiceofcurriculum['action']}"
+							styleClass="ax-action-w">
+							<p:menuButton value="#{choiceofcurriculum['action']}"
+								id="otherActionBtn">
+								<p:menuitem value="#{choiceofcurriculum['withDraw']}"
+									action="#{editChoiceOfProgrammeBean.withDraw(otherProg.id)}"
+									update=":mainTab:formChoice:otherProgTable :mainTab:formChoice:firstChoiceTable"
+									rendered="#{(otherProg.admFormProgId!='0' and otherProg.admFormProgId!=null) and otherProg.id!=null}">
+									<p:confirm header="#{choiceofcurriculum['prompt']}"
+										message="#{choiceofcurriculum['withDrawMessage']}"
+										icon="ui-icon-alert" />
+								</p:menuitem>
+							</p:menuButton>
+						</p:column>
+					</p:dataTable>
+				</div>
+
+				<!-- withDraw confirmDialog-->
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="#{choiceofcurriculum['yes']}" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="#{choiceofcurriculum['no']}" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+
+				<!-- Sports Scholarship Scheme -->
+				<div class="ax-section-title">#{choiceofcurriculum['sportsScholarship']}</div>
+				<div style="margin-top: 1.2%;">
+					<p:selectBooleanCheckbox
+						value="#{editChoiceOfProgrammeBean.sportScholarship.isActiveSport}"
+						style="margin-left:10px;margin-right:5px;">
+						<p:ajax event="change" update="sportSpecialistGroup" />
+					</p:selectBooleanCheckbox>
+					<label style="color: rgb(85, 85, 85) !important;">#{choiceofcurriculum['selectBoxHelp1']}</label><br />
+				</div>
+				<h:panelGroup id="sportSpecialistGroup">
+					<h:panelGroup
+						rendered="#{!editChoiceOfProgrammeBean.sportScholarship.isActiveSport}">
+						<div style="margin-top: 2%;"></div>
+					</h:panelGroup>
+					<p:panelGrid columns="1" columnClasses="ui-grid-col-6"
+						rendered="#{editChoiceOfProgrammeBean.sportScholarship.isActiveSport}"
+						styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+						<p:outputLabel style="text-align:left;" for="sptAppScheme"
+							value="#{choiceofcurriculum['indicateTheScheme']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:selectOneMenu id="sptAppScheme"
+								value="#{editChoiceOfProgrammeBean.sportScholarship.sptAppScheme}">
+								<f:selectItem itemLabel="#{choiceofcurriculum['select']}"
+									itemValue="" />
+								<f:selectItem itemLabel="#{choiceofcurriculum['jupas']}"
+									itemValue="#{choiceofcurriculum['jupas']}" />
+								<f:selectItem itemLabel="#{choiceofcurriculum['iasOrnon']}"
+									itemValue="#{choiceofcurriculum['iasOrnon']}" />
+								<f:selectItem itemLabel="#{choiceofcurriculum['das']}"
+									itemValue="#{choiceofcurriculum['das']}" />
+								<f:selectItem itemLabel="#{choiceofcurriculum['mainland']}"
+									itemValue="#{choiceofcurriculum['mainland']}" />
+							</p:selectOneMenu>
+						</p:column>
+
+						<p:outputLabel style="text-align:left;" for="sptSports"
+							value="#{choiceofcurriculum['inSport']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:inputText id="sptSports"
+								value="#{editChoiceOfProgrammeBean.sportScholarship.sptSports}" />
+						</p:column>
+
+						<p:outputLabel style="text-align:left;" for="sptLevelMenu"
+							value="#{choiceofcurriculum['sportLevel']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:selectCheckboxMenu multiple="true" filter="true"
+								id="sptLevelMenu"
+								value="#{editChoiceOfProgrammeBean.sportScholarship.sptLevels}">
+								<p:ajax event="change"
+									listener="#{editChoiceOfProgrammeBean.changeSptLevel()}"
+									update="sptLevelOthersGroup" />
+								<p:ajax event="toggleSelect"
+									listener="#{editChoiceOfProgrammeBean.changeSptLevel()}"
+									update="sptLevelOthersGroup" />
+								<f:selectItem itemLabel="#{choiceofcurriculum['nationalTeam']}"
+									itemValue="#{choiceofcurriculum['nationalTeam']}" />
+								<f:selectItem itemLabel="#{choiceofcurriculum['juniorSquad']}"
+									itemValue="#{choiceofcurriculum['juniorSquad']}" />
+								<f:selectItem itemLabel="#{choiceofcurriculum['interPort']}"
+									itemValue="#{choiceofcurriculum['interPort']}" />
+								<f:selectItem itemLabel="#{choiceofcurriculum['otherPs']}"
+									itemValue="others" />
+							</p:selectCheckboxMenu>
+						</p:column>
+						<h:panelGroup id="sptLevelOthersGroup">
+							<p:inputText id="sptLevelOthers"
+								rendered="#{editChoiceOfProgrammeBean.sportScholarship.isActiveSptLevelOthers}"
+								value="#{editChoiceOfProgrammeBean.sportScholarship.sptLevelOthers}"
+								placeholder="others" />
+						</h:panelGroup>
+
+						<p:outputLabel style="text-align:left;"
+							value="#{choiceofcurriculum['provideHyp']}" />
+						<p:inputText
+							value="#{editChoiceOfProgrammeBean.sportScholarship.sptHyperlink}" />
+					</p:panelGrid>
+				</h:panelGroup>
+
+				<!-- Music Specialist Scheme  -->
+				<h:panelGroup id="musicSpecialistGroup">
+					<h:panelGroup
+						rendered="#{!editChoiceOfProgrammeBean.musicSpecialist.isDisplayBachelorOfArts}" />
+					<h:panelGroup
+						rendered="#{editChoiceOfProgrammeBean.musicSpecialist.isDisplayBachelorOfArts}">
+						<div class="ax-section-title">
+							#{choiceofcurriculum['musicSpecialist']}
+							<h:outputLink id="LinkC" value="#" disabled="true"
+								styleClass="ax-pf-tooltip-icon">
+								<i class="ti-help"></i>
+							</h:outputLink>
+							<p:tooltip showEvent="click" id="toolTipLinkC" for="LinkC"
+								style="font-size: 12px !important;" position="left">
+									 #{choiceofcurriculum['musicInfo']}
+								<div>#{choiceofcurriculum['musicInfo1']}</div>
+							</p:tooltip>
+						</div>
+						<div style="margin-top: 1.2%; margin-bottom: 2%;">
+							<p:selectBooleanCheckbox
+								value="#{editChoiceOfProgrammeBean.musicSpecialist.isActiveMusic}"
+								style="margin-left:10px;margin-right:5px;">
+								<p:ajax event="change" update="majorGroup" />
+							</p:selectBooleanCheckbox>
+							<label style="color: rgb(85, 85, 85) !important;">#{choiceofcurriculum['selectBoxHelp2']}</label><br />
+						</div>
+						<h:panelGroup id="majorGroup">
+							<p:panelGrid columns="2" style="margin-bottom: 2%;"
+								rendered="false" columnClasses="ui-grid-col-2,ui-grid-col-10"
+								layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+								<p:outputLabel value="#{choiceofcurriculum['major']}" />
+								<p:selectCheckboxMenu id="multipleProg" multiple="true"
+									filter="true">
+									<f:selectItem itemLabel="Music" itemValue="0" />
+									<f:selectItem itemLabel="Fine Arts" itemValue="1" />
+									<f:selectItem itemLabel="Philosophy" itemValue="2" />
+								</p:selectCheckboxMenu>
+							</p:panelGrid>
+						</h:panelGroup>
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<!-- Specialist -->
+				<h:panelGroup
+					rendered="#{editChoiceOfProgrammeBean.countryVo.isActiveScholar}">
+					<div class="ax-section-title">#{choiceofcurriculum['scholarship']}</div>
+					<div style="margin-top: 1.2%; margin-bottom: 2.8%;">
+						<h:panelGroup
+							rendered="#{editChoiceOfProgrammeBean.countryVo.isDisplayHeForSheScholar and editChoiceOfProgrammeBean.heForSheScholarVo.isDisplayScholar}">
+							<p:selectBooleanCheckbox
+								value="#{editChoiceOfProgrammeBean.applicationVo.scholarHeforshe}"
+								style="margin-left:10px;margin-right:5px;" />
+							<label style="color: rgb(85, 85, 85) !important;">#{choiceofcurriculum['applyForHeforShe']}</label>
+							<br />
+							<a target="_blank"
+								href="http://www.aal.hku.hk/admissions/international/admissions-information?page=heforshe-impact-scholarship"
+								style="margin-left: 35px;">#{choiceofcurriculum['termsAndConditions']}</a>
+							<br />
+							<br />
+						</h:panelGroup>
+
+						<h:panelGroup
+							rendered="#{editChoiceOfProgrammeBean.institutionVo.isDisplayScholar and editChoiceOfProgrammeBean.uwcScholarVo.isDisplayScholar}">
+							<p:selectBooleanCheckbox
+								value="#{editChoiceOfProgrammeBean.applicationVo.scholarUwc}"
+								style="margin-left:10px;margin-right:5px;" />
+							<label style="color: rgb(85, 85, 85) !important;">#{choiceofcurriculum['applyForUWC']}</label>
+							<br />
+							<p:commandLink style="margin-left: 35px;"
+								value="#{choiceofcurriculum['termsAndConditions']}" ajax="false"
+								actionListener="#{editChoiceOfProgrammeBean.downloadTermsAndConditions('UWC')}">
+								<p:fileDownload value="#{editChoiceOfProgrammeBean.downloadFile}" />
+							</p:commandLink>
+							<br />
+							<br />
+						</h:panelGroup>
+
+						<h:panelGroup
+							rendered="#{editChoiceOfProgrammeBean.countryVo.isDisplayNigeriaScholar}">
+							<p:selectBooleanCheckbox
+								value="#{editChoiceOfProgrammeBean.applicationVo.scholarNigerian}"
+								style="margin-left:10px;margin-right:5px;" />
+							<label style="color: rgb(85, 85, 85) !important;">#{choiceofcurriculum['applyForNigerian']}</label>
+							<br />
+							<p:commandLink
+								value="#{choiceofcurriculum['termsAndConditions']}" ajax="false"
+								style="margin-left: 35px;"
+								actionListener="#{editChoiceOfProgrammeBean.downloadTermsAndConditions('Nigerian')}">
+								<p:fileDownload value="#{editChoiceOfProgrammeBean.downloadFile}" />
+							</p:commandLink>
+							<br />
+							<br />
+						</h:panelGroup>
+
+						<h:panelGroup
+							rendered="#{editChoiceOfProgrammeBean.countryVo.isDisplayVtpScholar}">
+							<p:selectBooleanCheckbox
+								value="#{editChoiceOfProgrammeBean.applicationVo.scholarVtp}"
+								style="margin-left:10px;margin-right:5px;" />
+							<label style="color: rgb(85, 85, 85) !important;">#{choiceofcurriculum['applyForVTP']}</label>
+							<br />
+							<a target="_blank"
+								href="http://www.aal.hku.hk/admissions/international/admissions-information?page=vietnam-van-thinh-phat-scholarships"
+								style="margin-left: 35px;">#{choiceofcurriculum['termsAndConditions']}</a>
+							<br />
+							<br />
+						</h:panelGroup>
+
+						<h:panelGroup
+							rendered="#{editChoiceOfProgrammeBean.countryVo.isDisplayAflScholar and editChoiceOfProgrammeBean.aflScholarVo.isDisplayScholar}">
+							<p:selectBooleanCheckbox
+								value="#{editChoiceOfProgrammeBean.applicationVo.scholarAfl}"
+								style="margin-left:10px;margin-right:5px;" />
+							<label style="color: rgb(85, 85, 85) !important;">#{choiceofcurriculum['applyForAFL']}</label>
+							<br />
+							<a target="_blank"
+								href="https://www.bxai.org/aflsp/scholarships/aflsp-overview/"
+								style="margin-left: 35px;">#{choiceofcurriculum['termsAndConditions']}</a>
+							<br />
+							<br />
+						</h:panelGroup>
+
+						<h:panelGroup
+							rendered="#{editChoiceOfProgrammeBean.countryVo.isDisplayHksarGsftScholar}">
+							<p:selectBooleanCheckbox
+								value="#{editChoiceOfProgrammeBean.applicationVo.scholarHksarGsft}"
+								style="margin-left:10px;margin-right:5px;" />
+							<label style="color: rgb(85, 85, 85) !important;">#{choiceofcurriculum['applyForHKSAR']}</label>
+							<br />
+							<a target="_blank"
+								href="http://www.aal.hku.hk/admissions/international/admissions-information?page=en/fees-and-scholarships"
+								style="margin-left: 35px;">#{choiceofcurriculum['termsAndConditions']}</a>
+							<br />
+							<br />
+						</h:panelGroup>
+
+						<h:panelGroup
+							rendered="#{editChoiceOfProgrammeBean.countryVo.isDisplayHksarBrGsftScholar}">
+							<p:selectBooleanCheckbox
+								value="#{editChoiceOfProgrammeBean.applicationVo.scholarHksarGsftBrs}"
+								style="margin-left:10px;margin-right:5px;" />
+							<label style="color: rgb(85, 85, 85) !important;">#{choiceofcurriculum['applyForBeltAndRoad']}</label>
+							<br />
+							<a target="_blank"
+								href="http://www.aal.hku.hk/admissions/international/admissions-information?page=en/fees-and-scholarships"
+								style="margin-left: 35px;">#{choiceofcurriculum['termsAndConditions']}</a>
+						</h:panelGroup>
+					</div>
+				</h:panelGroup>
+
+				<!-- Information for Housing Management -->
+				<h:panelGroup id="housingMgmtGroup">
+					<h:panelGroup
+						rendered="#{!editChoiceOfProgrammeBean.acadQualHousingMgmt.isSelectHousingMgmt}" />
+					<h:panelGroup
+						rendered="#{editChoiceOfProgrammeBean.acadQualHousingMgmt.isSelectHousingMgmt}">
+						<div class="ax-section-title">#{choiceofcurriculum['housingManagement']}</div>
+						<div class="ax-section-title type-b">#{choiceofcurriculum['acadQuali']}</div>
+						<label
+							style="color: rgb(85, 85, 85) !important; margin-top: 0.3%; margin-bottom: -0.5%; margin-left: 0.8%;">
+							#{choiceofcurriculum['aProfessional']}</label>
+						<div
+							style="padding-left: 15px; color: rgb(85, 85, 85) !important; margin-left: 0.8%; margin-bottom: 0.3%;">#{choiceofcurriculum['pleaseAttach']}</div>
+						<p:panelGrid columns="4"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+							styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+
+							<p:outputLabel for="period"
+								value="#{choiceofcurriculum['period']}" />
+							<p:column>
+								<p:calendar id="period" locale="de" placeholder="From"
+									readonlyInput="true" mindate="#{commonBean.minDate}"
+									maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" pattern="dd-MM-yyyy"
+									showOn="button"
+									value="#{editChoiceOfProgrammeBean.acadQualHousingMgmt.periodFrom}">
+									<p:ajax event="dateSelect"
+										listener="#{editChoiceOfProgrammeBean.initAdmFormProgId()}" />
+								</p:calendar>
+
+								<p:calendar id="toperiod" locale="de" placeholder="To"
+									readonlyInput="true" mindate="#{commonBean.minDate}"
+									maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" pattern="dd-MM-yyyy"
+									showOn="button"
+									value="#{editChoiceOfProgrammeBean.acadQualHousingMgmt.periodTo}">
+									<p:ajax event="dateSelect"
+										listener="#{editChoiceOfProgrammeBean.initAdmFormProgId()}" />
+								</p:calendar>
+							</p:column>
+
+							<p:outputLabel value="#{choiceofcurriculum['dateOfAward']}" />
+							<p:calendar id="award" locale="de" placeholder="dd-mm-yyyy"
+								readonlyInput="true" mindate="#{commonBean.minDate}"
+								maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35"
+								onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+								navigator="true" maxlength="10" pattern="dd-MM-yyyy"
+								showOn="button"
+								value="#{editChoiceOfProgrammeBean.acadQualHousingMgmt.hmAwardDate}">
+								<p:ajax event="dateSelect"
+									listener="#{editChoiceOfProgrammeBean.initAdmFormProgId()}" />
+							</p:calendar>
+						</p:panelGrid>
+
+						<br />
+						<label
+							style="color: rgb(85, 85, 85) !important; margin-left: 0.8%;">
+							#{choiceofcurriculum['otherQualifications']}</label>
+						<p:dataTable id="acadQualiTable" style="margin-bottom: 2%;"
+							value="#{editChoiceOfProgrammeBean.acadQualOthers}"
+							var="acadQualOther" reflow="true">
+							<p:column headerText="#{choiceofcurriculum['degreeOrDiploma']}">
+								<p:inputText value="#{acadQualOther.degreeTitle}" />
+							</p:column>
+
+							<p:column filterBy="#{commonBean.hkuProgrammes}"
+								sortBy="#{acadQualOther.courseDuration}"
+								headerText="#{choiceofcurriculum['durationOfCourse']}"
+								styleClass="ax-tooltip-header">
+								<f:facet name="filter">
+									<h:outputLink id="LinkD" value="#" disabled="true"
+										styleClass="ax-pf-tooltip-icon">
+										<i class="ti-help"></i>
+									</h:outputLink>
+									<p:tooltip showEvent="click" id="toolTipLinkD" for="LinkD"
+										style="font-size: 12px !important;"
+										value="#{choiceofcurriculum['durationOfCourseHelp']}"
+										position="left" />
+								</f:facet>
+								<p:inputText value="#{acadQualOther.courseDuration}" />
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['majorSubject']}">
+								<p:inputText value="#{acadQualOther.majorSubject}" />
+							</p:column>
+
+							<p:column
+								headerText="#{choiceofcurriculum['honoursClassification']}">
+								<p:inputText value="#{acadQualOther.honours}" />
+							</p:column>
+
+							<p:column filterBy="#{commonBean.hkuProgrammes}"
+								headerText="#{choiceofcurriculum['awardingInstitution']}"
+								styleClass="ax-tooltip-header">
+								<f:facet name="filter">
+									<h:outputLink id="LinkE" value="#" disabled="true"
+										styleClass="ax-pf-tooltip-icon">
+										<i class="ti-help"></i>
+									</h:outputLink>
+									<p:tooltip showEvent="click" id="toolTipLinkE" for="LinkE"
+										style="font-size: 12px !important;"
+										value="#{choiceofcurriculum['awardHelp']}" position="left" />
+								</f:facet>
+								<p:inputText value="#{acadQualOther.awardInstitution}" />
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['dateOfAward']}">
+								<p:calendar id="award2" locale="de" placeholder="dd-mm-yyyy"
+									readonlyInput="true" mindate="#{commonBean.minDate}"
+									maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" pattern="dd-MM-yyyy"
+									showOn="button" value="#{acadQualOther.otherAwardDate}">
+									<p:ajax event="dateSelect"
+										listener="#{editChoiceOfProgrammeBean.initAdmFormProgId()}" />
+								</p:calendar>
+							</p:column>
+						</p:dataTable>
+
+						<div class="ax-section-title type-b">#{choiceofcurriculum['profQuali']}</div>
+						<p:dataTable id="profQualiTable" style="margin-bottom: 2%;"
+							value="#{editChoiceOfProgrammeBean.acadQualHousingMgmtPqVos}"
+							var="acadQualHousingMgmtPqVo" reflow="true">
+							<p:column headerText="#{choiceofcurriculum['typeOfMem']}">
+								<p:inputText value="#{acadQualHousingMgmtPqVo.typeOfMem}" />
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['abbr']}">
+								<p:inputText value="#{acadQualHousingMgmtPqVo.abbre}" />
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['awardInstitution']}">
+								<p:inputText value="#{acadQualHousingMgmtPqVo.awardInstitution}" />
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['dateOfAward']}">
+								<p:calendar id="profQualiAward" locale="de"
+									mindate="#{commonBean.minDate}" maxdate="#{commonBean.maxDate}"
+									value="#{acadQualHousingMgmtPqVo.dateAward}"
+									yearRange="c-35:c+35" placeholder="dd-mm-yyyy"
+									readonlyInput="true"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" pattern="dd-MM-yyyy"
+									showOn="button">
+									<p:ajax event="dateSelect"
+										listener="#{editChoiceOfProgrammeBean.initAdmFormProgId()}" />
+								</p:calendar>
+							</p:column>
+						</p:dataTable>
+
+						<div class="ax-section-title type-b">#{choiceofcurriculum['releWorkExp']}</div>
+						<p:dataTable id="releWorkExpTable" style="margin-bottom: 2%;"
+							value="#{editChoiceOfProgrammeBean.acadQualHousingMgmtRweVos}"
+							var="acadQualHousingMgmtRweVo" reflow="true">
+							<p:column headerText="#{choiceofcurriculum['appointment']}">
+								<p:inputText value="#{acadQualHousingMgmtRweVo.appointment}" />
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['dates']}">
+								<p:calendar id="releWorkExpForm" locale="de" placeholder="From"
+									value="#{acadQualHousingMgmtRweVo.dateFrom}"
+									readonlyInput="true" mindate="#{commonBean.minDate}"
+									maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" pattern="dd-MM-yyyy"
+									showOn="button">
+									<p:ajax event="dateSelect"
+										listener="#{editChoiceOfProgrammeBean.initAdmFormProgId()}" />
+								</p:calendar>
+							</p:column>
+							<p:column>
+								<p:calendar id="releWorkExpTo" locale="de" placeholder="To"
+									value="#{acadQualHousingMgmtRweVo.dateTo}" readonlyInput="true"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" pattern="dd-MM-yyyy"
+									showOn="button" mindate="#{commonBean.minDate}"
+									maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35">
+									<p:ajax event="dateSelect"
+										listener="#{editChoiceOfProgrammeBean.initAdmFormProgId()}" />
+								</p:calendar>
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['nameOfOrg']}">
+								<p:inputText
+									value="#{acadQualHousingMgmtRweVo.nameOfOrganization}" />
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['natureOfDuties']}">
+								<p:inputText value="#{acadQualHousingMgmtRweVo.natureOfDuties}" />
+							</p:column>
+						</p:dataTable>
+
+						<div class="ax-section-title type-b">#{choiceofcurriculum['preOcc']}</div>
+						<p:dataTable id="preOccTable" style="margin-bottom: 2%;"
+							value="#{editChoiceOfProgrammeBean.acadQualHousingMgmt}"
+							var="acadQualHousingMgmt" reflow="true">
+							<p:column headerText="#{choiceofcurriculum['positionHeld']}">
+								<p:inputText value="#{acadQualHousingMgmt.positionHeld}" />
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['startDate']}">
+								<p:calendar id="preOccStartDate" locale="de"
+									mindate="#{commonBean.minDate}" maxdate="#{commonBean.maxDate}"
+									value="#{acadQualHousingMgmt.startingDate}"
+									yearRange="c-35:c+35" placeholder="dd-mm-yyyy"
+									readonlyInput="true"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" pattern="dd-MM-yyyy"
+									showOn="button">
+									<p:ajax event="dateSelect"
+										listener="#{editChoiceOfProgrammeBean.initAdmFormProgId()}" />
+								</p:calendar>
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['nameAndAddr']}">
+								<p:inputText value="#{acadQualHousingMgmt.nameAndAddr}" />
+							</p:column>
+						</p:dataTable>
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<!-- Information for Nursing -->
+				<h:panelGroup id="nursingGroup">
+					<h:panelGroup
+						rendered="#{!editChoiceOfProgrammeBean.acadQualNursingVo.isSelectNursing}" />
+					<h:panelGroup
+						rendered="#{editChoiceOfProgrammeBean.acadQualNursingVo.isSelectNursing}">
+						<div class="ax-section-title">#{choiceofcurriculum['infoNurs']}</div>
+						<div class="ax-section-title type-b">#{choiceofcurriculum['nurReg']}</div>
+						<p:dataTable id="nurRegTable" style="margin-bottom: 2%;"
+							value="#{editChoiceOfProgrammeBean.acadQualNursingNrVos}"
+							var="acadQualNursingNrVo" reflow="true">
+							<p:column headerText="#{choiceofcurriculum['nursingSchool']}">
+								<p:inputText value="#{acadQualNursingNrVo.nursingSchool}" />
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['periodOfAttend']}">
+								<p:calendar id="attendFormDate" locale="de" placeholder="From"
+									value="#{acadQualNursingNrVo.dateFrom}" readonlyInput="true"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" pattern="dd-MM-yyyy"
+									showOn="button" mindate="#{commonBean.minDate}"
+									maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35">
+									<p:ajax event="dateSelect"
+										listener="#{editChoiceOfProgrammeBean.initAdmFormProgId()}" />
+								</p:calendar>
+							</p:column>
+							<p:column>
+								<p:calendar id="attendToDate" locale="de" placeholder="To"
+									value="#{acadQualNursingNrVo.dateTo}" readonlyInput="true"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" pattern="dd-MM-yyyy"
+									showOn="button" mindate="#{commonBean.minDate}"
+									maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35">
+									<p:ajax event="dateSelect"
+										listener="#{editChoiceOfProgrammeBean.initAdmFormProgId()}" />
+								</p:calendar>
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['genOrPsy']}">
+								<p:selectBooleanCheckbox value="#{acadQualNursingNrVo.genOrPsy}" />
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['dateOfReg']}">
+								<p:calendar id="dateOfReg" locale="de" placeholder="dd-mm-yyyy"
+									value="#{acadQualNursingNrVo.dateOfRegAndIa}"
+									readonlyInput="true" mindate="#{commonBean.minDate}"
+									maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" pattern="dd-MM-yyyy"
+									showOn="button">
+									<p:ajax event="dateSelect"
+										listener="#{editChoiceOfProgrammeBean.initAdmFormProgId()}" />
+								</p:calendar>
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['regStatus']}">
+								<p:inputText value="#{acadQualNursingNrVo.regStatus}" />
+							</p:column>
+						</p:dataTable>
+
+						<div class="ax-section-title type-b">#{choiceofcurriculum['postRegQuali']}</div>
+						<p:dataTable id="postRegQualiTable" style="margin-bottom: 2%;"
+							value="#{editChoiceOfProgrammeBean.acadQualNursingPrqVos}"
+							var="acadQualNursingPrqVo" reflow="true">
+							<p:column headerText="#{choiceofcurriculum['membership']}">
+								<p:inputText value="#{acadQualNursingPrqVo.typeOfMem}" />
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['period']}">
+								<p:calendar id="postRegFrom" locale="de" placeholder="From"
+									value="#{acadQualNursingPrqVo.dateFrom}" readonlyInput="true"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" pattern="dd-MM-yyyy"
+									showOn="button" mindate="#{commonBean.minDate}"
+									maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35">
+									<p:ajax event="dateSelect"
+										listener="#{editChoiceOfProgrammeBean.initAdmFormProgId()}" />
+								</p:calendar>
+							</p:column>
+							<p:column>
+								<p:calendar id="postRegTo" locale="de" placeholder="To"
+									value="#{acadQualNursingPrqVo.dateTo}" readonlyInput="true"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" pattern="dd-MM-yyyy"
+									showOn="button" mindate="#{commonBean.minDate}"
+									maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35">
+									<p:ajax event="dateSelect"
+										listener="#{editChoiceOfProgrammeBean.initAdmFormProgId()}" />
+								</p:calendar>
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['abbr']}">
+								<p:inputText value="#{acadQualNursingPrqVo.abbre}" />
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['dateOfAward']}">
+								<p:calendar id="postRegAward" locale="de"
+									value="#{acadQualNursingPrqVo.dateOfAward}"
+									placeholder="dd-mm-yyyy" readonlyInput="true"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" pattern="dd-MM-yyyy"
+									showOn="button" mindate="#{commonBean.minDate}"
+									maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35">
+									<p:ajax event="dateSelect"
+										listener="#{editChoiceOfProgrammeBean.initAdmFormProgId()}" />
+								</p:calendar>
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['awardInstitution']}">
+								<p:inputText value="#{acadQualNursingPrqVo.awardInstitution}" />
+							</p:column>
+						</p:dataTable>
+
+						<div class="ax-section-title type-b">#{choiceofcurriculum['nurExp']}</div>
+						<p:dataTable id="nurExpTable" style="margin-bottom: 2%;"
+							value="#{editChoiceOfProgrammeBean.acadQualNursingExpVos}"
+							var="acadQualNursingExpVo" reflow="true">
+							<p:column headerText="#{choiceofcurriculum['from']}">
+								<p:calendar id="nurExpForm" locale="de" placeholder="From"
+									value="#{acadQualNursingExpVo.dateFrom}" readonlyInput="true"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" pattern="dd-MM-yyyy"
+									showOn="button" mindate="#{commonBean.minDate}"
+									maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35">
+									<p:ajax event="dateSelect"
+										listener="#{editChoiceOfProgrammeBean.initAdmFormProgId()}" />
+								</p:calendar>
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['to']}">
+								<p:calendar id="nurExpTo" locale="de" placeholder="To"
+									value="#{acadQualNursingExpVo.dateTo}" readonlyInput="true"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" pattern="dd-MM-yyyy"
+									showOn="button" mindate="#{commonBean.minDate}"
+									maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35">
+									<p:ajax event="dateSelect"
+										listener="#{editChoiceOfProgrammeBean.initAdmFormProgId()}" />
+								</p:calendar>
+							</p:column>
+
+							<p:column width="20%" headerText="#{choiceofcurriculum['ftPt']}">
+								<p:selectOneRadio value="#{acadQualNursingExpVo.mode}">
+									<f:selectItem itemLabel="#{choiceofcurriculum['fullTime']}"
+										itemValue="FT" />
+									<f:selectItem itemLabel="#{choiceofcurriculum['PartTime']}"
+										itemValue="PT" />
+								</p:selectOneRadio>
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['nameOfInsOrg']}">
+								<p:inputText value="#{acadQualNursingExpVo.nameOfInstitute}" />
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['positionHeld']}">
+								<p:inputText value="#{acadQualNursingExpVo.positionHeld}" />
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['areaOfWork']}">
+								<p:inputText value="#{acadQualNursingExpVo.aowNod}" />
+							</p:column>
+						</p:dataTable>
+
+						<div class="ax-section-title type-b">#{choiceofcurriculum['otherExp']}</div>
+						<p:dataTable id="otherExpTable" style="margin-bottom: 2%;"
+							value="#{editChoiceOfProgrammeBean.acadQualNursingOtherExpVos}"
+							var="acadQualNursingOtherExpVo" reflow="true">
+							<p:column headerText="#{choiceofcurriculum['from']}">
+								<p:calendar id="otherExpForm" locale="de" placeholder="From"
+									value="#{acadQualNursingOtherExpVo.dateFrom}"
+									readonlyInput="true"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" pattern="dd-MM-yyyy"
+									showOn="button" mindate="#{commonBean.minDate}"
+									maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35">
+									<p:ajax event="dateSelect"
+										listener="#{editChoiceOfProgrammeBean.initAdmFormProgId()}" />
+								</p:calendar>
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['to']}">
+								<p:calendar id="otherExpTo" locale="de" placeholder="To"
+									value="#{acadQualNursingOtherExpVo.dateTo}"
+									readonlyInput="true"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" pattern="dd-MM-yyyy"
+									showOn="button" mindate="#{commonBean.minDate}"
+									maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35">
+									<p:ajax event="dateSelect"
+										listener="#{editChoiceOfProgrammeBean.initAdmFormProgId()}" />
+								</p:calendar>
+							</p:column>
+
+							<p:column width="20%" headerText="#{choiceofcurriculum['ftPt']}">
+								<p:selectOneRadio value="#{acadQualNursingOtherExpVo.mode}">
+									<f:selectItem itemLabel="#{choiceofcurriculum['fullTime']}"
+										itemValue="FT" />
+									<f:selectItem itemLabel="#{choiceofcurriculum['PartTime']}"
+										itemValue="PT" />
+								</p:selectOneRadio>
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['nameOfInsOrg']}">
+								<p:inputText
+									value="#{acadQualNursingOtherExpVo.nameOfInstitute}" />
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['positionHeld']}">
+								<p:inputText value="#{acadQualNursingOtherExpVo.positionHeld}" />
+							</p:column>
+
+							<p:column headerText="#{choiceofcurriculum['natureOfDuties']}">
+								<p:inputText value="#{acadQualNursingOtherExpVo.aowNod}" />
+							</p:column>
+						</p:dataTable>
+
+						<div class="ax-section-title type-b">#{choiceofcurriculum['ssriyca']}</div>
+						<p:panelGrid columns="2"
+							columnClasses="ui-grid-col-4,ui-grid-col-8"
+							styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+							<p:outputLabel value="#{choiceofcurriculum['ssriyca']}" />
+							<p:inputText
+								value="#{editChoiceOfProgrammeBean.acadQualNursingVo.specResponsibilty}" />
+						</p:panelGrid>
+					</h:panelGroup>
+				</h:panelGroup>
+			</div>
+			<div class="ax-btn-set">
+				<p:commandButton value="#{choiceofcurriculum['save']}" immediate="true" />
+			</div>
+		</h:form>
+	</div>
+	<script type="text/javascript" language="javascript">_initAxToolTips() </script>
+</ui:composition>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

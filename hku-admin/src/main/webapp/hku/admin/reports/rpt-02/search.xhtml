@@ -1,0 +1,90 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="./rpt-02.xhtml">
+
+	<ui:define name="breadcrumb-4">
+		<li><a title="">Generate</a><span>/</span></li>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<div>
+			<p:panel id="toggleable" header="Generate Report" toggleable="true"
+				closable="true" toggleSpeed="200" closeSpeed="200" widgetVar="panel">
+				<f:facet name="options">
+					<p:menu>
+						<p:submenu label="Settings">
+							<p:menuitem value="Toggle" url="#" icon="ui-icon-newwin"
+								onclick="PF('panel').toggle()" />
+							<p:menuitem value="Remove" url="#" icon="ui-icon-close"
+								onclick="PF('panel').close()" />
+						</p:submenu>
+					</p:menu>
+				</f:facet>
+				<div>
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-6"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+						<p:outputLabel for="TrainingCategory" value=" Training Category" />
+						<p:selectOneMenu id="TrainingCategory">
+							<f:selectItem itemLabel="All" itemValue="0" />
+						</p:selectOneMenu>
+						<p:outputLabel for="coruseCat"
+							value=" Department/Product Category" />
+						<p:selectCheckboxMenu id="coruseCat"
+							value="#{checkboxView.selectedCities}" label="Cities"
+							filter="true" filterMatchMode="startsWith"
+							panelStyle="width:250px">
+							<f:selectItems value="#{checkboxView.cities}" />
+						</p:selectCheckboxMenu>
+					</p:panelGrid>
+					<p:panelGrid columns="6"
+						columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+						<p:outputLabel for="courseNo" value="Course No." />
+						<p:selectOneMenu id="courseNo">
+							<f:selectItem itemLabel="All" itemValue="0" />
+						</p:selectOneMenu>
+						<p:outputLabel for="courseName" value="Course Name" />
+						<p:inputText id="courseName" />
+						<p:outputLabel for="PublishedDate" value="Published Date" />
+						<p:selectOneMenu id="PublishedDate">
+							<f:selectItem itemLabel="All" itemValue="0" />
+						</p:selectOneMenu>
+					</p:panelGrid>
+				</div>
+				<div class="ax-btn-set">
+					<p:commandButton value="Generate" onclick="_ACTION('result')" />
+					<p:commandButton value="Reset" styleClass="ui-priority-secondary"
+						onclick="_ACTION('search')" />
+				</div>
+			</p:panel>
+			<p:dialog header="Create Course" widgetVar="createCourse"
+				modal="true" width="500" minHeight="50">
+				<h:form id="formB">
+					<div class="ui-fluid">
+						<p:panelGrid columns="2"
+							columnClasses="ui-grid-col-4,ui-grid-col-8" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+
+							<p:outputLabel for="field1" value="Course No." />
+							<p:inputText id="field1" />
+
+							<p:outputLabel for="field2" value="Course Name" />
+							<p:inputText id="field2" />
+
+						</p:panelGrid>
+					</div>
+					<div class="ax-btn-set">
+						<p:commandButton value="Save" styleClass="ui-priority-primary"
+							onclick="_ACTION('create-save')" />
+						<p:commandButton value="Cancel" styleClass="ui-priority-secondary"
+							onclick="PF('createCourse').hide();" />
+					</div>
+				</h:form>
+			</p:dialog>
+		</div>
+		<ui:insert name="main-content-2" />
+	</ui:define>
+</ui:composition>

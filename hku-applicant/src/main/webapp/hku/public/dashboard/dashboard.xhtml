@@ -1,0 +1,237 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="../tp-container.xhtml">
+
+	<ui:define name="title">
+        Dashboard
+	</ui:define>
+
+	<ui:define name="breadcrumb">
+		<li><a title="">Dashboard</a><i class="ti-angle-right"></i></li>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<script>
+			function _xAction(_url) {
+				window.location = '#{request.contextPath}/hku/admin/' + _url;
+			}
+		</script>
+		<div class="ax-tab-01">
+			<p:tabView activeIndex="0">
+				<p:tab title="Summary">
+					<h:form id="formB">
+						<div class="ax-dashboard-circle">
+							<ul>
+								<li><i class="green">NEW</i>
+									<div onclick="_actionA('detail')">
+										<div class="rows">
+											<div class="row-01">
+												No. of Drafted<br /> Survey
+											</div>
+											<div class="row-02">13</div>
+										</div>
+									</div></li>
+								<li>
+									<div onclick="_actionA('detail')">
+										<div class="rows">
+											<div class="row-01">
+												No. of Unpublish<br /> Survey
+											</div>
+											<div class="row-02">2</div>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div onclick="_actionA('detail')">
+										<div class="rows">
+											<div class="row-01">
+												No. of Published<br /> Survey
+											</div>
+											<div class="row-02">8</div>
+										</div>
+									</div>
+								</li>
+								<li><i class="red">Updated</i>
+									<div onclick="_actionA('detail')">
+										<div class="rows">
+											<div class="row-01">
+												No. of Pending<br /> Survey
+											</div>
+											<div class="row-02">11</div>
+										</div>
+									</div></li>
+							</ul>
+						</div>
+					</h:form>
+				</p:tab>
+				<p:tab title="Main Function">
+					<h:form id="formA">
+						<div class="ax-dashboard-icon">
+							<ul>
+								<li>
+									<div onclick="_xAction('rest/rest/result.xhtml')">
+										<div class="icon">
+											<i class="ti-crown"></i>
+										</div>
+										<div class="text">餐廳</div>
+									</div>
+								</li>
+								<li>
+									<div onclick="_xAction('rest/stock/result.xhtml')">
+										<div class="icon">
+											<i class="ti-package"></i>
+										</div>
+										<div class="text">存貨</div>
+									</div>
+								</li>
+								<li>
+									<div onclick="_xAction('rest/ibeacons/result.xhtml')">
+										<div class="icon">
+											<i class="ti-rss-alt"></i>
+										</div>
+										<div class="text">iBeacons</div>
+									</div>
+								</li>
+								<li>
+									<div onclick="_xAction('rest/snapshot/result.xhtml')">
+										<div class="icon">
+											<i class="ti-camera"></i>
+										</div>
+										<div class="text">Snapshot</div>
+									</div>
+								</li>
+								<li>
+									<div onclick="_xAction('reward/reward/result.xhtml')">
+										<div class="icon">
+											<i class="ti-gift"></i>
+										</div>
+										<div class="text">獎賞</div>
+									</div>
+								</li>
+								<li>
+									<div onclick="_xAction('reward/redeem/result.xhtml')">
+										<div class="icon">
+											<i class="ti-location-pin"></i>
+										</div>
+										<div class="text">換領中心</div>
+									</div>
+								</li>
+								<li>
+									<div onclick="_xAction('reward/voucher/result.xhtml')">
+										<div class="icon">
+											<i class="ti-receipt"></i>
+										</div>
+										<div class="text">Vouchers</div>
+									</div>
+								</li>
+								<li>
+									<div onclick="_xAction('reward/lottery/result.xhtml')">
+										<div class="icon">
+											<i class="ti-cup"></i>
+										</div>
+										<div class="text">抽獎</div>
+									</div>
+								</li>
+								<li><i class="gray">WIP</i>
+									<div onclick="_xAction('reward/dtime/result.xhtml')">
+										<div class="icon">
+											<i class="ti-time"></i>
+										</div>
+										<div class="text">倍數時段</div>
+									</div></li>
+								<li>
+									<div onclick="_xAction('system/fraud/edit.xhtml')">
+										<div class="icon">
+											<i class="ti-info-alt"></i>
+										</div>
+										<div class="text">Fraud Detection</div>
+									</div>
+								</li>
+								<li>
+									<div onclick="_xAction('rest/checkin/result.xhtml')">
+										<div class="icon">
+											<i class="ti-map-alt"></i>
+										</div>
+										<div class="text">打卡統計</div>
+									</div>
+								</li>
+								<li>
+									<div onclick="_xAction('cms/ad/result.xhtml')">
+										<div class="icon">
+											<i class="ti-direction"></i>
+										</div>
+										<div class="text">廣告</div>
+									</div>
+								</li>
+								<li>
+									<div onclick="_xAction('cms/terms/edit.xhtml')">
+										<div class="icon">
+											<i class="ti-layout"></i>
+										</div>
+										<div class="text">Terms</div>
+									</div>
+								</li>
+								<li>
+									<div onclick="_xAction('system/user/result.xhtml')">
+										<div class="icon">
+											<i class="ti-user"></i>
+										</div>
+										<div class="text">User</div>
+									</div>
+								</li>
+								<li>
+									<div onclick="_xAction('system/role/result.xhtml')">
+										<div class="icon">
+											<i class="ti-id-badge"></i>
+										</div>
+										<div class="text">Role</div>
+									</div>
+								</li>
+								<li>
+									<div onclick="_xAction('system/setting/setting.xhtml')">
+										<div class="icon">
+											<i class="ti-settings"></i>
+										</div>
+										<div class="text">System Setting</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+
+					</h:form>
+				</p:tab>
+			</p:tabView>
+		</div>
+		<div class="theme-switcher" >
+			<h:form>
+				<h:panelGrid columns="2" cellpadding="10">					
+					<p:themeSwitcher id="basic" style="width:165px">
+						<f:selectItem itemLabel="Choose Theme" itemValue="" />
+						<f:selectItems value="#{themeSwitcherView.themes}" var="theme"
+							itemLabel="#{theme.displayName}" itemValue="#{theme.name}" />
+					</p:themeSwitcher>
+				</h:panelGrid>
+			</h:form> 
+		</div>
+	</ui:define>
+</ui:composition>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

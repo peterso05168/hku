@@ -1,0 +1,181 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="./admission-exercise.xhtml">
+
+	<ui:define name="breadcrumb-3">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.configuration.admissionexe"
+				var="admission" />
+			<li><a title="">#{admission['admissionSetup']}</a><i
+				class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.configuration.admissionexe"
+				var="admissionexe" />
+			<h:form id="formAdmissionexe">
+				<p:growl id="growlMsg" showDetail="true" />
+				<p:dataTable value="#{admissionExerciseBean.exes}" var="exe"
+					reflow="true" sortBy="#{exe.admissionYear}" sortOrder="descending">
+
+					<p:column headerText="#{admissionexe['admissionYear']}"
+						sortBy="#{exe.admissionYear}">
+						<p:commandLink onclick="_ACTION('edit')"
+							action="#{admissionExerciseBean.formEdit(exe.id)}"
+							style="font-style: normal;font-size: 12px !important;">
+							<h:outputText value="#{exe.admissionYear}" />
+						</p:commandLink>
+					</p:column>
+
+					<p:column headerText="#{admissionexe['action']}"
+						styleClass="ax-action-w">
+						<p:menuButton value="#{admissionexe['action']}">
+							<p:menuitem value="#{admissionexe['edit']}"
+								action="#{admissionExerciseBean.formEdit(exe.id)}"
+								onclick="_ACTION('edit')" />
+						</p:menuButton>
+					</p:column>
+				</p:dataTable>
+				<div class="ax-btn-set">
+					<p:commandButton value="#{admissionexe['createAdmissionYear']}"
+						action="#{admissionExerciseBean.createExe()}" resetValues="true"
+						update=":formAdmissionexe :formAdmissionYear"
+						onclick="PF('createDialog').show()" />
+				</div>
+			</h:form>
+
+			<p:dialog header="#{admissionexe['createAdmissionYear']}"
+				widgetVar="createDialog" modal="true" width="520" height="480">
+				<h:form id="formAdmissionYear">
+					<div class="ui-fluid">
+						<p:panelGrid columns="1" columnClasses="ui-grid-col-12"
+							layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+
+							<p:column>
+								<p:outputLabel for="admissionYear"
+									value="#{admissionexe['admissionYear']}"
+									style="text-align:left;">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:inputNumber thousandSeparator="" decimalSeparator="."
+									decimalPlaces="0" id="admissionYear" maxValue="9999"
+									value="#{admissionExerciseBean.admissionYear}" />
+							</p:column>
+
+							<p:column>
+								<p:outputLabel for="applicationStartDate"
+									value="#{admissionexe['appDate']}" style="text-align:left;">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:calendar id="applicationStartDate" readonlyInput="true"
+									mindate="#{commonBean.minDate}" maxdate="#{commonBean.maxDate}"
+									placeholder="#{admissionexe['start']}" yearRange="c-35:c+35"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" locale="de"
+									pattern="dd-MM-yyyy" showOn="button"
+									value="#{admissionExerciseBean.exeVo.applicationStartDate}">
+								</p:calendar>
+								-
+								<p:calendar id="applicationEndtDate" readonlyInput="true"
+									mindate="#{commonBean.minDate}" maxdate="#{commonBean.maxDate}"
+									placeholder="#{admissionexe['end']}" yearRange="c-35:c+35"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" locale="de"
+									pattern="dd-MM-yyyy" showOn="button"
+									value="#{admissionExerciseBean.exeVo.applicationEndDate}">
+								</p:calendar>
+							</p:column>
+
+							<p:column>
+								<p:outputLabel for="programmeChoiceEndDate"
+									value="#{admissionexe['progChoiceEndDate']}"
+									style="text-align:left;">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:calendar id="programmeChoiceEndDate"
+									mindate="#{commonBean.minDate}" maxdate="#{commonBean.maxDate}"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" locale="de"
+									yearRange="c-35:c+35" pattern="dd-MM-yyyy" showOn="button"
+									readonlyInput="true"
+									value="#{admissionExerciseBean.exeVo.programmeChoiceEndDate}">
+								</p:calendar>
+							</p:column>
+
+							<p:column>
+								<p:outputLabel for="mfExcellentScheEndDate"
+									value="#{admissionexe['mfExcellentScheEndDate']}"
+									style="text-align:left;">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:calendar id="mfExcellentScheEndDate"
+									mindate="#{commonBean.minDate}" maxdate="#{commonBean.maxDate}"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" locale="de"
+									yearRange="c-35:c+35" pattern="dd-MM-yyyy" showOn="button"
+									readonlyInput="true"
+									value="#{admissionExerciseBean.exeVo.mfExcellentScheEndDate}">
+								</p:calendar>
+							</p:column>
+
+							<p:column>
+								<p:outputLabel for="cycleEndDate"
+									value="#{admissionexe['cycleEndDate']}"
+									style="text-align:left;">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:calendar id="cycleEndDate" mindate="#{commonBean.minDate}"
+									maxdate="#{commonBean.maxDate}"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" locale="de"
+									yearRange="c-35:c+35" pattern="dd-MM-yyyy" showOn="button"
+									readonlyInput="true"
+									value="#{admissionExerciseBean.exeVo.admCycleEndDate}">
+								</p:calendar>
+							</p:column>
+
+							<p:column>
+								<p:outputLabel style="text-align:left;">
+									#{admissionexe['display6']}&#160;<sup>th</sup>&#160;#{admissionexe['programmeChoice']}
+								</p:outputLabel>
+								<p:selectBooleanCheckbox
+									value="#{admissionExerciseBean.exeVo.displaySixthChoice}" />
+							</p:column>
+						</p:panelGrid>
+					</div>
+					<div class="ax-btn-set">
+						<p:commandButton value="#{admissionexe['create']}" role="button"
+							action="#{admissionExerciseBean.saveExe()}"
+							update=":formAdmissionexe :formAdmissionYear" />
+						<p:commandButton value="#{admissionexe['cancel']}"
+							onclick="PF('createDialog').hide()"
+							styleClass="ui-priority-secondary" />
+					</div>
+				</h:form>
+			</p:dialog>
+		</f:view>
+	</ui:define>
+</ui:composition>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

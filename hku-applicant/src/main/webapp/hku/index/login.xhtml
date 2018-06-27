@@ -1,0 +1,92 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	template="../public/tp-header-login.xhtml">
+	<ui:define name="breadcrumb">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.index.login" var="login" />
+			<li><a title="">#{login['loginTitle']}</a></li>
+		</f:view>
+		<script>
+			$(function() {
+				/* var loginId = '#{loginBean.loginId}';
+				if(loginId!=''){
+					alert("您的賬戶已激活，請登錄...");
+				} */
+			});
+		</script>
+	</ui:define>
+	<ui:define name="main-content">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.index.login" var="login" />
+			<div class="content-sec">
+				<div class="main-content">
+					<div class="content-container">
+						<div class="account-sec">
+							<div class="inner-box">
+								<h:form id="login_form">
+									<div class="title type-a">
+										<h1>#{login['loginUpper']}</h1>
+									</div>
+									<div class="account-form" style="margin-top: 32px">
+										<p:growl id="growl" showDetail="true" globalOnly="true" />
+										<div class="field-row">
+											<p:inputText id="username" placeholder="#{login['regEmailAddr']}" value="#{loginBean.accountVo.personEmail}" />
+											<i class="ti-user"></i>
+										</div>
+										<div class="field-row">
+											<p:password id="password" placeholder="#{login['password']}" value="#{loginBean.accountVo.password}" />
+											<i class="ti-key"></i>
+										</div>
+										<!-- <fieldset class="ax-captcha">
+											
+										<div>
+											<div style="width: 304px; height: 78px;">
+												<img src="#{request.contextPath}/resources/hku/images/captcha.png" />									
+											</div>
+										</div>
+										
+											 https://www.primefaces.org/showcase/ui/misc/captcha.xhtml 
+											<p:captcha label="Captcha" />
+										</fieldset> -->
+										<div>
+											<!-- <input class="btn btn-default full-width-yellow-button" type="button" value="#{login['loginTitle']}"
+											onClick="window.location='#{request.contextPath}/hku/public/my-inbox/edit.xhtml'" /> -->
+											<p:commandButton style="height: 40px !important;" value="#{login['loginTitle']}" process="@form"
+												class="btn btn-default full-width-yellow-button" action="#{loginBean.login}"
+												update="login_form login_form:growl" />
+										</div>
+										<div class="-fR" style="margin-top: 15px">
+											<div style="margin-top: 5px">
+												<a href="#{request.contextPath}/hku/index/forgot-password.xhtml" title="">#{login['forgotPassword']}<i
+													class="ti-help"></i>
+												</a>
+											</div>
+										</div>
+										<!-- <label><input class="inputCheckbox" type="checkbox" />Remember</label> -->
+									</div>
+								</h:form>
+							</div>
+							<div class="inner-box type-01">
+								<div class="title type-a">
+									<h1>#{login['registrationUpper']}</h1>
+								</div>
+								<div class="account-form" style="margin-top: 20px">
+									<div style="text-align: justify; background-color: #FFF; padding: 15px">
+										#{login['registrationCont1']}
+										<div style="text-align: left; margin-top: 10px">#{login['registrationCont2']}</div>
+									</div>
+									<div class="f2L" style="margin-top: 10px">
+										<div class="register-icon">
+											<a href="javascript:void(0)" onClick="window.location='#{request.contextPath}/hku/index/declaration.xhtml'"><i
+												class="ti-user"></i> #{login['registrationTitle']}</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</f:view>
+	</ui:define>
+</ui:composition>

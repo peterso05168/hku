@@ -1,0 +1,788 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<f:view locale="#{language.locale}">
+		<f:loadBundle basename="i18n.my-application.academicbackground"
+			var="academic" />
+		<div class="ax-tab-02">
+			<h:form id="academicForm">
+				<p:tabView id="abTabView" activeIndex="#{editAcademicProfileBean.currTabIndex}">
+					<p:ajax event="tabChange" listener="#{editAcademicProfileBean.onTabChange}"
+						update=":mainTab:academicForm" />
+					<p:tab title="#{academic['academicHistory']}" id="historyTab"
+						titleStyle="margin-right: 3px;">
+						<p:growl id="growlMsg" showDetail="true" />
+						<div class="note">#{academic['noteA']}</div>
+						<div class="note">
+							#{academic['noteB']} <span class="b">#{academic['noteC']}</span>
+						</div>
+						<h:panelGroup id="acadBg-study-group">
+							<h:panelGroup rendered="#{editAcademicProfileBean.acadBgVo.isNotStuding}">
+								<p:panelGrid columns="2"
+									columnClasses="ui-grid-col-5,ui-grid-col-7"
+									styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+									<p:outputLabel value="#{academic['currently']}"
+										style="text-align: right;" />
+									<p:column>
+										<p:selectBooleanCheckbox id="isNotStuding1"
+											value="#{editAcademicProfileBean.acadBgVo.isNotStuding}">
+											<p:ajax event="change"
+												update="acadBg-study-group acadBg-prog-group" />
+										</p:selectBooleanCheckbox>
+									</p:column>
+								</p:panelGrid>
+							</h:panelGroup>
+							<h:panelGroup rendered="#{!editAcademicProfileBean.acadBgVo.isNotStuding}">
+								<div class="ax-section-title">#{academic['academicBackground']}</div>
+								<p:panelGrid columns="2"
+									columnClasses="ui-grid-col-5,ui-grid-col-7"
+									styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+									<p:outputLabel value="#{academic['currently']}"
+										style="text-align: right;" />
+									<p:column>
+										<p:selectBooleanCheckbox id="isNotStuding"
+											value="#{editAcademicProfileBean.acadBgVo.isNotStuding}">
+											<p:ajax event="change"
+												update="acadBg-study-group acadBg-prog-group" />
+										</p:selectBooleanCheckbox>
+									</p:column>
+								</p:panelGrid>
+								<p:panelGrid id="acadBg-study-erea" columns="2"
+									columnClasses="ui-grid-col-5,ui-grid-col-7"
+									styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+									<p:outputLabel for="countryId"
+										value="#{academic['studyCountry']}">
+									</p:outputLabel>
+									<p:column>
+										<p:selectOneMenu id="countryId"
+											value="#{editAcademicProfileBean.acadBgVo.countryId}">
+											<p:ajax event="change"
+												listener="#{commonBean.loadProvinceOrCityListOfStudy}"
+												update=":mainTab:academicForm:abTabView:acadBg-study-erea" />
+											<p:ajax event="change"
+												listener="#{editAcademicProfileBean.changeProvince()}"
+												update=":mainTab:academicForm:abTabView:acadBg-study-erea" />
+											<f:selectItem itemLabel="#{personalparticular['select']}"
+												itemValue="select" noSelectionOption="true" />
+											<f:selectItems value="#{commonBean.countries}" var="country"
+												itemLabel="#{country.description}" itemValue="#{country.id}" />
+											<f:selectItem itemLabel="#{academic['others']}"
+												itemValue="others" />
+										</p:selectOneMenu>
+										<p:inputText id="othersCountryId"
+											value="#{editAcademicProfileBean.acadBgVo.studyCountryOthers}"
+											rendered="#{commonBean.isActiveStudyCountry}"
+											placeholder="#{academic['others']}" style="margin-top: 5px" />
+									</p:column>
+
+									<p:outputLabel for="provinceId" value="#{academic['province']}"
+										rendered="#{commonBean.isActiveProvince}">
+									</p:outputLabel>
+									<p:column>
+										<p:selectOneMenu id="provinceId"
+											value="#{editAcademicProfileBean.acadBgVo.provinceId}"
+											rendered="#{commonBean.isActiveProvince}">
+											<p:ajax event="change" listener="#{commonBean.loadCityList}"
+												update=":mainTab:academicForm:abTabView:acadBg-study-erea" />
+											<p:ajax event="change" listener="#{editAcademicProfileBean.changeCity()}"
+												update=":mainTab:academicForm:abTabView:acadBg-study-erea" />
+											<f:selectItem itemLabel="#{personalparticular['select']}"
+												itemValue="select" noSelectionOption="true" />
+											<f:selectItems value="#{commonBean.provinceOfStudys}"
+												var="province" itemLabel="#{province.description}"
+												itemValue="#{province.id}" />
+										</p:selectOneMenu>
+									</p:column>
+
+									<p:column rendered="#{commonBean.isActiveProvince}"></p:column>
+									<p:column rendered="#{commonBean.isActiveCity}"></p:column>
+
+									<p:outputLabel for="cityId" value="#{academic['city']}"
+										rendered="#{commonBean.isActiveCity}">
+									</p:outputLabel>
+									<p:column>
+										<p:selectOneMenu id="cityId"
+											value="#{editAcademicProfileBean.acadBgVo.cityId}"
+											rendered="#{commonBean.isActiveCity}">
+											<p:ajax event="change"
+												listener="#{commonBean.loadInstitutionList}"
+												update=":mainTab:academicForm:abTabView:acadBg-study-erea" />
+											<f:selectItem itemLabel="#{personalparticular['select']}"
+												itemValue="select" noSelectionOption="true" />
+											<f:selectItems value="#{commonBean.cityOfStudys}" var="city"
+												itemLabel="#{city.description}" itemValue="#{city.id}" />
+										</p:selectOneMenu>
+									</p:column>
+
+									<p:outputLabel for="institutionId"
+										value="#{academic['insititution']}">
+										<span style="color: red">*</span>
+									</p:outputLabel>
+									<h:panelGroup layout="block" id="acad_study_institution">
+										<p:selectOneMenu id="institutionId"
+											value="#{editAcademicProfileBean.acadBgVo.institutionId}">
+											<p:ajax event="change"
+												listener="#{editAcademicProfileBean.loadOthersInstitution}"
+												update=":mainTab:academicForm:abTabView:acad_study_institution" />
+											<p:ajax event="change" listener="#{editAcademicProfileBean.changeArea()}"
+												update=":mainTab:academicForm:abTabView:acad_study_institution" />
+											<f:selectItem itemLabel="#{personalparticular['select']}"
+												itemValue="" noSelectionOption="true" />
+											<f:selectItems value="#{commonBean.institutions}"
+												var="institution" itemLabel="#{institution.description}"
+												itemValue="#{institution.id}" />
+											<f:selectItem itemLabel="#{academic['others']}"
+												itemValue="others" />
+										</p:selectOneMenu>
+										<p:inputText id="otherInstitutionId"
+											value="#{editAcademicProfileBean.acadBgVo.institutionOthers}"
+											rendered="#{editAcademicProfileBean.isActiveOtherInstitution}"
+											placeholder="#{academic['others']}" style="margin-top: 5px" />
+									</h:panelGroup>
+								</p:panelGrid>
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<p:panelGrid columns="2" id="partcpNjceeGrid"
+							columnClasses="ui-grid-col-5,ui-grid-col-7"
+							styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+							<p:column>
+								<h:outputLink id="helpInfoK" value="#" disabled="true"
+									styleClass="ax-pf-tooltip-icon">
+									<i class="ti-help"></i>
+								</h:outputLink>
+								<p:tooltip showEvent="click" id="toolTipK" for="helpInfoK"
+									position="right">
+									#{academic['participating']}#{editAcademicProfileBean.admissionYear}?
+								</p:tooltip>
+								<p:outputLabel for="isPartcpNextNjcee"
+									value="#{academic['participating']}#{editAcademicProfileBean.admissionYear}?">
+									<span style="color: red">*</span>
+								</p:outputLabel>
+							</p:column>
+							<p:column>
+								<p:selectOneRadio id="isPartcpNextNjcee"
+									value="#{editAcademicProfileBean.acadBgVo.isPartcpNextNjcee}">
+									<p:ajax event="change"
+										listener="#{editAcademicProfileBean.changePartcpNjcee()}" />
+									<f:selectItem itemLabel="#{academic['yes']}" itemValue="true" />
+									<f:selectItem itemLabel="#{academic['no']}" itemValue="false" />
+								</p:selectOneRadio>
+							</p:column>
+						</p:panelGrid>
+
+						<h:panelGroup id="acadBg-prog-group">
+							<h:panelGroup rendered="#{editAcademicProfileBean.acadBgVo.isNotStuding}"></h:panelGroup>
+							<h:panelGroup rendered="#{!editAcademicProfileBean.acadBgVo.isNotStuding}">
+								<div class="ax-section-title">#{academic['currentStudy']}</div>
+								<p:panelGrid id="programmeInformation" columns="2"
+									columnClasses="ui-grid-col-5,ui-grid-col-7"
+									styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+									<p:outputLabel for="programmeTypeCd"
+										value="#{academic['curriculumType']}">
+										<span style="color: red">*</span>
+									</p:outputLabel>
+									<p:column>
+										<p:selectOneMenu id="programmeTypeCd"
+											value="#{editAcademicProfileBean.acadBgVo.programmeTypeCd}">
+											<p:ajax event="change"
+												listener="#{editAcademicProfileBean.changeProgType()}"
+												update=":mainTab:academicForm:abTabView:programmeInformation" />
+											<f:selectItem itemLabel="#{personalparticular['select']}"
+												itemValue="" noSelectionOption="true" />
+											<f:selectItems value="#{editAcademicProfileBean.hkuProgrammes}"
+												var="hkuProgramme" itemLabel="#{hkuProgramme.value}"
+												itemValue="#{hkuProgramme.cd}" />
+											<f:selectItem itemLabel="#{academic['others']}"
+												itemValue="others" />
+										</p:selectOneMenu>
+										<p:inputText id="otherProgrammeCd"
+											value="#{editAcademicProfileBean.acadBgVo.progTypeOthers}"
+											rendered="#{editAcademicProfileBean.acadBgVo.isActiveProgTypeCd == '2'}"
+											placeholder="#{academic['others']}" style="margin-top: 5px" />
+									</p:column>
+
+									<p:outputLabel for="programmeTitle"
+										value="#{academic['programmeTitle']}">
+										<span style="color: red">*</span>
+									</p:outputLabel>
+									<p:column>
+										<p:inputText id="programmeTitle"
+											value="#{editAcademicProfileBean.acadBgVo.programmeTitle}" />
+									</p:column>
+
+									<p:outputLabel for="typeOfEducation"
+										value="#{academic['typeOfEdu']}">
+										<span style="color: red">*</span>
+									</p:outputLabel>
+									<p:column>
+										<p:selectOneMenu id="typeOfEducation"
+											value="#{editAcademicProfileBean.acadBgVo.typeOfEducation}">
+											<f:selectItem itemLabel="#{personalparticular['select']}"
+												itemValue="" noSelectionOption="true" />
+											<f:selectItem itemLabel="#{academic['primaryEducation']}"
+												itemValue="PE" />
+											<f:selectItem itemLabel="#{academic['secondaryEducation']}"
+												itemValue="SE" />
+											<f:selectItem itemLabel="#{academic['tertiaryEducation']}"
+												itemValue="TPSE" />
+										</p:selectOneMenu>
+									</p:column>
+
+									<p:outputLabel for="" value="#{academic['completedStudy']}" />
+									<p:column>
+										<p:selectOneRadio id="completedStudy"
+											value="#{editAcademicProfileBean.acadBgVo.isCompletedStudy}">
+											<f:selectItem itemLabel="#{academic['yes']}" itemValue="true" />
+											<f:selectItem itemLabel="#{academic['no']}" itemValue="false" />
+										</p:selectOneRadio>
+									</p:column>
+
+									<p:outputLabel for="" value="#{academic['studyMode']}" />
+									<p:column>
+										<p:selectOneRadio id="studyModeCd"
+											value="#{editAcademicProfileBean.acadBgVo.studyModeCd}">
+											<f:selectItem itemLabel="#{academic['fulltime']}"
+												itemValue="FT" />
+											<f:selectItem itemLabel="#{academic['parttime']}"
+												itemValue="PT" />
+										</p:selectOneRadio>
+									</p:column>
+
+									<p:outputLabel for="latestCumulativeGpa"
+										value="#{academic['latestGPA']}"
+										rendered="#{editAcademicProfileBean.acadBgVo.isActiveProgTypeCd == '1' and !editAcademicProfileBean.acadBgVo.notGpa}">
+										<span style="color: red">*</span>
+									</p:outputLabel>
+									<h:panelGroup
+										rendered="#{editAcademicProfileBean.acadBgVo.isActiveProgTypeCd == '1' and !editAcademicProfileBean.acadBgVo.notGpa}">
+										<p:inputNumber decimalPlaces="0" thousandSeparator=""
+											id="latestCumulativeGpa" style="display:inline;"
+											inputStyle="width:80px;"
+											value="#{editAcademicProfileBean.acadBgVo.latestCumulativeGpa}" />
+										<span>#{academic['outGPA']}</span>
+										<span style="color: red">*&#160;&#160;</span>
+										<p:inputNumber decimalPlaces="0" thousandSeparator=""
+											id="maxGpa" style="display:inline;margin-left:3px"
+											inputStyle="width:80px;"
+											value="#{editAcademicProfileBean.acadBgVo.maxGpa}" />
+									</h:panelGroup>
+
+									<p:outputLabel for="myGPA" value="#{academic['myGPA']}"
+										rendered="#{editAcademicProfileBean.acadBgVo.isActiveProgTypeCd == '1'}" />
+									<p:column>
+										<p:selectBooleanCheckbox id="myGPA"
+											value="#{editAcademicProfileBean.acadBgVo.notGpa}"
+											rendered="#{editAcademicProfileBean.acadBgVo.isActiveProgTypeCd == '1'}">
+											<p:ajax event="change"
+												listener="#{editAcademicProfileBean.changeNotGPA()}"
+												update="programmeInformation" />
+										</p:selectBooleanCheckbox>
+									</p:column>
+
+									<p:outputLabel for="mylatest" value="#{academic['mylatest']}"
+										rendered="#{editAcademicProfileBean.acadBgVo.isActiveProgTypeCd == '1' and editAcademicProfileBean.acadBgVo.notGpa}">
+										<span style="color: red">*</span>
+									</p:outputLabel>
+									<p:column>
+										<p:inputText id="mylatest"
+											value="#{editAcademicProfileBean.acadBgVo.finalRslt}"
+											rendered="#{editAcademicProfileBean.acadBgVo.isActiveProgTypeCd == '1' and editAcademicProfileBean.acadBgVo.notGpa}" />
+									</p:column>
+								</p:panelGrid>
+
+								<p:panelGrid columns="2"
+									columnClasses="ui-grid-col-5,ui-grid-col-7"
+									styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+									<p:outputLabel for="dateOfAdmissionToProg"
+										value="#{academic['admissionDate']}">
+										<span style="color: red">*</span>
+									</p:outputLabel>
+									<p:column>
+										<p:calendar id="dateOfAdmissionToProg" readonlyInput="true"
+											onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+											maxlength="10" navigator="true" pattern="dd-MM-yyyy"
+											showOn="button" mindate="#{commonBean.minDate}"
+											maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35"
+											converterMessage="#{editAcademicProfileBean.acadBgVo.adminssionFormat}"
+											value="#{editAcademicProfileBean.acadBgVo.dateOfAdmissionToProg}" />
+										<p:watermark for="dateOfAdmissionToProg"
+											id="dateOfAdmissionToProgWm" value="dd-mm-yyyy" />
+									</p:column>
+
+									<p:outputLabel for="currentYrOfStudy"
+										value="#{academic['studyTitle']}">
+										<span style="color: red">*</span>
+									</p:outputLabel>
+									<p:column>
+										<p:inputText id="currentYrOfStudy"
+											value="#{editAcademicProfileBean.acadBgVo.currentYrOfStudy}" />
+									</p:column>
+
+									<p:column>
+										<h:outputLink id="helpInfoC" value="#" disabled="true"
+											styleClass="ax-pf-tooltip-icon">
+											<i class="ti-help"></i>
+										</h:outputLink>
+										<p:tooltip id="toolTipC" for="helpInfoC" showEvent="click"
+											value="#{academic['mmyyyy']}" position="right" />
+										<p:outputLabel for="expectedDateOfGrad"
+											value="#{academic['expectedDate']}">
+											<span style="color: red">*</span>
+										</p:outputLabel>
+									</p:column>
+									<p:column>
+										<p:calendar id="expectedDateOfGrad" readonlyInput="true"
+											onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+											navigator="true" maxlength="10"
+											mindate="#{commonBean.minDate}"
+											maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35"
+											converterMessage="#{editAcademicProfileBean.acadBgVo.expectedFormat}"
+											pattern="dd-MM-yyyy" showOn="button"
+											value="#{editAcademicProfileBean.acadBgVo.expectedDateOfGrad}" />
+										<p:watermark for="expectedDateOfGrad"
+											id="expectedDateOfGradWm" value="dd-mm-yyyy" />
+									</p:column>
+								</p:panelGrid>
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<div class="ax-section-title">#{academic['previousStudies']}</div>
+						<p:panelGrid id="prevpanel" columns="1"
+							columnClasses="ui-grid-col-12"
+							styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+							<p:dataTable id="preTable" value="#{editAcademicProfileBean.prevStudies}"
+								var="prevStudie" reflow="true" lazy="true">
+								<p:column headerText="#{academic['institutionName']}">
+									<p:commandLink rendered="#{prevStudie.institutionId !=''}"
+										action="#{editAcademicProfileBean.editPrevStudies(prevStudie.id)}"
+										style="font-style: normal;color: #222;font-weight: bold;"
+										oncomplete="PF('preDialog').show()"
+										update=":mainTab:preDialogForm">
+										<h:outputText value="#{prevStudie.institutionVo.description}" />
+									</p:commandLink>
+									<p:commandLink rendered="#{prevStudie.institutionOthers !=''}"
+										action="#{editAcademicProfileBean.editPrevStudies(prevStudie.id)}"
+										style="font-style: normal;color: #222;font-weight: bold;"
+										oncomplete="PF('preDialog').show()"
+										update=":mainTab:preDialogForm">
+										<h:outputText value="#{prevStudie.institutionOthers}" />
+									</p:commandLink>
+								</p:column>
+
+								<p:column headerText="#{academic['programmeType']}">
+									<h:outputText value="#{prevStudie.typeOfProg}" />
+								</p:column>
+
+								<p:column headerText="#{academic['country']}">
+									<h:outputText rendered="#{prevStudie.countryId !=''}"
+										value="#{prevStudie.countryVo.description}" />
+									<h:outputText rendered="#{prevStudie.studyCountryOthers !=''}"
+										value="#{prevStudie.studyCountryOthers}" />
+								</p:column>
+
+								<p:column headerText="#{academic['programmeTitle']}">
+									<h:outputText value="#{prevStudie.programmeTitle}" />
+								</p:column>
+
+								<p:column headerText="#{academic['studyMode']}">
+									<h:outputText value="#{prevStudie.studyMode}" />
+								</p:column>
+
+								<p:column headerText="#{academic['gpa']}">
+									<h:outputText value="#{prevStudie.finalCumulativeGpa}" />
+									/
+									<h:outputText value="#{prevStudie.maxGpa}" />
+								</p:column>
+
+								<p:column headerText="#{academic['action']}"
+									styleClass="ax-action-w">
+									<p:menuButton value="#{academic['action']}">
+										<p:menuitem value="#{academic['edit']}" immediate="true"
+											action="#{editAcademicProfileBean.editPrevStudies(prevStudie.id)}"
+											oncomplete="PF('preDialog').show()" resetValues="true"
+											update=":mainTab:preDialogForm" />
+										<p:menuitem value="#{academic['delete']}"
+											action="#{editAcademicProfileBean.deletePrevStudies(prevStudie.id)}"
+											update=":mainTab:academicForm:abTabView:prevpanel"
+											immediate="true">
+											<p:confirm header="#{academic['prompt']}"
+												message="#{academic['delMessage']}" icon="ui-icon-alert" />
+										</p:menuitem>
+									</p:menuButton>
+								</p:column>
+							</p:dataTable>
+						</p:panelGrid>
+
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							<p:commandButton value="#{academic['yes']}" type="button"
+								styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+							<p:commandButton value="#{academic['no']}" type="button"
+								styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+						</p:confirmDialog>
+					</p:tab>
+					<p:tab title="#{academic['schooling']}" id="schoolingTab">
+						<div class="note">#{academic['noteD']}</div>
+						<div class="note">
+							<p:outputLabel for="highestQualificationCd" styleClass="b"
+								value="#{academic['highestQualification']}#{editAcademicProfileBean.admissionYear}&#160;:">
+								<span style="color: red">&#160;*&#160;</span>
+							</p:outputLabel>
+
+							<p:selectOneMenu id="highestQualificationCd"
+								value="#{editAcademicProfileBean.acadBgVo.highestQualificationCd}">
+								<f:selectItem itemLabel="#{personalparticular['select']}"
+									itemValue="" />
+								<f:selectItems value="#{editAcademicProfileBean.highestQualificationCds}"
+									var="highestQualificationCd"
+									itemLabel="#{highestQualificationCd.value}"
+									itemValue="#{highestQualificationCd.cd}" />
+							</p:selectOneMenu>
+						</div>
+						<div class="sep type-02"></div>
+						<div class="note">#{academic['noteE']}#{editAcademicProfileBean.admissionYear}.#{academic['noteG']}</div>
+						<div class="note">
+							<p:outputLabel for="primaryYrs" styleClass="b"
+								value="#{academic['primaryEducation']} :">
+								<span style="color: red">&#160;*&#160;</span>
+							</p:outputLabel>
+							<p:inputNumber id="primaryYrs"
+								value="#{editAcademicProfileBean.acadBgVo.primaryYrs}" decimalPlaces="0"
+								thousandSeparator="" decimalSeparator="." />
+							<span>#{academic['equivalent']}</span>
+						</div>
+						<div class="note">
+							<p:outputLabel for="secondaryYrs" styleClass="b"
+								value="#{academic['secondaryEducation']} :">
+								<span style="color: red">&#160;*&#160;</span>
+							</p:outputLabel>
+							<p:inputNumber thousandSeparator="" decimalSeparator="."
+								decimalPlaces="0" id="secondaryYrs"
+								value="#{editAcademicProfileBean.acadBgVo.secondaryYrs}" />
+							<span>#{academic['equivalent']}</span>
+						</div>
+						<div class="note">
+							<p:outputLabel for="postYrs" styleClass="b"
+								value="#{academic['tertiaryEducation']} :">
+								<span style="color: red">&#160;*&#160;</span>
+							</p:outputLabel>
+							<p:inputNumber thousandSeparator="" decimalSeparator="."
+								decimalPlaces="0" id="postYrs"
+								value="#{editAcademicProfileBean.acadBgVo.postYrs}" />
+							<span>#{academic['equivalent']}</span>
+						</div>
+						<div class="note">#{academic['noteF']}#{editAcademicProfileBean.admissionYear}.#{academic['noteK']}</div>
+						<div class="sep type-01"></div>
+					</p:tab>
+				</p:tabView>
+
+				<div class="ax-btn-set ng-scope">
+					<p:commandButton value="#{academic['save']}" />
+				</div>
+			</h:form>
+		</div>
+		<p:dialog header="#{academic['previousStudies']}"
+			widgetVar="preDialog" modal="true" width="78%">
+			<p:ajax event="close" listener="#{editAcademicProfileBean.recoverCommonBean}" />
+			<div class="ng-scope">
+				<h:form id="preDialogForm">
+					<p:growl id="preGrowlMsg" showDetail="true" globalOnly="true" />
+					<p:growl id="preFormatGrowlMsg" showDetail="true" />
+
+					<div class="ax-section-title">#{academic['generalInformation']}</div>
+					<p:panelGrid id="acadBg-study-pre" columns="2"
+						columnClasses="ui-grid-col-5,ui-grid-col-7"
+						styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+						<p:outputLabel for="preCountryId"
+							value="#{academic['studyCountry']}">
+							<span style="color: red">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:selectOneMenu id="preCountryId"
+								value="#{editAcademicProfileBean.prevStudiesVo.countryId}">
+								<p:ajax event="change"
+									listener="#{commonBean.loadProvinceOrCityListOfStudy}"
+									update=":mainTab:preDialogForm:acadBg-study-pre" />
+								<p:ajax event="change" listener="#{editAcademicProfileBean.changeProvince()}"
+									update=":mainTab:preDialogForm:acadBg-study-pre" />
+								<f:selectItem itemLabel="#{personalparticular['select']}"
+									itemValue="select" noSelectionOption="true" />
+								<f:selectItems value="#{commonBean.countries}" var="country"
+									itemLabel="#{country.description}" itemValue="#{country.id}" />
+								<f:selectItem itemLabel="#{academic['others']}"
+									itemValue="others" />
+							</p:selectOneMenu>
+							<p:inputText id="preOthersCountryId"
+								value="#{editAcademicProfileBean.prevStudiesVo.studyCountryOthers}"
+								rendered="#{commonBean.isActiveStudyCountry}"
+								placeholder="#{academic['others']}" style="margin-top: 5px" />
+						</p:column>
+
+						<p:outputLabel for="preProvinceId" value="#{academic['province']}"
+							rendered="#{commonBean.isActiveProvince}">
+						</p:outputLabel>
+						<p:column>
+							<p:selectOneMenu id="preProvinceId"
+								value="#{editAcademicProfileBean.prevStudiesVo.provinceId}"
+								rendered="#{commonBean.isActiveProvince}">
+								<p:ajax event="change" listener="#{commonBean.loadCityList}"
+									update=":mainTab:preDialogForm:acadBg-study-pre" />
+								<p:ajax event="change" listener="#{editAcademicProfileBean.changeCity()}"
+									update=":mainTab:preDialogForm:acadBg-study-pre" />
+								<f:selectItem itemLabel="#{personalparticular['select']}"
+									itemValue="select" noSelectionOption="true" />
+								<f:selectItems value="#{commonBean.provinceOfStudys}"
+									var="province" itemLabel="#{province.description}"
+									itemValue="#{province.id}" />
+							</p:selectOneMenu>
+						</p:column>
+
+						<p:column rendered="#{commonBean.isActiveProvince}"></p:column>
+						<p:column rendered="#{commonBean.isActiveCity}"></p:column>
+
+						<p:outputLabel for="preCityId" value="#{academic['city']}"
+							rendered="#{commonBean.isActiveCity}">
+						</p:outputLabel>
+						<p:column>
+							<p:selectOneMenu id="preCityId"
+								value="#{editAcademicProfileBean.prevStudiesVo.cityId}"
+								rendered="#{commonBean.isActiveCity}">
+								<p:ajax event="change"
+									listener="#{commonBean.loadInstitutionList}"
+									update=":mainTab:preDialogForm:acadBg-study-pre" />
+								<f:selectItem itemLabel="#{personalparticular['select']}"
+									itemValue="select" noSelectionOption="true" />
+								<f:selectItems value="#{commonBean.cityOfStudys}" var="city"
+									itemLabel="#{city.description}" itemValue="#{city.id}" />
+							</p:selectOneMenu>
+						</p:column>
+
+						<p:outputLabel for="preInstitutionId"
+							value="#{academic['insititution']}">
+							<span style="color: red">*</span>
+						</p:outputLabel>
+						<h:panelGroup layout="block" id="pre_study_institution">
+							<p:selectOneMenu id="preInstitutionId"
+								value="#{editAcademicProfileBean.prevStudiesVo.institutionId}">
+								<p:ajax event="change"
+									listener="#{editAcademicProfileBean.loadOthersInstitution}"
+									update=":mainTab:preDialogForm:pre_study_institution" />
+								<p:ajax event="change" listener="#{editAcademicProfileBean.changeArea()}"
+									update=":mainTab:preDialogForm:pre_study_institution" />
+								<f:selectItem itemLabel="#{personalparticular['select']}"
+									itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{commonBean.institutions}"
+									var="institution" itemLabel="#{institution.description}"
+									itemValue="#{institution.id}" />
+								<f:selectItem itemLabel="#{academic['others']}"
+									itemValue="others" />
+							</p:selectOneMenu>
+							<p:inputText id="preOtherInstitutionId"
+								value="#{editAcademicProfileBean.prevStudiesVo.institutionOthers}"
+								rendered="#{editAcademicProfileBean.isActiveOtherInstitution}"
+								placeholder="#{academic['others']}" style="margin-top: 5px" />
+						</h:panelGroup>
+					</p:panelGrid>
+
+					<div class="ax-section-title">#{academic['programmeInformation']}</div>
+					<p:panelGrid id="preProgrammeInformation" columns="2"
+						columnClasses="ui-grid-col-5,ui-grid-col-7"
+						styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+						<p:outputLabel for="preProgrammeTypeCd"
+							value="#{academic['curriculumType']}">
+							<span style="color: red">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:selectOneMenu id="preProgrammeTypeCd"
+								value="#{editAcademicProfileBean.prevStudiesVo.programmeTypeCd}">
+								<p:ajax event="change" listener="#{editAcademicProfileBean.changeProgType()}"
+									update=":mainTab:preDialogForm:preProgrammeInformation" />
+								<f:selectItem itemLabel="#{personalparticular['select']}"
+									itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{editAcademicProfileBean.hkuProgrammes}"
+									var="hkuProgramme" itemLabel="#{hkuProgramme.value}"
+									itemValue="#{hkuProgramme.cd}" />
+								<f:selectItem itemLabel="#{academic['others']}"
+									itemValue="others" />
+							</p:selectOneMenu>
+							<p:inputText id="preOtherProgrammeCd"
+								value="#{editAcademicProfileBean.prevStudiesVo.progTypeOthers}"
+								rendered="#{editAcademicProfileBean.prevStudiesVo.isActiveProgTypeCd == '2'}"
+								placeholder="#{academic['others']}" style="margin-top: 5px" />
+						</p:column>
+
+						<p:outputLabel for="preProgrammeTitle"
+							value="#{academic['programmeTitle']}">
+							<span style="color: red">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:inputText id="preProgrammeTitle"
+								value="#{editAcademicProfileBean.prevStudiesVo.programmeTitle}" />
+						</p:column>
+
+						<p:outputLabel for="preTypeOfEducation"
+							value="#{academic['typeOfEdu']}">
+							<span style="color: red">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:selectOneMenu id="preTypeOfEducation"
+								value="#{editAcademicProfileBean.prevStudiesVo.typeOfEducation}">
+								<f:selectItem itemLabel="#{personalparticular['select']}"
+									itemValue="" noSelectionOption="true" />
+								<f:selectItem itemLabel="#{academic['primaryEducation']}"
+									itemValue="PE" />
+								<f:selectItem itemLabel="#{academic['secondaryEducation']}"
+									itemValue="SE" />
+								<f:selectItem itemLabel="#{academic['tertiaryEducation']}"
+									itemValue="TPSE" />
+							</p:selectOneMenu>
+						</p:column>
+
+						<p:outputLabel for="" value="#{academic['completedStudy']}" />
+						<p:column>
+							<p:selectOneRadio id="preCompletedStudy"
+								value="#{editAcademicProfileBean.prevStudiesVo.isCompletedStudy}">
+								<f:selectItem itemLabel="#{academic['yes']}" itemValue="true" />
+								<f:selectItem itemLabel="#{academic['no']}" itemValue="false" />
+							</p:selectOneRadio>
+						</p:column>
+
+						<p:outputLabel value="#{academic['studyMode']}" />
+						<p:column>
+							<p:selectOneRadio id="preStudyModeCd"
+								value="#{editAcademicProfileBean.prevStudiesVo.studyModeCd}">
+								<f:selectItem itemLabel="#{academic['fulltime']}" itemValue="FT" />
+								<f:selectItem itemLabel="#{academic['parttime']}" itemValue="PT" />
+							</p:selectOneRadio>
+						</p:column>
+
+						<p:outputLabel value="#{academic['studyPeriod']}"
+							for="studyDateFrom">
+							<span style="color: red">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:calendar value="#{editAcademicProfileBean.prevStudiesVo.studyFrom}"
+								id="studyDateFrom" locale="de" placeholder="From"
+								readonlyInput="true" mindate="#{commonBean.minDate}"
+								maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35"
+								converterMessage="Study Period From format is incorrect!"
+								onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+								navigator="true" maxlength="10" pattern="dd-MM-yyyy"
+								showOn="button" />
+
+							<p:calendar value="#{editAcademicProfileBean.prevStudiesVo.studyTo}"
+								locale="de" placeholder="To" readonlyInput="true"
+								id="studyDateTo" mindate="#{commonBean.minDate}"
+								maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35"
+								converterMessage="Study Period To format is incorrect!"
+								onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+								navigator="true" maxlength="10" pattern="dd-MM-yyyy"
+								showOn="button" />
+						</p:column>
+
+						<p:outputLabel for="preLatestCumulativeGpa"
+							value="#{academic['latestGPA']}"
+							rendered="#{editAcademicProfileBean.prevStudiesVo.isActiveProgTypeCd == '1' and !editAcademicProfileBean.prevStudiesVo.notGpa}">
+							<span style="color: red">*</span>
+						</p:outputLabel>
+						<h:panelGroup
+							rendered="#{editAcademicProfileBean.prevStudiesVo.isActiveProgTypeCd == '1' and !editAcademicProfileBean.prevStudiesVo.notGpa}">
+							<p:inputNumber decimalPlaces="0" thousandSeparator=""
+								id="preLatestCumulativeGpa" style="display:inline;"
+								inputStyle="width:80px;"
+								value="#{editAcademicProfileBean.prevStudiesVo.finalCumulativeGpa}" />
+							<span>#{academic['outGPA']}&#160;</span>
+							<span style="color: red">*&#160;&#160;</span>
+							<p:inputNumber decimalPlaces="0" thousandSeparator=""
+								id="preMaxGpa" style="display:inline;margin-left:3px"
+								inputStyle="width:80px;"
+								value="#{editAcademicProfileBean.prevStudiesVo.maxGpa}" />
+						</h:panelGroup>
+
+						<p:outputLabel for="preMyGPA" value="#{academic['myGPA']}"
+							rendered="#{editAcademicProfileBean.prevStudiesVo.isActiveProgTypeCd == '1'}" />
+						<p:column
+							rendered="#{editAcademicProfileBean.prevStudiesVo.isActiveProgTypeCd == '1'}">
+							<p:selectBooleanCheckbox id="preMyGPA"
+								value="#{editAcademicProfileBean.prevStudiesVo.notGpa}">
+								<p:ajax event="change" listener="#{editAcademicProfileBean.changeNotGPA()}"
+									update="preProgrammeInformation" />
+							</p:selectBooleanCheckbox>
+						</p:column>
+
+						<p:outputLabel for="preMylatest" value="#{academic['mylatest']}"
+							rendered="#{editAcademicProfileBean.prevStudiesVo.isActiveProgTypeCd == '1' and editAcademicProfileBean.prevStudiesVo.notGpa}">
+							<span style="color: red">*</span>
+						</p:outputLabel>
+						<p:column
+							rendered="#{editAcademicProfileBean.prevStudiesVo.isActiveProgTypeCd == '1' and editAcademicProfileBean.prevStudiesVo.notGpa}">
+							<p:inputText id="preMylatest"
+								value="#{editAcademicProfileBean.prevStudiesVo.finalRslt}" />
+						</p:column>
+
+						<p:outputLabel value="#{academic['awardDate']}" />
+						<p:calendar locale="de" placeholder="dd-mm-yyyy"
+							mindate="#{commonBean.minDate}" maxdate="#{commonBean.maxDate}"
+							yearRange="c-35:c+35"
+							value="#{editAcademicProfileBean.prevStudiesVo.dateOfAward}"
+							onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+							navigator="true" maxlength="10" pattern="dd-MM-yyyy"
+							showOn="button" readonlyInput="true"
+							converterMessage="Date of Award format is incorrect!" />
+					</p:panelGrid>
+
+					<div class="ax-btn-set">
+						<p:commandButton value="#{academic['save']}" role="button"
+							action="#{editAcademicProfileBean.savePrevStudies()}"
+							class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover"
+							update=":mainTab:academicForm:abTabView:prevpanel :mainTab:preDialogForm">
+						</p:commandButton>
+						<div class="ax-button type-a">
+							<p:commandButton value="#{academic['cancel']}"
+								class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+								onclick="PF('preDialog').hide()" role="button">
+							</p:commandButton>
+						</div>
+					</div>
+				</h:form>
+			</div>
+		</p:dialog>
+		<!-- select yes confirm -->
+		<p:confirmDialog widgetVar="messageDialog"
+			header="#{academic['prompt']}" message="#{academic['yesMsg']}"
+			showEffect="fade" hideEffect="fade" closable="false">
+			<p:commandButton value="#{academic['yes']}"
+				onclick="PF('messageDialog').hide();"
+				action="#{editAcademicProfileBean.confirmChangePartcpNjcee('yes')}"
+				update="mainTab:academicForm:abTabView:partcpNjceeGrid"
+				styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+			<p:commandButton value="#{academic['no']}"
+				onclick="PF('messageDialog').hide();"
+				action="#{editAcademicProfileBean.confirmChangePartcpNjcee('no')}"
+				update="mainTab:academicForm:abTabView:partcpNjceeGrid"
+				styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+		</p:confirmDialog>
+	</f:view>
+	<script type="text/javascript" language="javascript">_initAxToolTips() </script>
+</ui:composition>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

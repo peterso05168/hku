@@ -1,0 +1,97 @@
+<!DOCTYPE html [
+    <!ENTITY bull "&#8226;">
+]>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	template="../tp-container.xhtml">
+
+	<ui:define name="breadcrumb">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.my-application.applicationform" var="applicationform" />
+			<li><a title="">#{applicationform['myApplication']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+	<ui:define name="breadcrumb-1">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.my-application.applicationform" var="applicationform" />
+			<li style="font-size: 12px !important;">#{applicationform['edit']}</li>
+		</f:view>
+	</ui:define>
+	<ui:define name="title">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.my-application.applicationform" var="applicationform" />
+       		#{applicationform['myApplication']} (#{personalParticularsBean.admissionYear})
+        </f:view>
+	</ui:define>
+	<ui:define name="main-content">
+		<script>
+		var checkNum = 0;
+			function handleTabChange() {
+				var num = 0;
+				num = PF('tabForm').getActiveIndex();
+				$('#applicationForm\\:tabIndex').val(num);
+				if(checkNum == 1){
+					PF('applicationDialog').show();
+				}else{
+					$('#applicationForm\\:tabSubmit').click();
+				}
+			}
+			function updateActiveIndexValue(){
+				PF('tabForm').select('#{applicationBean.currTabIndex}');
+				PF('applicationDialog').hide();
+			}
+			function updateCheckNumTo0(){
+				checkNum = 0;
+			}
+			function updateCheckNumTo1(){
+				checkNum = 1;
+			}
+		</script>
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.my-application.applicationform" var="applicationform" />
+			<div class="ax-tab">
+				<div class="ng-scope">
+					<p:tabView id="mainTab" widgetVar="tabForm" dynamic="true" activeIndex="#{applicationBean.currTabIndex}">
+						<p:ajax event="tabChange" onstart="handleTabChange();return false;" />
+						<p:tab title="#{applicationform['personalParticulars']}" titleStyle="margin-right: 3px;">
+							<ui:include src="personal-particulars.xhtml"></ui:include>
+						</p:tab>
+						<p:tab title="#{applicationform['academicBackground']}" titleStyle="margin-right: 3px;">
+							<ui:include src="academic-profile.xhtml"></ui:include>
+						</p:tab>
+						<p:tab title="#{applicationform['otherQualifications']}" titleStyle="margin-right: 3px;">
+							<ui:include src="academic-qualifications.xhtml"></ui:include>
+						</p:tab>
+						<p:tab title="#{applicationform['choiceofCurriculum']}" titleStyle="margin-right: 3px;">
+							<ui:include src="choice-of-programme.xhtml"></ui:include>
+						</p:tab>
+						<p:tab title="#{applicationform['experienceAndAchievements']}" titleStyle="margin-right: 3px;">
+							<ui:include src="extra-curricular-achievements.xhtml"></ui:include>
+						</p:tab>
+						<p:tab rendered="#{refereeBean.isActiceRefree}" title="#{applicationform['reference']}" titleStyle="margin-right: 3px;">
+							<ui:include src="reference.xhtml"></ui:include>
+						</p:tab>
+						<p:tab title="#{applicationform['others']}">
+							<ui:include src="others.xhtml"></ui:include>
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+			
+			<p:dialog header="#{applicationform['prompt']}" widgetVar="applicationDialog" modal="true" width="400" minHeight="50" closable="false">
+				<h:form id="applicationForm">
+					<h:inputHidden value="#{applicationBean.tabIndex}" id="tabIndex" />
+					<div class="ui-fluid">
+						<p:panel>#{applicationform['turnThePage']}</p:panel>
+					</div>
+					<div class="ax-btn-set">
+						<p:commandButton id="tabSubmit" value="#{applicationform['confirm']}" type="submit" action="#{applicationBean.onTabChange}"
+							styleClass="ui-confirmdialog-yes" icon="ui-icon-check" update="mainTab" onclick="updateCheckNumTo0();" />
+						<p:commandButton value="#{applicationform['cancel']}" type="button" styleClass="ui-confirmdialog-no" onclick="updateActiveIndexValue();"
+							icon="ui-icon-close" update="mainTab" />
+					</div>
+				</h:form>
+			</p:dialog>
+		</f:view>
+	</ui:define>
+</ui:composition>

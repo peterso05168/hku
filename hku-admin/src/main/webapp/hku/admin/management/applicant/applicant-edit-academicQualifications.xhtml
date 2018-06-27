@@ -1,0 +1,1159 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<div class="ax-tab-02">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.my-application.otherqualification"
+				var="otherQualification" />
+		</f:view>
+
+		<h:form id="formQualifications">
+			<p:accordionPanel id="panelQuali"
+				activeIndex="#{editAcademicQualificationsBean.currPanelIndex}"
+				value="#{editAcademicQualificationsBean.qualifications}"
+				var="qualification">
+				<p:ajax event="tabChange"
+					listener="#{editAcademicQualificationsBean.onTabChange()}" />
+				<p:tab
+					title="#{qualification.type.examDesc} - (#{editAcademicQualificationsBean.setMonth(qualification.examTypeMonth)}#{qualification.examTypeYear})">
+					<p:growl id="growlMsg" showDetail="true" />
+					<div style="margin-bottom: 15px;">
+						<p:panelGrid columns="4"
+							rendered="#{!qualification.type.isActiveNJCEE}"
+							columnClasses="ui-grid-col-3,ui-grid-col-5,ui-grid-col-3,ui-grid-col-5"
+							styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+
+							<p:outputLabel for="ibSchoolCdInput"
+								value="#{otherQualification['schoolCode']}"
+								rendered="#{qualification.type.isActiveIB}">
+							</p:outputLabel>
+							<p:column rendered="#{qualification.type.isActiveIB}">
+								<p:inputText id="ibSchoolCdInput"
+									value="#{qualification.ibSchoolCd}" />
+							</p:column>
+							<p:outputLabel for="ibSessionNoInput"
+								value="#{otherQualification['sessionNo']}"
+								rendered="#{qualification.type.isActiveIB}">
+							</p:outputLabel>
+							<p:column rendered="#{qualification.type.isActiveIB}">
+								<p:inputText id="ibSessionNoInput"
+									value="#{qualification.ibSessionNo}" />
+							</p:column>
+
+							<p:outputLabel for="dateOfRelease"
+								rendered="#{!qualification.type.isActiveGCE}"
+								value="#{otherQualification['dateOfReleas']}">
+								<span style="color: red;">*</span>
+							</p:outputLabel>
+							<p:column>
+								<p:calendar id="dateOfRelease" locale="de"
+									mindate="#{commonBean.minDate}" maxdate="#{commonBean.maxDate}"
+									rendered="#{!qualification.type.isActiveGCE}"
+									yearRange="c-35:c+35"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" readonlyInput="true"
+									value="#{qualification.dateOfReleaseOfRslt}"
+									pattern="dd-MM-yyyy" showOn="button">
+								</p:calendar>
+							</p:column>
+
+							<p:column>
+								<p:outputLabel for="toeflNoInput"
+									rendered="#{qualification.type.examCd == 'TOEFLPT' or qualification.type.examCd == 'TOEFLIT'}"
+									value="#{otherQualification['toeflNo']}">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+							</p:column>
+							<p:column>
+								<p:inputText id="toeflNoInput"
+									value="#{qualification.toeflIdno}"
+									rendered="#{qualification.type.examCd == 'TOEFLPT' or qualification.type.examCd == 'TOEFLIT'}" />
+							</p:column>
+						</p:panelGrid>
+					</div>
+
+					<!-- NJCEE -->
+					<p:panelGrid columns="4" id="provinceGrid"
+						rendered="#{qualification.type.isActiveNJCEE}"
+						columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+						styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+						<p:outputLabel for="njceeExamPlaceCdMenu"
+							rendered="#{qualification.type.examCd == 'NJCEE'}"
+							value="#{otherQualification['whereExamination']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:column rendered="#{qualification.type.examCd == 'NJCEE'}">
+							<p:selectOneMenu id="njceeExamPlaceCdMenu"
+								value="#{qualification.njceeExamProvinceId}">
+								<f:attribute name="qualificationId" value="#{qualification.id}" />
+								<p:ajax event="change"
+									listener="#{editAcademicQualificationsBean.changeExamProvince}"
+									update="streamGrid, mainTab:confirmForm" />
+								<p:ajax event="focus"
+									listener="#{editAcademicQualificationsBean.changeProvinceAndStream(qualification.njceeExamProvinceId,qualification.id,qualification.njceeStreamCd,'changeProvince')}" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItems
+									value="#{editAcademicQualificationsBean.provinces}"
+									var="province" itemLabel="#{province.description}"
+									itemValue="#{province.id}"
+									itemDisabled="#{province.description == 'Hong Kong' or province.description == 'Macau' or province.description == 'Taiwan'}" />
+							</p:selectOneMenu>
+						</p:column>
+						<p:outputLabel for="hmtNjceeExamPlaceCdMenu"
+							rendered="#{qualification.type.examCd == 'HMTNJCEE'}"
+							value="#{otherQualification['whereExamination']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:column rendered="#{qualification.type.examCd == 'HMTNJCEE'}">
+							<p:selectOneMenu id="hmtNjceeExamPlaceCdMenu"
+								value="#{qualification.njceeExamProvinceId}">
+								<f:attribute name="qualificationId" value="#{qualification.id}" />
+								<p:ajax event="change"
+									listener="#{editAcademicQualificationsBean.changeExamProvince}"
+									update="streamGrid, mainTab:confirmForm" />
+								<p:ajax event="focus"
+									listener="#{editAcademicQualificationsBean.changeProvinceAndStream(qualification.njceeExamProvinceId,qualification.id,qualification.njceeStreamCd,'changeProvince')}" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItems
+									value="#{editAcademicQualificationsBean.provinces}"
+									var="province" itemLabel="#{province.description}"
+									itemValue="#{province.id}"
+									itemDisabled="#{province.description != 'Hong Kong' and province.description != 'Macau' and province.description != 'Taiwan'}" />
+							</p:selectOneMenu>
+						</p:column>
+						<p:column></p:column>
+						<p:column></p:column>
+
+						<p:column>
+							<h:outputLink id="helpInfoA" value="#" disabled="true"
+								styleClass="ax-pf-tooltip-icon">
+								<i class="ti-help"></i>
+							</h:outputLink>
+							<p:tooltip id="toolTipA" for="helpInfoA" showEvent="click"
+								value="#{otherQualification['helpInfo6']} #{editAcademicQualificationsBean.formatAppEndDate()}"
+								position="right" />
+							<p:outputLabel value="#{otherQualification['candidateNumber']}" />
+						</p:column>
+						<p:column>
+							<p:inputText value="#{qualification.njceeCandidateNo}" />
+						</p:column>
+
+						<p:column>
+							<h:outputLink id="helpInfoB" value="#" disabled="true"
+								styleClass="ax-pf-tooltip-icon">
+								<i class="ti-help"></i>
+							</h:outputLink>
+							<p:tooltip id="toolTipB" for="helpInfoB" showEvent="click"
+								value="#{otherQualification['helpInfo6']} #{editAcademicQualificationsBean.formatAppEndDate()}"
+								position="right" />
+							<p:outputLabel value="#{otherQualification['examinationNumber']}" />
+						</p:column>
+						<p:column>
+							<p:inputText value="#{qualification.njceeExamNo}" />
+						</p:column>
+					</p:panelGrid>
+
+					<!-- NJCEE -->
+					<p:panelGrid rendered="#{qualification.type.isActiveNJCEE}"
+						columns="2" style="margin-bottom:20px;" id="streamGrid"
+						columnClasses="ui-grid-col-2,ui-grid-col-4"
+						styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+						<p:outputLabel for="njceeStreamCdMenu"
+							value="#{otherQualification['stream']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:selectOneMenu id="njceeStreamCdMenu"
+								disabled="#{qualification.njceeExamProvinceDesc == 'Zhejiang' or qualification.njceeExamProvinceDesc == 'Shanghai'}"
+								value="#{qualification.njceeStreamCd}">
+								<p:ajax update="streamGrid" />
+								<p:ajax event="change"
+									listener="#{editAcademicQualificationsBean.changeExamStream}"
+									update="mainTab:confirmForm" />
+								<p:ajax event="focus"
+									listener="#{editAcademicQualificationsBean.changeProvinceAndStream(qualification.njceeExamProvinceId,qualification.id,qualification.njceeStreamCd,'changeStream')}" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItems
+									value="#{editAcademicQualificationsBean.streamRefCds}"
+									var="streamRefCd" itemLabel="#{streamRefCd.value}"
+									itemValue="#{streamRefCd.cd}" />
+								<f:selectItem itemLabel="#{otherQualification['others']}"
+									itemValue="others"
+									itemDisabled="#{qualification.njceeExamProvinceDesc !='Zhejiang' and qualification.njceeExamProvinceDesc !='Shanghai'}" />
+							</p:selectOneMenu>
+						</p:column>
+					</p:panelGrid>
+
+					<!-- table data -->
+					<!-- IB table -->
+					<p:dataTable rendered="#{qualification.type.isActiveIB}"
+						style="margin-bottom:25px;"
+						value="#{qualification.qualificationRslts}"
+						var="qualificationRslt" reflow="true">
+						<p:column headerText="#{otherQualification['subject']}">
+							<p:commandLink resetValues="true"
+								action="#{editAcademicQualificationsBean.editQualificationRslt(qualificationRslt.id,qualification.id,qualification.examTypeId)}"
+								style="font-size: 12px !important;font-style:normal;"
+								update="mainTab:formQualiRslt"
+								value="#{qualificationRslt.examSubjectDesc}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['level']}">
+							<p:outputLabel width="23%" value="#{qualificationRslt.examLevel}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['achievedGrade']}">
+							<p:outputLabel width="23%"
+								rendered="#{qualificationRslt.achievedGradeCd != 'others'}"
+								value="#{qualificationRslt.achievedGradeCd}"
+								style="font-size: 12px !important;" />
+							<p:outputLabel width="23%"
+								rendered="#{qualificationRslt.achievedGradeCd == 'others'}"
+								value="#{qualificationRslt.achievedGradeOthers}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['gradeBySchool']}"
+							width="23%">
+							<p:outputLabel
+								rendered="#{qualificationRslt.predictedGradeCd != 'others'}"
+								value="#{qualificationRslt.predictedGradeCd}"
+								style="font-size: 12px !important;" />
+							<p:outputLabel
+								rendered="#{qualificationRslt.predictedGradeCd == 'others'}"
+								value="#{qualificationRslt.predictedGradeOthers}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column>
+							<h:outputText styleClass="status-label red"
+								rendered="#{qualificationRslt.isDeleted and !qualificationRslt.isDeleteApproved}"
+								value="#{otherQualification['deleteRequest']}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['action']}"
+							styleClass="ax-action-w">
+							<p:menuButton value="#{otherQualification['action']}">
+								<p:menuitem value="#{otherQualification['edit']}"
+									action="#{editAcademicQualificationsBean.editQualificationRslt(qualificationRslt.id,qualification.id,qualification.examTypeId)}"
+									update="mainTab:formQualiRslt" resetValues="true">
+								</p:menuitem>
+								<p:menuitem value="#{otherQualification['delete']}"
+									action="#{editAcademicQualificationsBean.deleteQualificationRslt(qualificationRslt.id,qualification.examTypeId)}"
+									update=":mainTab:formQualifications">
+									<p:confirm header="#{otherQualification['prompt']}"
+										message="#{otherQualification['delMessage']}"
+										icon="ui-icon-alert" />
+								</p:menuitem>
+							</p:menuButton>
+						</p:column>
+					</p:dataTable>
+
+					<!-- GCE table -->
+					<p:dataTable rendered="#{qualification.type.isActiveGCE}"
+						value="#{qualification.qualificationRslts}"
+						var="qualificationRslt" reflow="true">
+						<p:column headerText="#{otherQualification['subject']}">
+							<p:commandLink resetValues="true"
+								action="#{editAcademicQualificationsBean.editQualificationRslt(qualificationRslt.id,qualification.id,qualification.examTypeId)}"
+								style="font-size: 12px !important;font-style:normal;"
+								update="mainTab:formQualiRslt"
+								value="#{qualificationRslt.examSubjectDesc}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['board']}">
+							<p:outputLabel value="#{qualificationRslt.examBoard}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['level']}">
+							<p:outputLabel value="#{qualificationRslt.examLevel}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['achievedGrade']}">
+							<p:outputLabel
+								rendered="#{qualificationRslt.achievedGradeCd != 'others'}"
+								value="#{qualificationRslt.achievedGradeCd}"
+								style="font-size: 12px !important;" />
+							<p:outputLabel
+								rendered="#{qualificationRslt.achievedGradeCd == 'others'}"
+								value="#{qualificationRslt.achievedGradeOthers}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['gradeBySchool']}">
+							<p:outputLabel
+								rendered="#{qualificationRslt.predictedGradeCd != 'others'}"
+								value="#{qualificationRslt.predictedGradeCd}"
+								style="font-size: 12px !important;" />
+							<p:outputLabel
+								rendered="#{qualificationRslt.predictedGradeCd == 'others'}"
+								value="#{qualificationRslt.predictedGradeOthers}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['dateRelease']}">
+							<p:outputLabel
+								value="#{editAcademicQualificationsBean.dateFormat(qualificationRslt.gceDateOfRelease)}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column>
+							<h:outputText styleClass="status-label red"
+								rendered="#{qualificationRslt.isDeleted and !qualificationRslt.isDeleteApproved}"
+								value="#{otherQualification['deleteRequest']}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['action']}"
+							styleClass="ax-action-w">
+							<p:menuButton value="#{otherQualification['action']}">
+								<p:menuitem value="#{otherQualification['edit']}"
+									action="#{editAcademicQualificationsBean.editQualificationRslt(qualificationRslt.id,qualification.id,qualification.examTypeId)}"
+									update="mainTab:formQualiRslt" resetValues="true">
+								</p:menuitem>
+								<p:menuitem value="#{otherQualification['delete']}"
+									action="#{editAcademicQualificationsBean.deleteQualificationRslt(qualificationRslt.id,qualification.examTypeId)}"
+									update=":mainTab:formQualifications">
+									<p:confirm header="#{otherQualification['prompt']}"
+										message="#{otherQualification['delMessage']}"
+										icon="ui-icon-alert" />
+								</p:menuitem>
+							</p:menuButton>
+						</p:column>
+					</p:dataTable>
+
+					<!-- HKDSE table -->
+					<p:dataTable rendered="#{qualification.type.examCd == 'HKDSE'}"
+						value="#{qualification.qualificationRslts}"
+						var="qualificationRslt" reflow="true">
+						<p:column headerText="#{otherQualification['subject']}">
+							<p:commandLink resetValues="true"
+								action="#{editAcademicQualificationsBean.editQualificationRslt(qualificationRslt.id,qualification.id,qualification.examTypeId)}"
+								style="font-size: 12px !important;font-style:normal;"
+								update="mainTab:formQualiRslt"
+								value="#{qualificationRslt.examSubjectDesc}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['achievedGrade']}">
+							<p:outputLabel width="23%"
+								rendered="#{qualificationRslt.achievedGradeCd != 'others'}"
+								value="#{qualificationRslt.achievedGradeCd}"
+								style="font-size: 12px !important;" />
+							<p:outputLabel width="23%"
+								rendered="#{qualificationRslt.achievedGradeCd == 'others'}"
+								value="#{qualificationRslt.achievedGradeOthers}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column>
+							<h:outputText styleClass="status-label red"
+								rendered="#{qualificationRslt.isDeleted and !qualificationRslt.isDeleteApproved}"
+								value="#{otherQualification['deleteRequest']}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['action']}"
+							styleClass="ax-action-w">
+							<p:menuButton value="#{otherQualification['action']}">
+								<p:menuitem value="#{otherQualification['edit']}"
+									action="#{editAcademicQualificationsBean.editQualificationRslt(qualificationRslt.id,qualification.id,qualification.examTypeId)}"
+									update="mainTab:formQualiRslt" resetValues="true">
+								</p:menuitem>
+								<p:menuitem value="#{otherQualification['delete']}"
+									action="#{editAcademicQualificationsBean.deleteQualificationRslt(qualificationRslt.id,qualification.examTypeId)}"
+									update=":mainTab:formQualifications">
+									<p:confirm header="#{otherQualification['prompt']}"
+										message="#{otherQualification['delMessage']}"
+										icon="ui-icon-alert" />
+								</p:menuitem>
+							</p:menuButton>
+						</p:column>
+					</p:dataTable>
+
+					<!-- NJCEE Table -->
+					<p:dataTable rendered="#{qualification.type.isActiveNJCEE}"
+						style="margin-bottom:25px;"
+						value="#{qualification.njceeRsltMap.entrySet()}" id="NJCEETable"
+						var="qualificationRslt" reflow="true">
+						<f:facet name="header">#{otherQualification['matura']}</f:facet>
+						<p:column headerText="#{otherQualification['subject']}">
+							<p:commandLink resetValues="true"
+								action="#{editAcademicQualificationsBean.editNjceeQualificationRslt(qualificationRslt.key,qualification.id,qualification.examTypeId,qualification.njceeExamProvinceId,qualification.njceeStreamCd,qualification.njceeRsltMap)}"
+								style="font-size: 12px !important;font-style:normal;"
+								update="mainTab:formQualiRslt"
+								value="#{qualificationRslt.value.examSubjectDesc}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['achievedPonit']}">
+							<p:outputLabel width="23%"
+								rendered="#{qualificationRslt.value.achievedGradeCd != null}"
+								value="#{qualificationRslt.value.achievedGradeCd}"
+								style="font-size: 12px !important;" />
+							<p:outputLabel width="23%"
+								rendered="#{qualificationRslt.value.achievedGradeCd == null}"
+								value="#{qualificationRslt.value.achievedGradeOthers}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column>
+							<h:outputText styleClass="status-label red"
+								rendered="#{qualificationRslt.value.isDeleted and !qualificationRslt.value.isDeleteApproved}"
+								value="#{otherQualification['deleteRequest']}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['action']}"
+							styleClass="ax-action-w">
+							<p:menuButton value="#{otherQualification['action']}">
+								<p:menuitem value="#{otherQualification['edit']}"
+									action="#{editAcademicQualificationsBean.editNjceeQualificationRslt(qualificationRslt.key,qualification.id,qualification.examTypeId,qualification.njceeExamProvinceId,qualification.njceeStreamCd,qualification.njceeRsltMap)}"
+									update="mainTab:formQualiRslt" resetValues="true">
+								</p:menuitem>
+								<p:menuitem value="#{otherQualification['delete']}"
+									action="#{editAcademicQualificationsBean.deleteNjceeQualificationRslt(qualificationRslt.key,qualification.id,qualification.njceeRsltMap)}"
+									update=":mainTab:formQualifications">
+									<p:confirm header="#{otherQualification['prompt']}"
+										message="#{otherQualification['delMessage']}"
+										icon="ui-icon-alert" />
+								</p:menuitem>
+							</p:menuButton>
+						</p:column>
+						<f:facet name="footer">
+							<div style="padding-left: 25%;">
+								<p:outputLabel for="totalScore"
+									value="#{otherQualification['totalScore']}">
+									<span style="color: red;">*</span>
+									<span>:&#160;</span>
+								</p:outputLabel>
+								<p:inputNumber decimalPlaces="0" thousandSeparator=""
+									maxValue="999" minValue="0" id="totalScore"
+									decimalSeparator="." inputStyle="width:60%;"
+									value="#{qualification.njceeTotalScore}" />
+							</div>
+						</f:facet>
+					</p:dataTable>
+
+					<!-- SAT table -->
+					<p:dataTable rendered="#{qualification.type.isActiveSAT}"
+						value="#{qualification.qualificationRslts}"
+						var="qualificationRslt" reflow="true">
+						<p:column headerText="#{otherQualification['subject']}">
+							<p:commandLink resetValues="true"
+								action="#{editAcademicQualificationsBean.editQualificationRslt(qualificationRslt.id,qualification.id,qualification.examTypeId)}"
+								style="font-size: 12px !important;font-style:normal;"
+								update="mainTab:formQualiRslt"
+								value="#{qualificationRslt.examSubjectDesc}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['level']}">
+							<p:outputLabel width="23%" value="#{qualificationRslt.examLevel}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['achievedScore']}">
+							<p:outputLabel width="23%"
+								value="#{qualificationRslt.achievedGradeOthers}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column>
+							<h:outputText styleClass="status-label red"
+								rendered="#{qualificationRslt.isDeleted and !qualificationRslt.isDeleteApproved}"
+								value="#{otherQualification['deleteRequest']}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['action']}"
+							styleClass="ax-action-w">
+							<p:menuButton value="#{otherQualification['action']}">
+								<p:menuitem value="#{otherQualification['edit']}"
+									action="#{editAcademicQualificationsBean.editQualificationRslt(qualificationRslt.id,qualification.id,qualification.examTypeId)}"
+									update="mainTab:formQualiRslt" resetValues="true">
+								</p:menuitem>
+								<p:menuitem value="#{otherQualification['delete']}"
+									action="#{editAcademicQualificationsBean.deleteQualificationRslt(qualificationRslt.id,qualification.examTypeId)}"
+									update=":mainTab:formQualifications">
+									<p:confirm header="#{otherQualification['prompt']}"
+										message="#{otherQualification['delMessage']}"
+										icon="ui-icon-alert" />
+								</p:menuitem>
+							</p:menuButton>
+						</p:column>
+					</p:dataTable>
+
+					<!-- IT table -->
+					<p:dataTable rendered="#{qualification.type.isActiveIT}"
+						value="#{qualification.qualificationRslts}"
+						var="qualificationRslt" reflow="true">
+						<p:column headerText="#{otherQualification['subject']}">
+							<p:commandLink resetValues="true"
+								action="#{editAcademicQualificationsBean.editQualificationRslt(qualificationRslt.id,qualification.id,qualification.examTypeId)}"
+								style="font-size: 12px !important;font-style:normal;"
+								update="mainTab:formQualiRslt"
+								value="#{qualificationRslt.examSubjectDesc}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['achievedScore']}">
+							<p:outputLabel width="23%"
+								value="#{qualificationRslt.achievedGradeOthers}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column>
+							<h:outputText styleClass="status-label red"
+								rendered="#{qualificationRslt.isDeleted and !qualificationRslt.isDeleteApproved}"
+								value="#{otherQualification['deleteRequest']}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['action']}"
+							styleClass="ax-action-w">
+							<p:menuButton value="#{otherQualification['action']}">
+								<p:menuitem value="#{otherQualification['edit']}"
+									action="#{editAcademicQualificationsBean.editQualificationRslt(qualificationRslt.id,qualification.id,qualification.examTypeId)}"
+									update="mainTab:formQualiRslt" resetValues="true">
+								</p:menuitem>
+								<p:menuitem value="#{otherQualification['delete']}"
+									action="#{editAcademicQualificationsBean.deleteQualificationRslt(qualificationRslt.id,qualification.examTypeId)}"
+									update=":mainTab:formQualifications">
+									<p:confirm header="#{otherQualification['prompt']}"
+										message="#{otherQualification['delMessage']}"
+										icon="ui-icon-alert" />
+								</p:menuitem>
+							</p:menuButton>
+						</p:column>
+					</p:dataTable>
+
+					<!-- delete and remove confirmDialog-->
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+						<p:commandButton value="#{otherQualification['yes']}"
+							type="button" styleClass="ui-confirmdialog-yes"
+							icon="ui-icon-check" />
+						<p:commandButton value="#{otherQualification['no']}" type="button"
+							styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</p:confirmDialog>
+
+					<p:panelGrid columns="4"
+						rendered="#{qualification.type.isActiveIB and qualification.type.examCd == 'IBD'}"
+						columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+						styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+						<p:outputLabel for="etAchievedRsltMenu"
+							value="#{otherQualification['achievedResultGrade']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:selectOneMenu id="etAchievedRsltMenu"
+								value="#{qualification.ibAchievedRsltGradeCd}">
+								<p:ajax event="change"
+									listener="#{editAcademicQualificationsBean.changeTotalPoints(qualification.id)}"
+									update="ibAchievedRsltPoints" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" noSelectionOption="true" />
+								<f:selectItems
+									value="#{editAcademicQualificationsBean.eeTokGrades}"
+									var="grade" itemLabel="#{grade.value}" itemValue="#{grade.cd}" />
+							</p:selectOneMenu>
+						</p:column>
+						<p:outputLabel for="etPredictedRsltMenu"
+							value="#{otherQualification['predictedResultGrade']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:selectOneMenu id="etPredictedRsltMenu"
+								value="#{qualification.ibPredictedRsltGradeCd}">
+								<p:ajax event="change"
+									listener="#{editAcademicQualificationsBean.changeTotalPoints(qualification.id)}"
+									update="ibPredictedRsltPoints" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" noSelectionOption="true" />
+								<f:selectItems
+									value="#{editAcademicQualificationsBean.eeTokGrades}"
+									var="grade" itemLabel="#{grade.value}" itemValue="#{grade.cd}" />
+							</p:selectOneMenu>
+						</p:column>
+
+						<p:outputLabel
+							value="#{otherQualification['achievedResultPoint']}" />
+						<p:column>
+							<p:inputText disabled="true" id="ibAchievedRsltPoints"
+								value="#{qualification.ibAchievedRsltPoints} / #{qualification.achievedTotalPoints}" />
+						</p:column>
+						<p:outputLabel
+							value="#{otherQualification['predictedResultPoint']}" />
+						<p:column>
+							<p:inputText disabled="true" id="ibPredictedRsltPoints"
+								value="#{qualification.ibPredictedRsltPoints} / #{qualification.predictedTotalPoints}" />
+						</p:column>
+
+						<p:outputLabel for="ibAchievedRsltMenu"
+							value="#{otherQualification['achievedResult']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:selectOneMenu id="ibAchievedRsltMenu"
+								value="#{qualification.ibAchievedRslt}">
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItem itemLabel="#{otherQualification['yes']}"
+									itemValue="yes" />
+								<f:selectItem itemLabel="#{otherQualification['no']}"
+									itemValue="no" />
+							</p:selectOneMenu>
+						</p:column>
+						<p:outputLabel for="ibPredictedRsltMenu"
+							value="#{otherQualification['diplomaAwarded']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:selectOneMenu id="ibPredictedRsltMenu"
+								value="#{qualification.ibPredictedRslt}">
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItem itemLabel="#{otherQualification['yes']}"
+									itemValue="yes" />
+								<f:selectItem itemLabel="#{otherQualification['no']}"
+									itemValue="no" />
+							</p:selectOneMenu>
+						</p:column>
+					</p:panelGrid>
+
+					<!-- NJCEE HKU Multi-faceted Excellence Scheme-->
+					<h:panelGroup rendered="#{qualification.type.isActiveNJCEE}">
+						<div class="ax-section-title">
+							#{otherQualification['excellenceScheme']}
+							<h:outputLink id="helpInfoC" value="#" disabled="true"
+								styleClass="ax-pf-tooltip-icon">
+								<i class="ti-help"></i>
+							</h:outputLink>
+							<p:tooltip showEvent="click" id="toolTipC" for="helpInfoC"
+								position="right">
+								<div>#{otherQualification['schemeHelpInfo1']}</div>
+								<div>#{otherQualification['schemeHelpInfo2']}</div>
+								<div>#{otherQualification['schemeHelpInfo3']}</div>
+								<div>#{otherQualification['schemeHelpInfo4']}</div>
+								<div>#{otherQualification['schemeHelpInfo5']}</div>
+								<div>#{otherQualification['schemeHelpInfo6']}</div>
+								<div>#{otherQualification['schemeHelpInfo7']}</div>
+								<div>#{otherQualification['schemeHelpInfo8']}</div>
+								<div>#{otherQualification['schemeHelpInfo9']}</div>
+							</p:tooltip>
+						</div>
+
+						<div style="margin: 10px 0px 10px 10px;">
+							<p:selectBooleanCheckbox style="margin-right:5px;"
+								value="#{qualification.njceeHkuMfExcellentSche}" />
+							<label style="color: rgb(85, 85, 85) !important;">#{otherQualification['schemeSelectBox']}</label>
+						</div>
+					</h:panelGroup>
+
+					<div style="margin-top: 10px;">
+						<h:panelGroup style="margin-right: 0.3%;">
+							<h:outputText styleClass="status-label red"
+								rendered="#{qualification.isDeleted and !qualification.isDeleteApproved}"
+								value="#{otherQualification['removalRequest']}" />
+						</h:panelGroup>
+					</div>
+				</p:tab>
+			</p:accordionPanel>
+
+			<div style="margin-top: 30px;">
+				<p:commandButton value="#{otherQualification['save']}" />
+			</div>
+		</h:form>
+
+		<p:dialog header="#{otherQualification['qualificationAndSubject']}"
+			widgetVar="subjectDialog" width="70%" height="350" modal="true">
+			<p:ajax event="close"
+				listener="#{editAcademicQualificationsBean.initNjcee}" />
+			<h:form id="formQualiRslt">
+				<p:panelGrid columns="4" id="subjectGrid"
+					rendered="#{!editAcademicQualificationsBean.examTypeVo.isActiveGCE}"
+					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+					styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+					<p:column
+						rendered="#{editAcademicQualificationsBean.examTypeVo.examCd != 'HKDSE' and editAcademicQualificationsBean.examTypeVo.isActiveSAT}">
+						<p:outputLabel for="rsltExamLevel"
+							rendered="#{!editAcademicQualificationsBean.isSelectLevel}"
+							value="#{otherQualification['level']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+					</p:column>
+					<p:column
+						rendered="#{editAcademicQualificationsBean.examTypeVo.examCd != 'HKDSE' and editAcademicQualificationsBean.examTypeVo.isActiveSAT}">
+						<h:panelGroup id="rsltExamLevelGroup">
+							<p:selectOneMenu id="rsltExamLevel"
+								rendered="#{!editAcademicQualificationsBean.isSelectLevel}"
+								value="#{editAcademicQualificationsBean.editQualificationRslt.examLevel}">
+								<p:ajax event="change"
+									listener="#{editAcademicQualificationsBean.loadSubjectDesc}"
+									update="rsltExamSubjectDescGroup rsltExamLevelGroup" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="0" />
+								<f:selectItems
+									value="#{editAcademicQualificationsBean.displayLevel}"
+									var="level" itemLabel="#{level}" itemValue="#{level}" />
+							</p:selectOneMenu>
+						</h:panelGroup>
+					</p:column>
+
+					<p:outputLabel for="rsltExamSubjectDesc"
+						rendered="#{!editAcademicQualificationsBean.isSelectSubject}"
+						value="#{otherQualification['subject']}">
+						<span style="color: red;">*</span>
+					</p:outputLabel>
+					<p:outputLabel for="rsltSelectExamSubjectDesc"
+						rendered="#{editAcademicQualificationsBean.isSelectSubject}"
+						value="#{otherQualification['subject']}">
+						<span style="color: red;">*</span>
+					</p:outputLabel>
+					<p:column>
+						<h:panelGroup id="rsltExamSubjectDescGroup">
+							<p:selectOneMenu id="rsltExamSubjectDesc"
+								rendered="#{!editAcademicQualificationsBean.isSelectSubject}"
+								value="#{editAcademicQualificationsBean.editQualificationRslt.examSubjectId}">
+								<p:ajax event="change" update="subjectGrid"
+									listener="#{editAcademicQualificationsBean.changeSubject}" />
+								<p:ajax event="change" update="rsltIbExamLevelGroup"
+									listener="#{editAcademicQualificationsBean.loadIbExamLevel}" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="0" />
+								<f:selectItems
+									value="#{editAcademicQualificationsBean.displaySubject}"
+									var="subject" itemLabel="#{subject.examSubjectDesc}"
+									itemValue="#{subject.id}"
+									itemDisabled="#{subject.subjectDisable}" />
+							</p:selectOneMenu>
+
+							<p:selectOneMenu id="rsltSelectExamSubjectDesc"
+								rendered="#{editAcademicQualificationsBean.isSelectSubject}"
+								value="#{editAcademicQualificationsBean.editQualificationRslt.examSubjectId}">
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="0" />
+								<f:selectItems
+									value="#{editAcademicQualificationsBean.selectSubject}"
+									var="subject" itemLabel="#{subject.examSubjectDesc}"
+									itemValue="#{subject.id}"
+									itemDisabled="#{subject.subjectDisable}" />
+							</p:selectOneMenu>
+						</h:panelGroup>
+					</p:column>
+					<p:column
+						rendered="#{editAcademicQualificationsBean.examTypeVo.isActiveIB}">
+						<p:outputLabel for="rsltIbExamLevel"
+							value="#{otherQualification['level']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+					</p:column>
+					<p:column
+						rendered="#{editAcademicQualificationsBean.examTypeVo.isActiveIB}">
+						<h:panelGroup id="rsltIbExamLevelGroup">
+							<p:selectOneMenu id="rsltIbExamLevel"
+								value="#{editAcademicQualificationsBean.editQualificationRslt.examLevel}">
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="0" />
+								<f:selectItems
+									value="#{editAcademicQualificationsBean.selectLevel}"
+									var="level" itemLabel="#{level}" itemValue="#{level}" />
+							</p:selectOneMenu>
+						</h:panelGroup>
+					</p:column>
+					<p:outputLabel for="itAchievedScore"
+						rendered="#{editAcademicQualificationsBean.examTypeVo.isActiveIT}"
+						value="#{otherQualification['achievedScore']}">
+						<span style="color: red;">*</span>
+					</p:outputLabel>
+					<p:column
+						rendered="#{editAcademicQualificationsBean.examTypeVo.isActiveIT}">
+						<p:inputText id="itAchievedScore"
+							placeholder="#{otherQualification['achievedScore']}"
+							value="#{editAcademicQualificationsBean.editQualificationRslt.achievedGradeOthers}" />
+					</p:column>
+					<p:column
+						rendered="#{editAcademicQualificationsBean.examTypeVo.examCd == 'HKDSE'}"></p:column>
+					<p:column
+						rendered="#{editAcademicQualificationsBean.examTypeVo.examCd == 'HKDSE'}"></p:column>
+
+					<p:outputLabel for="rsltPredictedGradeCd"
+						rendered="#{!editAcademicQualificationsBean.examTypeVo.isActiveNJCEE and !editAcademicQualificationsBean.examTypeVo.isActiveSAT and !editAcademicQualificationsBean.examTypeVo.isActiveIT}"
+						value="#{otherQualification['gradeBySchool']}">
+					</p:outputLabel>
+					<p:column
+						rendered="#{!editAcademicQualificationsBean.examTypeVo.isActiveNJCEE and !editAcademicQualificationsBean.examTypeVo.isActiveSAT and !editAcademicQualificationsBean.examTypeVo.isActiveIT}">
+						<p:selectOneMenu id="rsltPredictedGradeCd"
+							value="#{editAcademicQualificationsBean.editQualificationRslt.predictedGradeCd}">
+							<p:ajax event="change"
+								listener="#{editAcademicQualificationsBean.changeGrade()}"
+								update="predictedOthersGroup" />
+							<f:selectItem itemLabel="#{otherQualification['select']}"
+								itemValue="" />
+							<f:selectItems value="#{editAcademicQualificationsBean.grades}"
+								var="grade" itemLabel="#{grade.gradeCd}"
+								itemValue="#{grade.gradeCd}" />
+							<f:selectItem itemLabel="#{otherQualification['others']}"
+								itemValue="others"
+								itemDisabled="#{editAcademicQualificationsBean.examTypeVo.isActiveIB}" />
+						</p:selectOneMenu>
+					</p:column>
+					<p:outputLabel for="rsltAchievedGradeCd"
+						rendered="#{!editAcademicQualificationsBean.examTypeVo.isActiveNJCEE and !editAcademicQualificationsBean.examTypeVo.isActiveSAT and !editAcademicQualificationsBean.examTypeVo.isActiveIT}"
+						value="#{otherQualification['achievedGrade']}">
+					</p:outputLabel>
+					<p:column
+						rendered="#{!editAcademicQualificationsBean.examTypeVo.isActiveNJCEE and !editAcademicQualificationsBean.examTypeVo.isActiveSAT and !editAcademicQualificationsBean.examTypeVo.isActiveIT}">
+						<p:selectOneMenu id="rsltAchievedGradeCd"
+							value="#{editAcademicQualificationsBean.editQualificationRslt.achievedGradeCd}">
+							<p:ajax event="change"
+								listener="#{editAcademicQualificationsBean.changeGrade()}"
+								update="achievedOthersGroup" />
+							<f:selectItem itemLabel="#{otherQualification['select']}"
+								itemValue="" />
+							<f:selectItems value="#{editAcademicQualificationsBean.grades}"
+								var="grade" itemLabel="#{grade.gradeCd}"
+								itemValue="#{grade.gradeCd}" />
+							<f:selectItem itemLabel="#{otherQualification['others']}"
+								itemValue="others"
+								itemDisabled="#{editAcademicQualificationsBean.examTypeVo.isActiveIB}" />
+						</p:selectOneMenu>
+					</p:column>
+
+					<p:column
+						rendered="#{!editAcademicQualificationsBean.examTypeVo.isActiveNJCEE}"></p:column>
+					<h:panelGroup id="predictedOthersGroup"
+						rendered="#{!editAcademicQualificationsBean.examTypeVo.isActiveNJCEE}">
+						<p:column>
+							<p:inputText id="predictedGradeOthers"
+								rendered="#{editAcademicQualificationsBean.editQualificationRslt.isPredictedOthers}"
+								placeholder="#{otherQualification['others']}"
+								value="#{editAcademicQualificationsBean.editQualificationRslt.predictedGradeOthers}" />
+						</p:column>
+					</h:panelGroup>
+
+					<p:column
+						rendered="#{!editAcademicQualificationsBean.examTypeVo.isActiveNJCEE}"></p:column>
+					<h:panelGroup id="achievedOthersGroup"
+						rendered="#{!editAcademicQualificationsBean.examTypeVo.isActiveNJCEE}">
+						<p:column>
+							<p:inputText id="achievedGradeOthers"
+								placeholder="#{otherQualification['others']}"
+								rendered="#{editAcademicQualificationsBean.editQualificationRslt.isAchievedOthers}"
+								value="#{editAcademicQualificationsBean.editQualificationRslt.achievedGradeOthers}" />
+						</p:column>
+					</h:panelGroup>
+
+					<p:column
+						rendered="#{editAcademicQualificationsBean.examTypeVo.isActiveNJCEE and !editAcademicQualificationsBean.editQualificationRslt.isActiveAchievedGrade}">
+						<p:outputLabel for="achievedPoint"
+							value="#{otherQualification['achievedPonit']}">
+						</p:outputLabel>
+					</p:column>
+					<p:column
+						rendered="#{editAcademicQualificationsBean.examTypeVo.isActiveNJCEE and !editAcademicQualificationsBean.editQualificationRslt.isActiveAchievedGrade}">
+						<p:inputNumber decimalPlaces="0" thousandSeparator=""
+							id="achievedPoint" maxValue="999" minValue="0"
+							placeholder="#{otherQualification['ponit']}"
+							value="#{editAcademicQualificationsBean.editQualificationRslt.achievedGradeOthers}" />
+					</p:column>
+
+					<p:outputLabel for="rsltAchievedGradeCdJs"
+						rendered="#{editAcademicQualificationsBean.editQualificationRslt.isActiveAchievedGrade}"
+						value="#{otherQualification['achievedGrade']}">
+						<span style="color: red;">*</span>
+					</p:outputLabel>
+					<p:column
+						rendered="#{editAcademicQualificationsBean.editQualificationRslt.isActiveAchievedGrade}">
+						<p:selectOneMenu id="rsltAchievedGradeCdJs"
+							value="#{editAcademicQualificationsBean.editQualificationRslt.achievedGradeCd}">
+							<f:selectItem itemLabel="#{otherQualification['select']}"
+								itemValue="" />
+							<f:selectItems value="#{editAcademicQualificationsBean.grades}"
+								var="grade" itemLabel="#{grade.gradeCd}"
+								itemValue="#{grade.gradeCd}" />
+						</p:selectOneMenu>
+					</p:column>
+
+					<p:outputLabel for="satAchievedScore"
+						rendered="#{editAcademicQualificationsBean.examTypeVo.isActiveSAT}"
+						value="#{otherQualification['achievedScore']}">
+						<span style="color: red;">*</span>
+					</p:outputLabel>
+					<p:column
+						rendered="#{editAcademicQualificationsBean.examTypeVo.isActiveSAT}">
+						<p:inputText id="satAchievedScore"
+							placeholder="#{otherQualification['achievedScore']}"
+							value="#{editAcademicQualificationsBean.editQualificationRslt.achievedGradeOthers}" />
+					</p:column>
+				</p:panelGrid>
+
+				<!-- GCE Grid -->
+				<p:panelGrid columns="4" id="gceSubjectGrid"
+					rendered="#{editAcademicQualificationsBean.examTypeVo.isActiveGCE}"
+					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+					styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+					<p:column>
+						<p:outputLabel for="rsltGceExamLevel"
+							rendered="#{!editAcademicQualificationsBean.isSelectLevel}"
+							value="#{otherQualification['level']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:outputLabel for="rsltGceSelectExamLevel"
+							rendered="#{editAcademicQualificationsBean.isSelectLevel}"
+							value="#{otherQualification['level']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+					</p:column>
+					<p:column>
+						<h:panelGroup id="rsltExamGceLevelGroup">
+							<p:selectOneMenu id="rsltGceExamLevel"
+								rendered="#{!editAcademicQualificationsBean.isSelectLevel}"
+								value="#{editAcademicQualificationsBean.editQualificationRslt.examLevel}">
+								<p:ajax event="change"
+									listener="#{editAcademicQualificationsBean.loadExamBoard}"
+									update="rsltExamBoardGroup rsltExamGceLevelGroup gceGradeGrid" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItems
+									value="#{editAcademicQualificationsBean.displayLevel}"
+									var="level" itemLabel="#{level}" itemValue="#{level}" />
+							</p:selectOneMenu>
+
+							<p:selectOneMenu id="rsltGceSelectExamLevel"
+								rendered="#{editAcademicQualificationsBean.isSelectLevel}"
+								value="#{editAcademicQualificationsBean.editQualificationRslt.examLevel}">
+								<p:ajax event="change"
+									listener="#{editAcademicQualificationsBean.loadExamBoard}"
+									update="rsltExamBoardGroup rsltExamGceLevelGroup gceGradeGrid" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItems
+									value="#{editAcademicQualificationsBean.selectLevel}"
+									var="level" itemLabel="#{level}" itemValue="#{level}" />
+							</p:selectOneMenu>
+						</h:panelGroup>
+					</p:column>
+
+					<p:column>
+						<p:outputLabel for="rsltGceExamBoard"
+							rendered="#{!editAcademicQualificationsBean.isSelectBoard}"
+							value="#{otherQualification['board']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:outputLabel for="rsltGceSelectExamBoard"
+							rendered="#{editAcademicQualificationsBean.isSelectBoard}"
+							value="#{otherQualification['board']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+					</p:column>
+					<p:column>
+						<h:panelGroup id="rsltExamBoardGroup">
+							<p:selectOneMenu id="rsltGceExamBoard"
+								rendered="#{!editAcademicQualificationsBean.isSelectBoard}"
+								value="#{editAcademicQualificationsBean.editQualificationRslt.examBoard}">
+								<p:ajax event="change"
+									listener="#{editAcademicQualificationsBean.loadGceExamLevel}"
+									update="rsltExamBoardGroup rsltExamGceLevelGroup gceGradeGrid" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItems
+									value="#{editAcademicQualificationsBean.examBoards}"
+									var="examBoard" itemLabel="#{examBoard}"
+									itemValue="#{examBoard}" />
+							</p:selectOneMenu>
+
+							<p:selectOneMenu id="rsltGceSelectExamBoard"
+								rendered="#{editAcademicQualificationsBean.isSelectBoard}"
+								value="#{editAcademicQualificationsBean.editQualificationRslt.examBoard}">
+								<p:ajax event="change"
+									listener="#{editAcademicQualificationsBean.loadGceExamLevel}"
+									update="rsltExamBoardGroup rsltExamGceLevelGroup gceGradeGrid" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItems
+									value="#{editAcademicQualificationsBean.selectBoards}"
+									var="examBoard" itemLabel="#{examBoard}"
+									itemValue="#{examBoard}" />
+							</p:selectOneMenu>
+						</h:panelGroup>
+					</p:column>
+				</p:panelGrid>
+				<!-- GCE Grade Grid -->
+				<p:panelGrid columns="4" id="gceGradeGrid"
+					rendered="#{editAcademicQualificationsBean.examTypeVo.isActiveGCE}"
+					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+					styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+					<p:column>
+						<p:outputLabel for="rsltExamGceSubjectDesc"
+							value="#{otherQualification['subject']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+					</p:column>
+					<p:column>
+						<h:panelGroup id="rsltExamGceSubjectDescGroup">
+							<p:selectOneMenu id="rsltExamGceSubjectDesc"
+								value="#{editAcademicQualificationsBean.editQualificationRslt.examSubjectId}">
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="0" />
+								<f:selectItems
+									value="#{editAcademicQualificationsBean.selectSubject}"
+									var="subject" itemLabel="#{subject.examSubjectDesc}"
+									itemValue="#{subject.id}" />
+							</p:selectOneMenu>
+						</h:panelGroup>
+					</p:column>
+
+					<p:outputLabel for="gecDateOfRelease"
+						value="#{otherQualification['dateRelease']}">
+						<span style="color: red;">*</span>
+					</p:outputLabel>
+					<p:column>
+						<p:calendar id="gecDateOfRelease" locale="de"
+							mindate="#{commonBean.minDate}" maxdate="#{commonBean.maxDate}"
+							onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+							navigator="true" readonlyInput="true" placeholder="dd-mm-yyyy"
+							yearRange="c-35:c+35"
+							value="#{editAcademicQualificationsBean.editQualificationRslt.gceDateOfRelease}"
+							pattern="dd-MM-yyyy" showOn="button">
+						</p:calendar>
+					</p:column>
+
+					<p:outputLabel for="rsltGcePredictedGradeCd"
+						value="#{otherQualification['gradeBySchool']}">
+					</p:outputLabel>
+					<h:panelGroup id="predictedGradeGroup">
+						<p:column>
+							<p:selectOneMenu id="rsltGcePredictedGradeCd"
+								value="#{editAcademicQualificationsBean.editQualificationRslt.predictedGradeCd}">
+								<p:ajax event="change"
+									listener="#{editAcademicQualificationsBean.changeGrade()}"
+									update="gcePredictedOthersGroup" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItems value="#{editAcademicQualificationsBean.grades}"
+									var="grade" itemLabel="#{grade.gradeCd}"
+									itemValue="#{grade.gradeCd}" />
+								<f:selectItem itemLabel="#{otherQualification['others']}"
+									itemValue="others" />
+							</p:selectOneMenu>
+						</p:column>
+					</h:panelGroup>
+					<p:outputLabel for="rsltGceAchievedGradeCd"
+						value="#{otherQualification['achievedGrade']}">
+					</p:outputLabel>
+					<h:panelGroup id="achievedGradeGroup">
+						<p:column>
+							<p:selectOneMenu id="rsltGceAchievedGradeCd"
+								value="#{editAcademicQualificationsBean.editQualificationRslt.achievedGradeCd}">
+								<p:ajax event="change"
+									listener="#{editAcademicQualificationsBean.changeGrade()}"
+									update="gceAchievedOthersGroup" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItems value="#{editAcademicQualificationsBean.grades}"
+									var="grade" itemLabel="#{grade.gradeCd}"
+									itemValue="#{grade.gradeCd}" />
+								<f:selectItem itemLabel="#{otherQualification['others']}"
+									itemValue="others" />
+							</p:selectOneMenu>
+						</p:column>
+					</h:panelGroup>
+
+					<p:column></p:column>
+					<h:panelGroup id="gcePredictedOthersGroup">
+						<p:column>
+							<p:inputText id="gcePredictedGradeOthers"
+								rendered="#{editAcademicQualificationsBean.editQualificationRslt.isPredictedOthers}"
+								placeholder="#{otherQualification['others']}"
+								value="#{editAcademicQualificationsBean.editQualificationRslt.predictedGradeOthers}" />
+						</p:column>
+					</h:panelGroup>
+
+					<p:column></p:column>
+					<h:panelGroup id="gceAchievedOthersGroup">
+						<p:column>
+							<p:inputText id="gceAchievedOthers"
+								placeholder="#{otherQualification['others']}"
+								rendered="#{editAcademicQualificationsBean.editQualificationRslt.isAchievedOthers}"
+								value="#{editAcademicQualificationsBean.editQualificationRslt.achievedGradeOthers}" />
+						</p:column>
+					</h:panelGroup>
+				</p:panelGrid>
+				<div>
+					<br />
+					<p:commandButton value="#{otherQualification['save']}"
+						action="#{editAcademicQualificationsBean.saveQualificationRslt()}"
+						update=":mainTab:formQualifications :mainTab:formQualiRslt" />
+					<p:commandButton value="#{otherQualification['cancel']}"
+						oncomplete="PF('subjectDialog').hide()"
+						styleClass="ui-priority-secondary" />
+				</div>
+			</h:form>
+		</p:dialog>
+		<!-- change province confirm -->
+		<p:dialog header="#{otherQualification['prompt']}"
+			widgetVar="changeProvinceDialog" modal="true" width="400"
+			minHeight="50" closable="false">
+			<h:form id="confirmForm">
+				<div class="ui-fluid">
+					<p:panel>#{editAcademicQualificationsBean.promptMsg}</p:panel>
+				</div>
+				<div class="ax-btn-set">
+					<p:commandButton value="#{otherQualification['yes']}"
+						action="#{editAcademicQualificationsBean.cleanSubject('yes')}"
+						update=":mainTab:formQualifications" icon="ui-icon-check" />
+					<p:commandButton value="#{otherQualification['no']}"
+						action="#{editAcademicQualificationsBean.cleanSubject('no')}"
+						update=":mainTab:formQualifications" icon="ui-icon-close" />
+				</div>
+			</h:form>
+		</p:dialog>
+		<!-- edit NJCEE exam confirm -->
+		<p:confirmDialog widgetVar="messageNjceeDialog"
+			message="#{otherQualification['editMsg']}"
+			header="#{otherQualification['prompt']}" showEffect="fade"
+			hideEffect="fade">
+			<p:commandButton value="#{otherQualification['yes']}" type="button"
+				onclick="PF('messageNjceeDialog').hide();"
+				styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+		</p:confirmDialog>
+		<!-- edit IB exam confirm -->
+		<p:confirmDialog widgetVar="messageIbDialog"
+			message="#{otherQualification['ibEditMsg']}"
+			header="#{otherQualification['prompt']}" showEffect="fade"
+			hideEffect="fade">
+			<p:commandButton value="#{otherQualification['yes']}" type="button"
+				onclick="PF('messageIbDialog').hide();"
+				styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+		</p:confirmDialog>
+		<!-- edit IT exam confirm -->
+		<p:confirmDialog widgetVar="messageItDialog"
+			message="#{otherQualification['itEditMsg']}"
+			header="#{otherQualification['prompt']}" showEffect="fade"
+			hideEffect="fade">
+			<p:commandButton value="#{otherQualification['yes']}" type="button"
+				onclick="PF('messageItDialog').hide();"
+				styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+		</p:confirmDialog>
+	</div>
+	<script type="text/javascript" language="javascript">_initAxToolTips() </script>
+</ui:composition>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

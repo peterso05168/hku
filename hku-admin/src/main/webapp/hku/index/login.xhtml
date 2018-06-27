@@ -1,0 +1,35 @@
+<!DOCTYPE html [
+    <!ENTITY bull "&#8226;">
+]>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	template="../admin/tp-base.xhtml">
+
+	<ui:define name="page-content">
+		<div class="login-page-bg">
+			<div class="login-page-header ">
+				<div class="header-container">
+					<div class="logo">
+						<a href="login.xhtml" title=""><img src="#{request.contextPath}/resources/hku/images/logo.png" alt="" /></a>
+					</div>
+					<div class="app-name">
+						<div class="sep"></div>
+						<div class="text">
+							<div class="row-01">Non-Jupas Online Application System</div>
+							<div class="row-02 Arial">Administration</div>
+						</div>
+					</div>
+					<div class="account-sec type-02">
+						<div class="account-form">
+							<!-- <p:commandButton styleClass="btn btn-default full-width-yellow-button" style="margin-top: 31px;height:39px;"
+								value="Login Non-Jupas System" onclick="window.location = 'https://testportal.hku.hk/cas/servlet/edu.yale.its.tp.cas.servlet.Login?service=http://147.8.205.132:8080/hku-admin/hku/admin/dashboard/dashboard.xhtml';" /> -->
+							<p:commandButton styleClass="btn btn-default full-width-yellow-button" style="margin-top: 31px;height:39px;"
+								value="Login Non-Jupas System" onclick="window.location = '#{request.contextPath}/hku/admin/dashboard/dashboard.xhtml'" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

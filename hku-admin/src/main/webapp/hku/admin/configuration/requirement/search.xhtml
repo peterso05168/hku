@@ -1,0 +1,137 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="../configuration.xhtml">
+
+	<ui:define name="title">
+		<f:loadBundle basename="i18n.configuration.requirement" var="requirement" />
+		#{requirement['entranceRequirement']}
+	</ui:define>
+
+	<ui:define name="main-content">
+
+		<f:loadBundle basename="i18n.configuration.requirement" var="requirement" />
+		<div>
+			<p:panel id="toggleable" header="#{requirement['searchRequirement']}"
+				toggleable="true" toggleSpeed="200" widgetVar="panel">
+				<h:form>
+					<div>
+						<div class="search-advance">
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+
+								<p:outputLabel for="requirementNameFind"
+									value="#{requirement['requirementName']}">
+								</p:outputLabel>
+								<p:inputText id="requirementNameFind"
+									value="#{requirementSearchBean.requirementSearchVo.description}" />
+
+								<p:outputLabel for="typeFind" value="#{requirement['type']}" />
+								<p:selectOneMenu id="typeFind"
+									value="#{requirementSearchBean.requirementSearchVo.type}">
+									<f:selectItem itemLabel="- Select -" itemValue="" />
+									<f:selectItems value="#{requirementSearchBean.refCds}" var="refCd"
+										itemLabel="#{refCd.value}" itemValue="#{refCd.value}" />
+								</p:selectOneMenu>
+
+								<p:outputLabel for="statusFind" value="#{requirement['status']}" />
+								<p:selectOneMenu id="statusFind"
+									value="#{requirementSearchBean.isPublished}">
+									<f:selectItem itemLabel="- All -" itemValue="" />
+									<f:selectItem itemLabel="Active" itemValue="true" />
+									<f:selectItem itemLabel="Inactive" itemValue="false" />
+								</p:selectOneMenu>
+							</p:panelGrid>
+						</div>
+					</div>
+					<div class="ax-btn-set">
+						<p:commandButton value="#{requirement['search']}" action="#{requirementSearchBean.search}" update="entranceForm" />
+						<p:commandButton value="#{requirement['reset']}" styleClass="ui-priority-secondary" action="#{requirementSearchBean.reset}" 
+							update="entranceForm,toggleable" />
+						<p:commandButton value="#{requirement['create']}" action="#{requirementSearchBean.loadCreateDialog}" 
+							oncomplete="PF('createEntranceDialog').show()" update="createEntranceForm" />
+					</div>
+				</h:form>
+			</p:panel>
+			<p:dialog header="#{requirement['createEntranceRequirement']}"
+				widgetVar="createEntranceDialog" modal="true" width="40%">
+				<h:form id="createEntranceForm">
+					<p:growl id="growlMsg" showDetail="true" />
+					<div class="ui-fluid">
+						<p:panelGrid columns="1" columnClasses="ui-grid-col-12"
+							layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+
+							<p:outputLabel for="requirementNameCreate"
+								value="#{requirement['requirementName']}" style="text-align:left;">
+								<span style="color:red">*</span>
+							</p:outputLabel>
+							<p:inputText id="requirementNameCreate" 
+								value="#{requirementSearchBean.requirementPersistVo.description}" />
+
+							<p:outputLabel for="typeCreate" value="#{requirement['type']}"
+								style="text-align:left;">
+								<span style="color:red">*</span>
+							</p:outputLabel>
+							<p:selectOneMenu id="typeCreate" 
+								value="#{requirementSearchBean.requirementPersistVo.type}">
+								<f:selectItem itemLabel="- Select -" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{requirementSearchBean.refCds}" var="refCd"
+									itemLabel="#{refCd.value}" itemValue="#{refCd.value}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+					</div>
+					<div class="ax-btn-set">
+						<p:commandButton value="#{requirement['create']}" action="#{requirementSearchBean.save}" update="createEntranceForm" />
+						<p:commandButton value="#{requirement['cancel']}" styleClass="ui-priority-secondary"
+							oncomplete="PF('createEntranceDialog').hide()" />
+					</div>
+				</h:form>
+			</p:dialog>
+		</div>
+		<h:form id="entranceForm">
+			<p:dataTable var="requirementVo" value="#{requirementSearchBean.requirementVos}" reflow="true" draggableColumns="true"
+				rendered="#{requirementSearchBean.renderedResult}">
+
+				<f:facet name="header">
+					#{requirement['searchResult']}
+				</f:facet>
+
+				<p:column headerText="#{requirement['requirementName']}" sortBy="#{requirementVo.description}">
+					<p:commandLink
+						style="font-style: normal;color: #222;font-weight: bold;"
+						action="#{requirementSearchBean.edit(requirementVo.id)}"
+						onclick="window.location = 'edit.xhtml'">
+						<h:outputText value="#{requirementVo.description}" />
+					</p:commandLink>
+				</p:column>
+
+				<p:column headerText="#{requirement['type']}" sortBy="#{requirementVo.type}">
+					<h:outputText value="#{requirementVo.type}" />
+				</p:column>
+
+				<p:column headerText="#{requirement['status']}" sortBy="#{requirementVo.isPublished}">
+					<h:outputText
+						value="#{requirementVo.isPublished?'Active':'Inactive'}" />
+				</p:column>
+
+				<p:column headerText="#{requirement['action']}" styleClass="ax-action-w dont-print">
+					<p:menuButton value="Action">
+						<p:menuitem value="#{requirement['edit']}" onclick="_ACTION('edit')" actionListener="#{requirementSearchBean.edit(requirementVo.id)}" 
+							rendered="#{requirementVo.isPublished}" />
+						<p:menuitem value="#{requirement['inactive']}" actionListener="#{requirementSearchBean.inactive(requirementVo.id)}" 
+							rendered="#{requirementVo.isPublished}" update="entranceForm" />
+					</p:menuButton>
+				</p:column>
+
+			</p:dataTable>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="#{requirement['yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="#{requirement['no']}" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,70 @@
+<!DOCTYPE html [
+    <!ENTITY bull "&#8226;">
+]>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	template="./tp-base.xhtml">
+	<ui:define name="page-content">
+	<div class="menu-layout-" data-layout-id="mainLayout"
+			data-layout-type="side-menu">			 
+			<div class="menu-content-">
+				<div class="body-header">
+					<div class="header">
+						<div class="logo">
+							<a href="login.xhtml" title=""><img src="#{request.contextPath}/resources/hku/images/logo.png"
+								alt="" /></a>
+						</div>
+						<div class="app-name">
+							<div class="sep"></div>
+							<div class="text">
+								<div class="row-01">Non-Jupas Online Application System</div>
+								<div class="row-02">The University of Hong Kong</div>
+							</div>
+						</div>
+						<div class="ax-printing">
+							<ul>
+								<li class="printer" onClick="_printPreview()"
+									title="Print Preview"><i class="ti-printer"></i></li>
+								<li class="print-now" onClick="_printNow()" title="Print Now"><i
+									class="ti-printer"></i></li>
+								<li class="print-cancel" onClick="_printCancel()" title="Cancel"><i
+									class="ti-close"></i></li>
+							</ul>
+						</div>
+						<div class="lang" id="lang_selection">
+							<ul>
+								<li class="selected"><h:form><h:commandLink value="Eng" actionListener="#{language.setEnglish}" immediate="true"/></h:form></li>
+								<li class="sep">
+									<div></div>
+								</li>
+								<li><h:form><h:commandLink value="中文" actionListener="#{language.setChinese}" immediate="true"/></h:form></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="body-content">
+					<div>
+						<div class="breadcrumbs">
+							<ul>
+								<li><a href="login.xhtml" title=""><i class="ti-home"></i></a><i
+									class="ti-angle-right"></i></li>
+								<ui:insert name="breadcrumb" /> 
+								<ui:insert name="breadcrumb-1" />
+								<ui:insert name="breadcrumb-2" />
+								<ui:insert name="breadcrumb-3" />
+								<ui:insert name="breadcrumb-4" />
+								<ui:insert name="breadcrumb-5" />
+							</ul>
+						</div>
+						<ui:insert name="main-content" />
+					</div>
+				</div>
+			</div>
+		</div>
+		 
+	</ui:define>
+	
+</ui:composition>

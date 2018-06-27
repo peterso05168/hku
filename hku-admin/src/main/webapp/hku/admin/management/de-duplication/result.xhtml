@@ -1,0 +1,224 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="./search.xhtml">
+
+	<ui:define name="breadcrumb-3">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.deDuplication"
+				var="duplication" />
+			<li><a title="">#{duplication['enquiry']}</a><i
+				class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+
+	<ui:define name="main-content-2">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.deDuplication"
+				var="duplication" />
+			<p:tabView activeIndex="0">
+				<p:tab title="#{duplication['hkid']}" titleStyle="margin-right:4px;">
+					<h:form id="formHkid">
+						<p:dataTable id="hkidTable" var="" value="" rowStyleClass=""
+							reflow="true">
+							<!-- <p:column selectionMode="multiple" style="width:40px;text-align:center" /> -->
+
+							<p:column headerText="#{duplication['appNo']}">
+								<p:commandLink href="javascript:void(0)">
+									<h:outputText value="APP2017S10019" />
+								</p:commandLink>
+							</p:column>
+
+							<p:column headerText="#{duplication['hkid']}">
+								<h:outputText value="K021937847" />
+							</p:column>
+
+							<p:column headerText="#{duplication['name']}">
+								<h:outputText value="Mary Chan" />
+							</p:column>
+
+							<p:column headerText="#{duplication['dateOfBirth']}">
+								<h:outputText value="1999-02-22" />
+							</p:column>
+
+							<p:column headerText="#{duplication['school']}">
+								<h:outputText value="School A" />
+							</p:column>
+
+							<p:column headerText="#{duplication['country']}">
+								<h:outputText value="China" />
+							</p:column>
+							
+							<p:column headerText="#{duplication['provinceCity']}">
+								<h:outputText value="City A" />
+							</p:column>
+							
+							<p:column headerText="#{duplication['registeredEmail']}">
+								<h:outputText value="marychan@asdf.com" />
+							</p:column>
+							
+							<p:column headerText="#{duplication['mobile']}">
+								<h:outputText value="9654 2541" />
+							</p:column>
+						</p:dataTable>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{duplication['inactive']}" />
+						</div>
+					</h:form>
+				</p:tab>
+				<p:tab title="#{duplication['passport']}" titleStyle="margin-right:4px;">
+					<h:form id="formPassport">
+						<p:dataTable id="passportTable" var="" value="" rowStyleClass=""
+							reflow="true">
+							<!-- <p:column selectionMode="multiple" style="width:40px;text-align:center" /> -->
+
+							<p:column headerText="#{duplication['appNo']}">
+								<p:commandLink href="javascript:void(0)">
+									<h:outputText value="APP2017S10019" />
+								</p:commandLink>
+							</p:column>
+
+							<p:column headerText="#{duplication['passport']}">
+								<h:outputText value="K021937847" />
+							</p:column>
+
+							<p:column headerText="#{duplication['name']}">
+								<h:outputText value="Mary Chan" />
+							</p:column>
+
+							<p:column headerText="#{duplication['dateOfBirth']}">
+								<h:outputText value="1999-02-22" />
+							</p:column>
+
+							<p:column headerText="#{duplication['school']}">
+								<h:outputText value="School A" />
+							</p:column>
+
+							<p:column headerText="#{duplication['country']}">
+								<h:outputText value="China" />
+							</p:column>
+							
+							<p:column headerText="#{duplication['provinceCity']}">
+								<h:outputText value="City A" />
+							</p:column>
+							
+							<p:column headerText="#{duplication['registeredEmail']}">
+								<h:outputText value="marychan@asdf.com" />
+							</p:column>
+							
+							<p:column headerText="#{duplication['mobile']}">
+								<h:outputText value="9654 2541" />
+							</p:column>
+						</p:dataTable>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{duplication['inactive']}" />
+						</div>
+					</h:form>
+				</p:tab>
+				<p:tab title="#{duplication['chinaID']}" titleStyle="margin-right:4px;">
+					<h:form id="formChinaID">
+						<p:dataTable id="chinaIDTable" var="" value="" rowStyleClass=""
+							reflow="true">
+							<!-- <p:column selectionMode="multiple" style="width:40px;text-align:center" /> -->
+
+							<p:column headerText="#{duplication['appNo']}">
+								<p:commandLink href="javascript:void(0)">
+									<h:outputText value="APP2017S10019" />
+								</p:commandLink>
+							</p:column>
+
+							<p:column headerText="#{duplication['chinaID']}">
+								<h:outputText value="K021937847" />
+							</p:column>
+
+							<p:column headerText="#{duplication['name']}">
+								<h:outputText value="Mary Chan" />
+							</p:column>
+
+							<p:column headerText="#{duplication['dateOfBirth']}">
+								<h:outputText value="1999-02-22" />
+							</p:column>
+
+							<p:column headerText="#{duplication['school']}">
+								<h:outputText value="School A" />
+							</p:column>
+
+							<p:column headerText="#{duplication['country']}">
+								<h:outputText value="China" />
+							</p:column>
+							
+							<p:column headerText="#{duplication['provinceCity']}">
+								<h:outputText value="City A" />
+							</p:column>
+							
+							<p:column headerText="#{duplication['registeredEmail']}">
+								<h:outputText value="marychan@asdf.com" />
+							</p:column>
+							
+							<p:column headerText="#{duplication['mobile']}">
+								<h:outputText value="9654 2541" />
+							</p:column>
+						</p:dataTable>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{duplication['inactive']}" />
+						</div>
+					</h:form>
+				</p:tab>
+				<p:tab title="#{duplication['dobNameSchool']}" titleStyle="margin-right:4px;">
+					<h:form id="formNameSchool">
+						<p:dataTable id="nameSchoolTable" var="" value="" rowStyleClass=""
+							reflow="true">
+							<!-- <p:column selectionMode="multiple" style="width:40px;text-align:center" /> -->
+
+							<p:column headerText="#{duplication['appNo']}">
+								<p:commandLink href="javascript:void(0)">
+									<h:outputText value="APP2017S10019" />
+								</p:commandLink>
+							</p:column>
+
+							<p:column headerText="#{duplication['passport']}">
+								<h:outputText value="K021937847" />
+							</p:column>
+
+							<p:column headerText="#{duplication['name']}">
+								<h:outputText value="Mary Chan" />
+							</p:column>
+
+							<p:column headerText="#{duplication['dateOfBirth']}">
+								<h:outputText value="1999-02-22" />
+							</p:column>
+
+							<p:column headerText="#{duplication['school']}">
+								<h:outputText value="School A" />
+							</p:column>
+
+							<p:column headerText="#{duplication['country']}">
+								<h:outputText value="China" />
+							</p:column>
+							
+							<p:column headerText="#{duplication['provinceCity']}">
+								<h:outputText value="City A" />
+							</p:column>
+							
+							<p:column headerText="#{duplication['registeredEmail']}">
+								<h:outputText value="marychan@asdf.com" />
+							</p:column>
+							
+							<p:column headerText="#{duplication['mobile']}">
+								<h:outputText value="9654 2541" />
+							</p:column>
+						</p:dataTable>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{duplication['inactive']}" />
+						</div>
+					</h:form>
+				</p:tab>
+			</p:tabView>
+		</f:view>
+	</ui:define>
+</ui:composition>
+
+
+
+

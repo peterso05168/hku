@@ -1,0 +1,201 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+	<div class="ax-tab-02">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.applicantProfile" var="profile" />
+			<h:form id="profile_form">
+				<p:panelGrid columns="3" columnClasses="ui-grid-col-3,ui-grid-col-5,ui-grid-col-4" layout="grid"
+					styleClass="ui-panelgrid-blank ui-fluid">
+					<p:column>
+						<h:outputLink id="helpInfoA" value="#" disabled="true" styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip showEvent="click" id="toolTipA" for="helpInfoA" position="left">
+											#{profile['title1']}
+												<div>#{profile['title2']}</div>
+						</p:tooltip>
+						<p:outputLabel for="regEmailAddr" value="#{profile['registeredEmailAddress']}" />
+					</p:column>
+					<p:inputText id="regEmailAddr" value="#{applicantProfileBean.accountVo.personEmail}" />
+					<p:column></p:column>
+
+					<p:column>
+						<h:outputLink id="helpInfoC" value="#" disabled="true" styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip showEvent="click" id="toolTipC" for="helpInfoC" value="#{profile['alternateEmailAddressPrompt']}"
+							position="left" />
+						<p:outputLabel for="alterEmailAddr" value="#{profile['alternateEmailAddress']}" />
+					</p:column>
+					<p:inputText id="alterEmailAddr" value="#{applicantProfileBean.applicantInformationVo.alternateEmail}" />
+					<p:column></p:column>
+
+					<p:outputLabel for="surname" value="#{profile['surname']}" />
+					<p:column>
+						<p:inputText id="surname" maxlength="60" value="#{applicantProfileBean.applicantInformationVo.surname}" />
+						<p:watermark for="surname" value="#{profile['inEnglish']}" id="surnameWatermark" />
+					</p:column>
+					<p:column></p:column>
+
+					<p:outputLabel for="givenName" value="#{profile['givenName']}" />
+					<p:column>
+						<p:inputText id="givenName" maxlength="120" value="#{applicantProfileBean.applicantInformationVo.givenName}" />
+						<p:watermark for="givenName" value="#{profile['inEnglish']}" id="givenNameWatermark" />
+					</p:column>
+					<p:column></p:column>
+				</p:panelGrid>
+
+				<p:panelGrid columns="3" columnClasses="ui-grid-col-3,ui-grid-col-5,ui-grid-col-4" layout="grid"
+					styleClass="ui-panelgrid-blank ui-fluid" id="profile_nationality_country">
+
+					<p:outputLabel for="nationality" value="#{profile['nationality']}" />
+					<p:selectOneMenu id="nationality" value="#{applicantProfileBean.applicantInformationVo.nationalityCountryId}">
+						<f:selectItem itemLabel="#{profile['select']}" itemValue="" noSelectionOption="true" />
+						<f:selectItems value="#{applicantProfileBean.countryVos}" var="country" itemLabel="#{country.description}"
+							itemValue="#{country.id}" />
+					</p:selectOneMenu>
+					<p:column></p:column>
+
+					<p:outputLabel for="nationalityCountry" value="#{profile['nationalityCountry']}" />
+					<p:selectOneMenu id="nationalityCountry" value="#{applicantProfileBean.applicantInformationVo.residenceCountryId}">
+						<f:selectItem itemLabel="#{profile['select']}" itemValue="" noSelectionOption="true" />
+						<f:selectItems value="#{applicantProfileBean.countryVos}" var="country" itemLabel="#{country.description}"
+							itemValue="#{country.id}" />
+					</p:selectOneMenu>
+					<p:column></p:column>
+				</p:panelGrid>
+
+				<p:panelGrid columns="3" columnClasses="ui-grid-col-3,ui-grid-col-5,ui-grid-col-4" layout="grid"
+					styleClass="ui-panelgrid-blank ui-fluid" id="profile_study_country">
+
+					<p:outputLabel for="studyCountry" value="#{profile['studyCountry']}" />
+					<p:selectOneMenu id="studyCountry" value="#{applicantProfileBean.applicantInformationVo.studyCountryId}">
+						<f:selectItem itemLabel="#{profile['select']}" itemValue="" noSelectionOption="true" />
+						<f:selectItems value="#{applicantProfileBean.countryVos}" var="country" itemLabel="#{country.description}"
+							itemValue="#{country.id}" />
+					</p:selectOneMenu>
+					<p:column></p:column>
+
+					<p:outputLabel for="studyProvince" value="#{profile['studyProvince']}"
+						rendered="#{applicantProfileBean.applicantInformationVo.studyProvinceId!=null and applicantProfileBean.applicantInformationVo.studyProvinceId!=''?true:false}" />
+					<p:selectOneMenu id="studyProvince" value="#{applicantProfileBean.applicantInformationVo.studyProvinceId}"
+						rendered="#{applicantProfileBean.applicantInformationVo.studyProvinceId!=null and applicantProfileBean.applicantInformationVo.studyProvinceId!=''?true:false}">
+						<f:selectItem itemLabel="#{profile['select']}" itemValue="" noSelectionOption="true" />
+						<f:selectItems value="#{applicantProfileBean.provinceVos}" var="province" itemLabel="#{province.description}"
+							itemValue="#{province.id}" />
+					</p:selectOneMenu>
+					<p:column
+						rendered="#{applicantProfileBean.applicantInformationVo.studyProvinceId!=null and applicantProfileBean.applicantInformationVo.studyProvinceId!=''?true:false}"></p:column>
+
+					<p:outputLabel for="studyCity" value="#{profile['studyCity']}"
+						rendered="#{applicantProfileBean.applicantInformationVo.studyCityId!=null and applicantProfileBean.applicantInformationVo.studyCityId!=''?true:false}" />
+					<p:selectOneMenu id="studyCity" value="#{applicantProfileBean.applicantInformationVo.studyCityId}"
+						rendered="#{applicantProfileBean.applicantInformationVo.studyCityId!=null and applicantProfileBean.applicantInformationVo.studyCityId!=''?true:false}">
+						<f:selectItem itemLabel="#{profile['select']}" itemValue="" noSelectionOption="true" />
+						<f:selectItems value="#{applicantProfileBean.cityVos}" var="city" itemLabel="#{city.description}"
+							itemValue="#{city.id}" />
+					</p:selectOneMenu>
+					<p:column
+						rendered="#{applicantProfileBean.applicantInformationVo.studyCityId!=null and applicantProfileBean.applicantInformationVo.studyCityId!=''?true:false}"></p:column>
+
+					<p:outputLabel for="nameOfInstitution" value="#{profile['nameOfInstitution']}" />
+					<h:panelGroup layout="block">
+						<p:selectOneMenu id="nameOfInstitution" value="#{applicantProfileBean.applicantInformationVo.institutionId}">
+							<f:selectItem itemLabel="#{profile['select']}" itemValue="" noSelectionOption="true" />
+							<f:selectItems value="#{applicantProfileBean.institutionVos}" var="institution"
+								itemLabel="#{institution.description}" itemValue="#{institution.id}" />
+							<f:selectItem itemLabel="Others" itemValue="others" />
+						</p:selectOneMenu>
+						<p:inputText id="nameOfInstitutionInputText"
+							value="#{applicantProfileBean.applicantInformationVo.institutionOthers}"
+							rendered="#{applicantProfileBean.applicantInformationVo.institutionOthers!=''?true:false}"
+							style="margin-top:5px;" />
+						<p:watermark for="nameOfInstitutionInputText"
+							rendered="#{applicantProfileBean.applicantInformationVo.institutionOthers!=''?true:false}" value="Others"
+							id="nameOfInstitutionInputTextWatermark" />
+					</h:panelGroup>
+					<p:column></p:column>
+				</p:panelGrid>
+
+				<p:panelGrid columns="2" columnClasses="ui-grid-col-3,ui-grid-col-9" layout="grid"
+					styleClass="ui-panelgrid-blank ui-fluid">
+					<p:column></p:column>
+					<p:selectBooleanCheckbox value="#{applicantProfileBean.applicantInformationVo.isNotStuding}"
+						itemLabel="#{profile['currentlyIAmNotStudying']}" style="margin-top:6px; font-weight:bold" />
+				</p:panelGrid>
+				<p:panelGrid columns="3" columnClasses="ui-grid-col-3,ui-grid-col-5,ui-grid-col-4" layout="grid"
+					styleClass="ui-panelgrid-blank ui-fluid">
+					<p:column>
+						<h:outputLink id="helpInfoD" value="#" disabled="true" styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip showEvent="click" id="toolTipD" for="helpInfoD" position="left">
+						#{profile['homeTelNoCountryNote1']}
+						<div>#{profile['homeTelNoCountryNote2']}</div>
+						</p:tooltip>
+						<p:outputLabel for="homeTelNoCountryCode" value="#{profile['homeTelNo']}" />
+					</p:column>
+					<h:panelGroup layout="block">
+						<p:inputNumber id="homeTelNoCountryCode" style="display:inline;" inputStyle="width:100px;" decimalPlaces="0"
+							thousandSeparator="" value="#{applicantProfileBean.applicantInformationVo.homeTel.countryCd}" />
+						<p:watermark for="homeTelNoCountryCode" value="#{profile['countryCode']}" id="homeTelNoCountryCodeWatermark" />
+
+						<p:inputNumber id="homeTelNoAreaCode" style="display:inline; margin-left:3px" inputStyle="width:100px;"
+							decimalPlaces="0" thousandSeparator="" value="#{applicantProfileBean.applicantInformationVo.homeTel.areaCd}" />
+						<p:watermark for="homeTelNoAreaCode" value="#{profile['areaCode']}" id="homeTelNoAreaCodeWatermark" />
+
+						<p:inputNumber id="homeTelNo" style="display:inline; margin-left:3px" inputStyle="width:100px;" decimalPlaces="0"
+							thousandSeparator="" value="#{applicantProfileBean.applicantInformationVo.homeTel.number}" />
+						<p:watermark for="homeTelNo" value="#{profile['number']}" id="homeTelNoWatermark" />
+					</h:panelGroup>
+					<p:column></p:column>
+
+					<p:column>
+						<h:outputLink id="helpInfoE" value="#" disabled="true" styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip showEvent="click" id="toolTipE" for="helpInfoE" position="left">
+						#{profile['homeTelNoCountryNote1']}
+						<div>#{profile['homeTelNoCountryNote2']}</div>
+						</p:tooltip>
+						<p:outputLabel for="mobilePhoneNoCountryCode" value="#{profile['mobilePhoneNo']}" />
+					</p:column>
+					<h:panelGroup layout="block" style="width:100%;">
+						<p:inputNumber id="mobilePhoneNoCountryCode" style="display:inline;" inputStyle="width:100px;" decimalPlaces="0"
+							thousandSeparator="" value="#{applicantProfileBean.applicantInformationVo.mobileTel.countryCd}" />
+						<p:watermark for="mobilePhoneNoCountryCode" value="#{profile['countryCode']}"
+							id="mobilePhoneNoCountryCodeWatermark" />
+
+						<p:inputNumber id="mobilePhoneNoAreaCode" style="display:inline; margin-left:3px" inputStyle="width:100px;"
+							decimalPlaces="0" thousandSeparator="" value="#{applicantProfileBean.applicantInformationVo.mobileTel.areaCd}" />
+						<p:watermark for="mobilePhoneNoAreaCode" value="#{profile['areaCode']}" id="mobilePhoneNoAreaCodeWatermark" />
+
+						<p:inputNumber id="mobilePhoneNo" style="display:inline; margin-left:3px" inputStyle="width:100px;"
+							decimalPlaces="0" thousandSeparator="" value="#{applicantProfileBean.applicantInformationVo.mobileTel.number}" />
+						<p:watermark for="mobilePhoneNo" value="#{profile['number']}" id="mobilePhoneNoWatermark" />
+					</h:panelGroup>
+					<p:column></p:column>
+					<p:column></p:column>
+				</p:panelGrid>
+
+				<p:panelGrid columns="2" columnClasses="ui-grid-col-3,ui-grid-col-9" layout="grid"
+					styleClass="ui-panelgrid-blank ui-fluid">
+					<p:column></p:column>
+					<p:selectBooleanCheckbox value="#{applicantProfileBean.applicantInformationVo.receiveInfoFlag}"
+						itemLabel="#{profile['receiveInfoText']}" style="margin-top:6px; font-weight:bold" />
+				</p:panelGrid>
+
+				<div class="hr"></div>
+				<div class="ax-section-title">#{profile['tags']}</div>
+				<p:panelGrid columns="2" columnClasses="ui-grid-col-3,ui-grid-col-9" layout="grid"
+					styleClass="ui-panelgrid-blank ui-fluid">
+					<p:outputLabel for="tag" value="#{profile['tag']}" />
+					<p:inputText id="tag" value="#{applicantProfileBean.applicantInformationVo.tags}" />
+				</p:panelGrid>
+				<div class="hr"></div>
+				<div class="hr"></div>
+			</h:form>
+		</f:view>
+	</div>
+</ui:composition>

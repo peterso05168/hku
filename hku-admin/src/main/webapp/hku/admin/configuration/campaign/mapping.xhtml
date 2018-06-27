@@ -1,0 +1,88 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	template="./campaign.xhtml">
+
+	<ui:define name="breadcrumb-2">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.configuration.campaign" var="cpgn" />
+			<li><a title="">#{cpgn['campaign']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+	<ui:define name="breadcrumb-3">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.configuration.campaign" var="cpgn" />
+			<li><a title="">#{cpgn['mapping']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+	<ui:define name="breadcrumb-4">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.configuration.campaign" var="cpgn" />
+			<li><a title="">#{cpgn['edit']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+	<ui:define name="title">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.configuration.campaign" var="cpgn" />#{cpgn['campaignMapping']}
+        </f:view>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.configuration.campaign" var="campaign" />
+			<div>
+				<p:panel id="toggleable" header="#{campaign['mapping']}" toggleSpeed="200" closeSpeed="200">
+					<h:form id="mappingForm">
+						<div>
+							<p:panelGrid columns="4" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" layout="grid"
+								styleClass="ui-panelgrid-blank ui-fluid">
+								<p:outputLabel value="#{campaign['country']}" />
+								<p:selectOneMenu value="#{mappingBean.mappingVo.countryId}">
+									<p:ajax event="change" listener="#{mappingBean.loadProvinceList}" update="mappingForm" />
+									<f:selectItem itemLabel="#{campaign['all']}" itemValue="" />
+									<f:selectItems value="#{mappingBean.countryVos}" var="country" itemLabel="#{country.description}" itemValue="#{country.id}" />
+								</p:selectOneMenu>
+								<p:outputLabel value="#{campaign['province']}" />
+								<p:selectOneMenu value="#{mappingBean.mappingVo.provinceId}">
+									<f:selectItem itemLabel="#{campaign['all']}" itemValue="" />
+									<f:selectItems value="#{mappingBean.proVos}" var="pro" itemLabel="#{pro.description}" itemValue="#{pro.id}" />
+								</p:selectOneMenu>
+							</p:panelGrid>
+						</div>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{campaign['search']}" update="formCampaignMapping" action="#{mappingBean.search}" />
+							<p:commandButton value="#{campaign['reset']}" styleClass="ui-priority-secondary" update="mappingForm formCampaignMapping" action="#{mappingBean.reset}" />
+						</div>
+					</h:form>
+				</p:panel>
+				<p:panel id="toggleable1" toggleSpeed="200" closeSpeed="200">
+					<h:form id="formCampaignMapping">
+					<p:growl id="growlMsg" showDetail="true" />
+						<p:dataTable value="#{mappingBean.mappingVos}" var="mapping">
+							<p:column headerText="#{campaign['studyProvinceOrCity']}" width="55%">
+								<h:outputText value="#{mapping.studyProvinceOrCityName}" />
+							</p:column>
+
+							<p:column headerText="#{campaign['interviewProvinceOrCity']}">
+								<p:selectOneMenu style="width:15%" value="#{mapping.interviewProvinceId}"
+									rendered="#{mapping.studyProvinceId!=null?true:false}">
+									<f:selectItem itemLabel="#{campaign['all']}" itemValue="" />
+									<f:selectItems value="#{mappingBean.provinceVos}" var="province" itemLabel="#{province.description}"
+										itemValue="#{province.id}" />
+								</p:selectOneMenu>
+								<p:selectOneMenu style="width:15%" value="#{mapping.interviewCityId}"
+									rendered="#{mapping.studyCityId!=null?true:false}">
+									<f:selectItem itemLabel="#{campaign['all']}" itemValue="" />
+									<f:selectItems value="#{mappingBean.cityVos}" var="city" itemLabel="#{city.description}" itemValue="#{city.id}" />
+								</p:selectOneMenu>
+							</p:column>
+						</p:dataTable>
+
+						<div class="ax-btn-set">
+							<p:commandButton value="#{campaign['save']}" action="#{mappingBean.save}" update="formCampaignMapping" />
+						</div>
+					</h:form>
+				</p:panel>
+			</div>
+		</f:view>
+	</ui:define>
+</ui:composition>

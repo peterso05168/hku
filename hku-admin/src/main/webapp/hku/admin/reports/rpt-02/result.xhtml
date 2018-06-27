@@ -1,0 +1,68 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="./search.xhtml">
+
+	<ui:define name="breadcrumb-4">
+		<li><a title="">Generate</a><span>/</span></li>
+	</ui:define>
+
+	<ui:define name="main-content-2">
+		<h:form>
+			<p:dataTable var="car" value="#{dtBasicView.cars}" rows="10"
+				reflow="true" paginator="true" paginatorPosition="bottom"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15">
+				<p:column headerText="Training Category" sortBy="#{car.id}">
+					<h:outputText value="#{car.id}" />
+				</p:column>
+				<p:column headerText="Department/Product Category"
+					sortBy="#{car.id}">
+					<h:outputText value="#{car.id}" />
+				</p:column>
+				<p:column headerText="Course No." sortBy="#{car.year}">
+					<h:outputText value="#{car.brand}" />
+				</p:column>
+				<p:column headerText="Course Name" sortBy="#{car.id}">
+					<h:outputText value="#{car.id}" />
+				</p:column>
+				<p:column headerText="Published Date" sortBy="#{car.brand}">
+					<h:outputText value="#{car.year}" />
+				</p:column>
+				<p:column headerText="Pending To Enroll No." sortBy="#{car.brand}">
+					<h:outputText value="#{car.year}" />
+				</p:column>
+				<p:column headerText="(%)" sortBy="#{car.brand}">
+					<h:outputText value="#{car.year}" />
+				</p:column>
+				<p:column headerText="In Progress No." sortBy="#{car.brand}">
+					<h:outputText value="#{car.year}" />
+				</p:column>
+				<p:column headerText="(%)" sortBy="#{car.brand}">
+					<h:outputText value="#{car.year}" />
+				</p:column>
+				<p:column headerText="Completed No." sortBy="#{car.brand}">
+					<h:outputText value="#{car.year}" />
+				</p:column>
+				<p:column headerText="(%)" sortBy="#{car.brand}">
+					<h:outputText value="#{car.year}" />
+				</p:column>
+				<p:column headerText="Expired No." sortBy="#{car.brand}">
+					<h:outputText value="#{car.year}" />
+				</p:column>
+				<p:column headerText="(%)" sortBy="#{car.brand}">
+					<h:outputText value="#{car.year}" />
+				</p:column>
+			</p:dataTable>
+			<div class="ax-btn-set">
+				<p:selectOneMenu id="fileType">
+					<f:selectItem itemLabel="PDF" itemValue="0" />
+					<f:selectItem itemLabel="Excel" itemValue="1" />
+					<f:selectItem itemLabel="CSV" itemValue="2" />
+				</p:selectOneMenu>
+				<p:commandButton value="Export" onclick="_ACTION('result')" />
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

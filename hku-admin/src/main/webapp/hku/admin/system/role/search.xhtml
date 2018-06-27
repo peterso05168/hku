@@ -1,0 +1,165 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	template="./role.xhtml">
+
+	<ui:define name="breadcrumb-3">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.system-role.rolemanage" var="role" />
+			<li><a title="">#{role['search']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+		<script>
+			$(function({
+				$("#advancedSearch").click(function(){
+					alert("sdfsd");
+				});
+			}));
+		</script>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.system-role.rolemanage" var="rolemanage" />
+			<f:loadBundle basename="i18n.system-role.rolemanage" var="roleResult" />
+			<div>
+				<p:panel id="toggleable" header="#{rolemanage['searchRole']}" toggleable="true" toggleSpeed="200" closeSpeed="200"
+					widgetVar="panel">
+					<h:form id="roleForm">
+						<div>
+							<input type="checkbox" id="basicAdvance" name="basicAdvance" class="basicAdvance hidden-checkbox" />
+							<div>
+								<p:panelGrid columns="1" layout="grid" columnClasses="ui-grid-col-12" styleClass="ui-panelgrid-blank ui-fluid" rendered="#{!roleBean.divStatus}">
+									<p:inputText value="#{roleBean.roleVo.combination}" />
+									<p:column>
+										<label for="basicAdvance" class="basicAdvanceLabel advance"
+											style="margin-top: -0.3%; float: right; margin-right: 3px;"> <i class="ti-search"></i>
+										<p:commandLink action="#{roleBean.clickSearch('true')}" update="roleForm">
+											#{rolemanage['advancedSearch']}
+										</p:commandLink>
+										</label>
+										<div class="note" style="margin-top: -0.6%; margin-bottom: -1%;">#{rolemanage['roleNameDesc']}</div>
+									</p:column>
+								</p:panelGrid>
+							</div>
+							<div>
+								<p:panelGrid columns="6" rendered="#{roleBean.divStatus}"
+									columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2"
+									layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+
+									<p:outputLabel for="roleName" value="#{rolemanage['roleName']}" />
+									<p:inputText id="roleName" value="#{roleBean.roleVo.roleName}" />
+
+									<p:outputLabel for="roleType" value="#{rolemanage['roleType']}" />
+									<p:selectOneMenu id="roleType">
+										<f:selectItem itemLabel="#{rolemanage['all']}" itemValue="0" />
+										<f:selectItem itemLabel="#{rolemanage['courseProviderPortal']}" itemValue="1" />
+										<f:selectItem itemLabel="#{rolemanage['learnerPortal']}" itemValue="2" />
+									</p:selectOneMenu>
+
+									<p:outputLabel for="status" value="#{rolemanage['status']}" />
+									<p:selectOneMenu id="status" value="#{roleBean.roleVo.status}">
+										<f:selectItem itemLabel="#{rolemanage['all']}" itemValue="" />
+										<f:selectItem itemLabel="#{rolemanage['active']}" itemValue="TRUE" />
+										<f:selectItem itemLabel="#{rolemanage['inactive']}" itemValue="FALSE" />
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+								<p:panelGrid columns="6" columnClasses="ui-grid-col-12" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" rendered="#{roleBean.divStatus}">
+									<p:column styleClass="ui-grid-col-12">
+											<label for="basicAdvance" class="basicAdvanceLabel advance"
+												style="margin-top: -0.3%; float: right; margin-right: 3px;">
+												<i class="ti-search"></i>
+										<p:commandLink action="#{roleBean.clickSearch('false')}" update="roleForm">
+												#{rolemanage['basicSearch']}
+										</p:commandLink>
+												</label>
+									</p:column>
+								</p:panelGrid>
+							</div>
+						</div>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{rolemanage['search']}" action="#{roleBean.search}" update="formRole" />
+							<p:commandButton value="#{rolemanage['reset']}" styleClass="ui-priority-secondary" action="#{roleBean.reset}"
+								update="toggleable formRole" />
+							<p:commandButton value="#{rolemanage['role']}" icon="ti-plus" styleClass="ui-priority-primary"
+								onclick="_ACTION('create')" update="saveForm" action="#{roleBean.createNewRole}" />
+						</div>
+					</h:form>
+				</p:panel>
+				<p:dialog header="#{rolemanage['createRole']}" height="370" widgetVar="createDialog" modal="true" width="500"
+					minHeight="50">
+					<h:form id="saveForm">
+						<p:growl id="growlMsg" showDetail="true" />
+						<div class="ui-fluid">
+							<p:panelGrid columns="1" columnClasses="ui-grid-col-12" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+
+								<p:column>
+									<p:outputLabel for="roleName" value="#{rolemanage['roleName']}" style="text-align:left;">
+										<span style="color: red;">*</span>
+									</p:outputLabel>
+									<p:inputText id="roleName" value="#{roleBean.saveRole.roleName}" />
+								</p:column>
+
+								<p:column>
+									<p:outputLabel for="roleType" value="#{rolemanage['roleType']}" style="text-align:left;" />
+									<p:selectOneMenu id="roleType">
+										<f:selectItem itemLabel="#{rolemanage['select']}" itemValue="0" />
+										<f:selectItem itemLabel="#{rolemanage['courseProviderPortal']}" itemValue="1" />
+										<f:selectItem itemLabel="#{rolemanage['learnerPortal']}" itemValue="2" />
+									</p:selectOneMenu>
+								</p:column>
+
+								<p:column>
+									<p:outputLabel for="desc" value="#{rolemanage['desc']}" style="text-align:left;" />
+									<p:inputText id="desc" value="#{roleBean.saveRole.description}" />
+								</p:column>
+							</p:panelGrid>
+						</div>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{rolemanage['create']}" action="#{roleBean.save}" update="toggleable formRole saveForm" />
+							<p:commandButton value="#{rolemanage['cancel']}" styleClass="ui-priority-secondary"
+								onclick="_ACTION('create-cancel')" />
+						</div>
+					</h:form>
+				</p:dialog>
+				<h:form id="formRole">
+					<p:dataTable id="roleTable" var="role" value="#{roleBean.lazyDataModel}" reflow="true" paginator="true"
+						paginatorPosition="bottom" rowKey="#{role.id}" rows="15" lazy="true" rendered="#{roleBean.status}"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+						<f:facet name="header">#{roleResult['searchResult']}</f:facet>
+
+						<p:column headerText="#{roleResult['roleName']}">
+							<p:commandLink href="javascript:void(0)" action="#{roleBean.formEdit(role.id)}"
+								style="font-style: normal; font-size: 12px !important;">
+								<h:outputText value="#{role.roleName}" />
+							</p:commandLink>
+						</p:column>
+
+						<p:column headerText="#{roleResult['desc']}">
+							<h:outputText value="#{role.description}" />
+						</p:column>
+
+						<p:column headerText="#{roleResult['status']}">
+							<h:outputText rendered="#{role.isActive}" value="#{roleResult['active']}" styleClass="status-label green" />
+							<h:outputText rendered="#{!role.isActive}" value="#{roleResult['inactive']}" styleClass="status-label gray" />
+						</p:column>
+
+						<p:column headerText="#{roleResult['action']}" styleClass="ax-action-w">
+							<p:menuButton value="#{roleResult['action']}">
+								<p:menuitem value="#{roleResult['edit']}" action="#{roleBean.formEdit(role.id)}" />
+								<p:menuitem value="#{roleResult['delete']}" action="#{roleBean.delete(role.id)}">
+									<p:confirm header="#{roleResult['prompt']}" message="#{roleResult['deleteMessage']}" icon="ui-icon-alert" />
+								</p:menuitem>
+							</p:menuButton>
+						</p:column>
+					</p:dataTable>
+
+					<!-- delete confirmDialog-->
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+						<p:commandButton value="#{roleResult['yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+						<p:commandButton value="#{roleResult['no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</p:confirmDialog>
+				</h:form>
+			</div>
+		</f:view>
+	</ui:define>
+</ui:composition>

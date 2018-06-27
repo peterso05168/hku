@@ -1,0 +1,489 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="./my-profile.xhtml">
+
+	<ui:define name="main-content">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.my-profile.myprofile" var="myprofile" />
+			<p:tabView id="infoTabView" activeIndex="0">
+				<p:tab title="#{myprofile['basicInfo']}"
+					titleStyle="margin-right: 3px;">
+					<h:form id="appInfoForm">
+						<p:growl id="growl" showDetail="true" />
+						<p:panelGrid columns="3"
+							columnClasses="ui-grid-col-3,ui-grid-col-5,ui-grid-col-4"
+							layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+							<p:column>
+								<h:outputLink id="helpInfoEmailAddr" value="#" disabled="true"
+									styleClass="ax-pf-tooltip-icon">
+									<i class="ti-help"></i>
+								</h:outputLink>
+								<p:tooltip id="toolTipEmailAddr" for="helpInfoEmailAddr"
+									showEvent="click" position="left">
+									<div>#{myprofile['regEmailAddrTooltip1']}</div>
+									<div>#{myprofile['regEmailAddrTooltip2']}</div>
+									<div>#{myprofile['regEmailAddrTooltip3']}</div>
+								</p:tooltip>
+								<p:outputLabel for="regEmailAddr"
+									value="#{myprofile['regEmailAddr']}" />
+							</p:column>
+							<p:inputText id="regEmailAddr"
+								value="#{myProfileBean.accountVo.personEmail}" disabled="true" />
+							<p:column></p:column>
+
+							<p:column>
+								<h:outputLink id="helpInfoC" value="#" disabled="true"
+									styleClass="ax-pf-tooltip-icon">
+									<i class="ti-help"></i>
+								</h:outputLink>
+								<p:tooltip id="toolTipC" for="helpInfoC" showEvent="click"
+									value="#{myprofile['alterEmailAddrTooltip']}" position="left" />
+								<p:outputLabel for="alterEmailAddr"
+									value="#{myprofile['alterEmailAddr']}">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+							</p:column>
+							<p:inputText id="alterEmailAddr"
+								value="#{myProfileBean.applicantInformationVo.alternateEmail}" />
+							<p:column></p:column>
+
+							<p:column>
+								<h:outputLink id="helpInfoD" value="#" disabled="true"
+									styleClass="ax-pf-tooltip-icon">
+									<i class="ti-help"></i>
+								</h:outputLink>
+								<p:tooltip showEvent="click" id="toolTipD" for="helpInfoD"
+									position="left">
+								#{myprofile['hkidCardNoTooltip1']}
+										<div>#{myprofile['hkidCardNoTooltip2']}</div>
+								</p:tooltip>
+								<p:outputLabel for="hkidCardNo"
+									value="#{myprofile['hkidCardNo']}" />
+							</p:column>
+							<p:inputText id="hkidCardNo"
+								value="#{myProfileBean.applicantInformationVo.hkid}" />
+							<p:column></p:column>
+
+							<p:outputLabel for="passportNo"
+								value="#{myprofile['passportNo']}" />
+							<p:inputText id="passportNo"
+								value="#{myProfileBean.applicantInformationVo.passportNo}" />
+							<p:column></p:column>
+
+							<p:outputLabel for="surname" value="#{myprofile['surname']}">
+								<span style="color: red;">*</span>
+							</p:outputLabel>
+							<p:inputText id="surname"
+								value="#{myProfileBean.applicantInformationVo.surname}" />
+							<p:watermark for="surname" value="#{myprofile['inEng']}"
+								id="surnameWatermark" />
+
+							<p:outputLabel for="givenName" value="#{myprofile['givenName']}">
+								<span style="color: red;">*</span>
+							</p:outputLabel>
+							<p:inputText id="givenName"
+								value="#{myProfileBean.applicantInformationVo.givenName}" />
+							<p:watermark for="givenName" value="#{myprofile['inEng']}"
+								id="givenNameWatermark" />
+
+							<p:outputLabel for="chineseName"
+								value="#{myprofile['chineseName']}" />
+							<p:inputText id="chineseName"
+								value="#{myProfileBean.applicantInformationVo.chineseName}" />
+							<p:column></p:column>
+
+							<p:column>
+								<h:outputLink id="helpInfoE" value="#" disabled="true"
+									styleClass="ax-pf-tooltip-icon">
+									<i class="ti-help"></i>
+								</h:outputLink>
+								<p:tooltip showEvent="click" id="toolTipE" for="helpInfoE"
+									position="left" value="#{myprofile['dateOfBirthTooltip']}" />
+								<p:outputLabel for="dateOfBirth"
+									value="#{myprofile['dateOfBirth']}">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+							</p:column>
+							<p:calendar id="dateOfBirth" placeholder="dd-mm-yyyy" readonlyInput="true"
+								value="#{myProfileBean.applicantInformationVo.dateOfBirth}" yearRange="c-40:c+40"
+								onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+								converterMessage="#{myprofile['dateOfBirth']}" mindate="#{commonBean.minBirthDate}" maxdate="#{commonBean.maxBirthDate}"
+								navigator="true" maxlength="10" locale="de" pattern="dd-MM-yyyy"
+								showOn="button">
+							</p:calendar>
+							<p:column></p:column>
+
+							<p:outputLabel for="sex" value="#{myprofile['sex']}">
+								<span style="color: red;">*</span>
+							</p:outputLabel>
+							<p:selectOneMenu id="sex"
+								value="#{myProfileBean.applicantInformationVo.sex}">
+								<f:selectItem itemLabel="#{myprofile['select']}" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="#{myprofile['male']}" itemValue="m" />
+								<f:selectItem itemLabel="#{myprofile['female']}" itemValue="f" />
+							</p:selectOneMenu>
+							<p:column></p:column>
+
+							<p:outputLabel for="countryOfNationality"
+								value="#{myprofile['countryOfNationality']}">
+								<span style="color: red;">*</span>
+							</p:outputLabel>
+							<p:selectOneMenu id="countryOfNationality"
+								value="#{myProfileBean.applicantInformationVo.nationalityCountryId}">
+								<p:ajax event="change"
+									listener="#{commonBean.loadProvinceOrCityList}"
+									update="provinceOrCityNational" />
+								<p:ajax event="change" listener="#{myProfileBean.changeArea}"
+									update="provinceOrCityNational" />
+								<f:selectItem itemLabel="#{myprofile['select']}"
+									noSelectionOption="true" itemValue="" />
+								<f:selectItems value="#{commonBean.countries}" var="country"
+									itemLabel="#{country.description}" itemValue="#{country.id}" />
+							</p:selectOneMenu>
+							<p:column></p:column>
+
+							<p:outputLabel for="provinceOfNationality"
+								rendered="#{commonBean.isActiveProvinceOrCity}"
+								value="#{myprofile['provinceOrCity']}">
+								<span style="color: red;">*</span>
+							</p:outputLabel>
+							<p:outputLabel for="cityOfNationality"
+								rendered="#{!commonBean.isActiveProvinceOrCity}"
+								value="#{myprofile['provinceOrCity']}">
+								<span style="color: red;">*</span>
+							</p:outputLabel>
+							<p:column>
+								<h:panelGroup id="provinceOrCityNational">
+									<p:selectOneMenu id="provinceOfNationality"
+										value="#{myProfileBean.applicantInformationVo.nationalityProvinceId}"
+										rendered="#{commonBean.isActiveProvinceOrCity}">
+										<f:selectItem itemLabel="#{myprofile['select']}"
+											noSelectionOption="true" itemValue="" />
+										<f:selectItems value="#{commonBean.provinces}" var="province"
+											itemLabel="#{province.description}"
+											itemValue="#{province.id}" />
+									</p:selectOneMenu>
+
+									<p:selectOneMenu id="cityOfNationality"
+										value="#{myProfileBean.applicantInformationVo.nationalityCityId}"
+										rendered="#{!commonBean.isActiveProvinceOrCity}">
+										<f:selectItem itemLabel="#{myprofile['select']}"
+											noSelectionOption="true" itemValue="" />
+										<f:selectItems value="#{commonBean.citys}" var="city"
+											itemLabel="#{city.description}" itemValue="#{city.id}" />
+									</p:selectOneMenu>
+								</h:panelGroup>
+							</p:column>
+							<p:column></p:column>
+
+							<p:outputLabel for="currCountryOfResidence"
+								value="#{myprofile['currCountryOfResidence']}">
+								<span style="color: red;">*</span>
+							</p:outputLabel>
+							<p:selectOneMenu id="currCountryOfResidence"
+								value="#{myProfileBean.applicantInformationVo.residenceCountryId}">
+								<f:selectItem itemLabel="#{myprofile['select']}" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{commonBean.countries}" var="country"
+									itemLabel="#{country.description}" itemValue="#{country.id}" />
+							</p:selectOneMenu>
+							<p:column></p:column>
+						</p:panelGrid>
+
+						<h:panelGroup id="studtInfoGroup">
+							<h:panelGroup
+								rendered="#{myProfileBean.applicantInformationVo.isNotStuding}"></h:panelGroup>
+							<h:panelGroup
+								rendered="#{!myProfileBean.applicantInformationVo.isNotStuding}">
+								<p:panelGrid columns="3" id="myprofile_study_area"
+									columnClasses="ui-grid-col-3,ui-grid-col-5,ui-grid-col-4"
+									layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+									<p:outputLabel for="currCountryOfStudy"
+										value="#{myprofile['currCountryOfStudy']}">
+										<span style="color: red;">*</span>
+									</p:outputLabel>
+									<h:panelGroup layout="block">
+										<p:selectOneMenu id="currCountryOfStudy"
+											value="#{myProfileBean.applicantInformationVo.studyCountryId}">
+											<p:ajax event="change"
+												listener="#{commonBean.loadProvinceOrCityListOfStudy}"
+												update="appInfoForm:myprofile_study_area myprofile_study_institution" />
+											<p:ajax event="change" listener="#{myProfileBean.changeArea}"
+												update="appInfoForm:myprofile_study_area myprofile_study_institution"
+												process="@this" />
+											<f:selectItem itemLabel="#{myprofile['select']}" itemValue=""
+												noSelectionOption="true" />
+											<f:selectItems value="#{commonBean.countries}" var="country"
+												itemLabel="#{country.description}" itemValue="#{country.id}" />
+											<f:selectItem itemLabel="#{myprofile['others']}"
+												itemValue="others" />
+										</p:selectOneMenu>
+
+										<p:inputText id="currCountryOfStudyInputText"
+											rendered="#{commonBean.isActiveStudyCountry}"
+											style="margin-top:5px;"
+											value="#{myProfileBean.applicantInformationVo.studyCountryOthers}" />
+										<p:watermark for="currCountryOfStudyInputText"
+											rendered="#{commonBean.isActiveStudyCountry}"
+											value="#{myprofile['others']}"
+											id="currCountryOfStudyInputTextWatermark" />
+									</h:panelGroup>
+									<p:column></p:column>
+
+									<p:outputLabel for="province"
+										value="#{myprofile['studyProvince']}"
+										rendered="#{commonBean.isActiveProvince}">
+										<span style="color: red;">*</span>
+									</p:outputLabel>
+									<p:selectOneMenu id="province"
+										rendered="#{commonBean.isActiveProvince}"
+										value="#{myProfileBean.applicantInformationVo.studyProvinceId}">
+										<p:ajax event="change" listener="#{commonBean.loadCityList}"
+											update="appInfoForm:myprofile_study_area" />
+										<p:ajax event="change" listener="#{myProfileBean.changeArea}"
+											update="appInfoForm:myprofile_study_area" />
+										<f:selectItem itemLabel="#{myprofile['select']}" itemValue=""
+											noSelectionOption="true" />
+										<f:selectItems value="#{commonBean.provinceOfStudys}"
+											var="province" itemLabel="#{province.description}"
+											itemValue="#{province.id}" />
+									</p:selectOneMenu>
+									<p:column rendered="#{commonBean.isActiveProvince}"></p:column>
+
+									<p:outputLabel for="city" value="#{myprofile['studyCity']}"
+										rendered="#{commonBean.isActiveCity}">
+										<span style="color: red;">*</span>
+									</p:outputLabel>
+									<p:selectOneMenu id="city"
+										rendered="#{commonBean.isActiveCity}"
+										value="#{myProfileBean.applicantInformationVo.studyCityId}">
+										<p:ajax event="change" listener="#{myProfileBean.changeArea}"
+											update="appInfoForm:myprofile_study_area" />
+										<p:ajax event="change"
+											listener="#{commonBean.loadInstitutionList}"
+											update="myprofile_study_institution" />
+										<f:selectItem itemLabel="#{myprofile['select']}" itemValue=""
+											noSelectionOption="true" />
+										<f:selectItems value="#{commonBean.cityOfStudys}" var="city"
+											itemLabel="#{city.description}" itemValue="#{city.id}" />
+									</p:selectOneMenu>
+									<p:column rendered="#{commonBean.isActiveCity}"></p:column>
+								</p:panelGrid>
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<p:panelGrid columns="3"
+							columnClasses="ui-grid-col-3,ui-grid-col-5,ui-grid-col-4"
+							layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+							<p:column></p:column>
+							<p:column>
+								<p:selectBooleanCheckbox id="isNotStuding"
+									value="#{myProfileBean.applicantInformationVo.isNotStuding}"
+									itemLabel="#{myprofile['currently']}">
+									<p:ajax event="change"
+										update="studtInfoGroup institutionInfoGroup" />
+								</p:selectBooleanCheckbox>
+							</p:column>
+							<p:column></p:column>
+
+							<p:column>
+								<h:outputLink id="helpInfoF" value="#" disabled="true"
+									styleClass="ax-pf-tooltip-icon">
+									<i class="ti-help"></i>
+								</h:outputLink>
+								<p:tooltip showEvent="click" id="toolTipF" for="helpInfoF"
+									position="left">
+								#{myprofile['telTooltip1']}
+										<div>#{myprofile['telTooltip2']}</div>
+								</p:tooltip>
+								<p:outputLabel for="homeTelNoCountryCode"
+									value="#{myprofile['homeTelNo']}">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+							</p:column>
+							<h:panelGroup layout="block">
+								<p:inputNumber decimalPlaces="0" thousandSeparator=""
+									id="homeTelNoCountryCode"
+									value="#{myProfileBean.homeTel.countryCd}"
+									style="display:inline;" inputStyle="width:100px;" />
+								<p:watermark for="homeTelNoCountryCode"
+									value="#{myprofile['countryCode']}"
+									id="homeTelNoCountryCodeWatermark" />
+								<p:inputNumber decimalPlaces="0" thousandSeparator=""
+									id="homeTelNoAreaCode" value="#{myProfileBean.homeTel.areaCd}"
+									style="display:inline;margin-left:3px" inputStyle="width:100px;" />
+								<p:watermark for="homeTelNoAreaCode"
+									value="#{myprofile['areaCode']}"
+									id="homeTelNoAreaCodeWatermark" />
+								<p:inputNumber decimalPlaces="0" thousandSeparator=""
+									id="homeTelNo" value="#{myProfileBean.homeTel.number}"
+									style="display:inline;margin-left:3px" inputStyle="width:100px;" />
+								<p:watermark for="homeTelNo" value="#{myprofile['number']}"
+									id="homeTelNoWatermark" />
+							</h:panelGroup>
+							<p:column></p:column>
+							<p:column>
+								<h:outputLink id="helpInfoG" value="#" disabled="true"
+									styleClass="ax-pf-tooltip-icon">
+									<i class="ti-help"></i>
+								</h:outputLink>
+								<p:tooltip showEvent="click" id="toolTipG" for="helpInfoG"
+									position="left">
+								#{myprofile['telTooltip1']}
+										<div>#{myprofile['telTooltip2']}</div>
+								</p:tooltip>
+								<p:outputLabel for="mobilePhoneNoCountryCode"
+									value="#{myprofile['mobilePhoneNo']}">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+							</p:column>
+							<h:panelGroup layout="block">
+								<p:inputNumber decimalPlaces="0" thousandSeparator=""
+									id="mobilePhoneNoCountryCode"
+									value="#{myProfileBean.mobileTel.countryCd}"
+									style="display:inline;" inputStyle="width:100px;" />
+								<p:watermark for="mobilePhoneNoCountryCode"
+									value="#{myprofile['countryCode']}"
+									id="mobilePhoneNoCountryCodeWatermark" />
+								<p:inputNumber decimalPlaces="0" thousandSeparator=""
+									id="mobilePhoneNoAreaCode"
+									value="#{myProfileBean.mobileTel.areaCd}"
+									style="display:inline;margin-left:3px" inputStyle="width:100px;" />
+								<p:watermark for="mobilePhoneNoAreaCode"
+									value="#{myprofile['areaCode']}"
+									id="mobilePhoneNoAreaCodeWatermark" />
+								<p:inputNumber decimalPlaces="0" thousandSeparator=""
+									id="mobilePhoneNo" value="#{myProfileBean.mobileTel.number}"
+									style="display:inline;margin-left:3px" inputStyle="width:100px;" />
+								<p:watermark for="mobilePhoneNo" value="#{myprofile['number']}"
+									id="mobilePhoneNoWatermark" />
+							</h:panelGroup>
+						</p:panelGrid>
+						<p:panelGrid columns="2"
+							columnClasses="ui-grid-col-3,ui-grid-col-9" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+							<p:outputLabel for="correspondenceAddr"
+								value="#{myprofile['correspondenceAddr']}">
+								<span style="color: red;">*</span>
+							</p:outputLabel>
+							<p:inputText id="correspondenceAddr"
+								value="#{myProfileBean.applicantInformationVo.correspondenceAddr}" />
+						</p:panelGrid>
+
+						<h:panelGroup id="institutionInfoGroup">
+							<h:panelGroup
+								rendered="#{myProfileBean.applicantInformationVo.isNotStuding}"></h:panelGroup>
+							<h:panelGroup
+								rendered="#{!myProfileBean.applicantInformationVo.isNotStuding}">
+								<p:panelGrid columns="3"
+									columnClasses="ui-grid-col-3,ui-grid-col-5,ui-grid-col-4"
+									layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+									<p:outputLabel for="nameOfInstitution"
+										value="#{myprofile['nameOfInstitution']}">
+										<span style="color: red;">*</span>
+									</p:outputLabel>
+									<h:panelGroup layout="block" id="myprofile_study_institution">
+										<p:selectOneMenu id="nameOfInstitution"
+											value="#{myProfileBean.applicantInformationVo.institutionId}">
+											<p:ajax event="change" listener="#{commonBean.loadOthers}"
+												update="myprofile_study_institution" />
+											<p:ajax event="change" listener="#{myProfileBean.changeArea}"
+												update="myprofile_study_institution" />
+											<f:selectItem itemLabel="#{myprofile['select']}" itemValue=""
+												noSelectionOption="true" />
+											<f:selectItems value="#{commonBean.institutions}"
+												var="institution" itemLabel="#{institution.description}"
+												itemValue="#{institution.id}" />
+											<f:selectItem itemLabel="#{myprofile['others']}"
+												itemValue="others" />
+										</p:selectOneMenu>
+										<p:inputText id="nameOfInstitutionInputText"
+											rendered="#{commonBean.isActiveStudyInstitution}"
+											value="#{myProfileBean.applicantInformationVo.institutionOthers}"
+											style="margin-top:5px;" />
+										<p:watermark for="nameOfInstitutionInputText"
+											value="#{myprofile['others']}"
+											rendered="#{commonBean.isActiveStudyInstitution}"
+											id="nameOfInstitutionInputTextWatermark" />
+									</h:panelGroup>
+									<p:column></p:column>
+									<p:column></p:column>
+								</p:panelGrid>
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<p:panelGrid columns="2"
+							columnClasses="ui-grid-col-3,ui-grid-col-9" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+							<p:column></p:column>
+							<h:panelGroup layout="block">
+								<p:selectBooleanCheckbox
+									value="#{myProfileBean.applicantInformationVo.receiveInfoFlag}"
+									itemLabel="#{myprofile['receiveInfoText']}"
+									style="font-weight:bold" />
+							</h:panelGroup>
+						</p:panelGrid>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{myprofile['save']}"
+								action="#{myProfileBean.save()}" update="infoTabView:appInfoForm infoTabView:historyForm" />
+						</div>
+					</h:form>
+				</p:tab>
+
+				<p:tab title="#{myprofile['history']}"
+					titleStyle="margin-right: 3px;">
+					<h:form id="historyForm">
+						<p:dataTable value="#{myProfileBean.auditLogVos}" var="auditLogVo" reflow="true">
+							<p:column headerText="#{myprofile['action']}" width="65%">
+								<h:outputText value="#{auditLogVo.msg}" />
+							</p:column>
+							<p:column headerText="#{myprofile['updatedDateTime']}">
+								<h:outputText value="#{auditLogVo.lastDate}" />
+							</p:column>
+							<p:column headerText="#{myprofile['status']}"
+								styleClass="ax-action-w">
+								<h:outputText value="#{auditLogVo.statusCd}" styleClass="status-label red" />
+							</p:column>
+						</p:dataTable>
+					</h:form>
+				</p:tab>
+
+				<p:tab title="#{myprofile['changePassword']}"
+					titleStyle="margin-right: 3px;">
+					<h:form id="changePasswordForm">
+						<p:panelGrid columns="2"
+							columnClasses="ui-grid-col-2,ui-grid-col-4" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+							<p:outputLabel value="#{myprofile['currPassword']}">
+								<span style="color: red;">*</span>
+							</p:outputLabel>
+							<p:inputText />
+
+							<p:outputLabel value="#{myprofile['newPassword']}">
+								<span style="color: red;">*</span>
+							</p:outputLabel>
+							<p:inputText />
+
+							<p:outputLabel value="#{myprofile['reTypeNewPass']}">
+								<span style="color: red;">*</span>
+							</p:outputLabel>
+							<p:inputText />
+						</p:panelGrid>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{myprofile['submit']}" />
+							<p:commandButton value="#{myprofile['cancel']}" />
+						</div>
+					</h:form>
+				</p:tab>
+			</p:tabView>
+		</f:view>
+	</ui:define>
+</ui:composition>
+
+
+
+
+

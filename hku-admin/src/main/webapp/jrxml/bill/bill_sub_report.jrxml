@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.3.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bill_sub_report" pageWidth="780" pageHeight="70" columnWidth="780" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="f8659b35-dce4-4153-a7ad-8dd33c232c92">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="IS_PAYMENT" class="java.lang.Boolean"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="unitName" class="java.lang.String"/>
+	<field name="pricingName" class="java.lang.String"/>
+	<field name="description" class="java.lang.String"/>
+	<field name="unitPrice" class="java.lang.String"/>
+	<field name="quantity" class="java.lang.String"/>
+	<field name="amount" class="java.lang.String"/>
+	<field name="offsetAmount" class="java.lang.String"/>
+	<field name="amountPaid" class="java.lang.String"/>
+	<field name="memo" class="java.lang.String"/>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="45" height="20" uuid="3cd9d15a-8e9a-4de1-b1a1-9defdf51c098">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#C9C7C7"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+				</box>
+				<textElement>
+					<font fontName="黑体" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[序号]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="235" y="0" width="105" height="20" uuid="12731c3d-b7c6-4bc5-bdb8-cda795acbfa9">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#C9C7C7"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+				</box>
+				<textElement>
+					<font fontName="黑体" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[计费时间]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="340" y="0" width="75" height="20" uuid="2ae3077c-849a-4bcc-a8a4-2a03b2081ca1">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#C9C7C7"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+				</box>
+				<textElement>
+					<font fontName="黑体" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[单价(元)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="415" y="0" width="50" height="20" uuid="392d550a-5687-4b56-b4b0-04a323b967f8">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#C9C7C7"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+				</box>
+				<textElement>
+					<font fontName="黑体" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[数量]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="540" y="0" width="75" height="20" uuid="86fb38a6-3817-4c0b-a4a4-2882dcf7ff4e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#C9C7C7"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+				</box>
+				<textElement>
+					<font fontName="黑体" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[调整金额]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="690" y="0" width="90" height="20" uuid="d4dd48a6-f0ff-44e6-830c-e65e87e1f315">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#C9C7C7"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+				</box>
+				<textElement>
+					<font fontName="黑体" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[备注]]></text>
+			</staticText>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="45" y="0" width="90" height="20" isPrintWhenDetailOverflows="true" uuid="7af848af-8393-441f-9611-b987e0c71ef5"/>
+				<box>
+					<pen lineColor="#C9C7C7"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+				</box>
+				<textElement>
+					<font fontName="黑体" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{IS_PAYMENT}?"付款单位":"收款单位"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="135" y="0" width="100" height="20" isPrintWhenDetailOverflows="true" uuid="f14ecbdd-5ca9-46cb-9765-c63bce58d59c"/>
+				<box>
+					<pen lineColor="#C9C7C7"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+				</box>
+				<textElement>
+					<font fontName="黑体" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{IS_PAYMENT}?"收款项目":"付款项目"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="465" y="0" width="75" height="20" isPrintWhenDetailOverflows="true" uuid="43b51574-c682-4df9-97d9-6ac350df232b"/>
+				<box>
+					<pen lineColor="#C9C7C7"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+				</box>
+				<textElement>
+					<font fontName="黑体" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{IS_PAYMENT}?"应收金额":"应付金额"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="615" y="0" width="75" height="20" isPrintWhenDetailOverflows="true" uuid="b9b76d8d-b59f-4f3e-be73-f7c5d43a546f"/>
+				<box>
+					<pen lineColor="#C9C7C7"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+				</box>
+				<textElement>
+					<font fontName="黑体" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{IS_PAYMENT}?"实收金额":"实付金额"]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="45" y="0" width="90" height="20" isPrintWhenDetailOverflows="true" uuid="680948c0-b10f-4b5b-bbfc-73d4c00264d5">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#C9C7C7"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+				</box>
+				<textElement>
+					<font fontName="黑体" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{unitName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="135" y="0" width="100" height="20" isPrintWhenDetailOverflows="true" uuid="16e7f7d9-fc95-4ce6-bcbf-ecb5e48e3206">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#C9C7C7"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+				</box>
+				<textElement>
+					<font fontName="黑体" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pricingName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="235" y="0" width="105" height="20" isPrintWhenDetailOverflows="true" uuid="a96cab53-7333-4a35-9b28-7453d7d4998e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#C9C7C7"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+				</box>
+				<textElement>
+					<font fontName="黑体" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="340" y="0" width="75" height="20" isPrintWhenDetailOverflows="true" uuid="eb0dfe8f-9c4e-4dbc-b8d7-b8e3aa2ff2e9">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#C9C7C7"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+				</box>
+				<textElement>
+					<font fontName="黑体" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{unitPrice}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="415" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" uuid="16b33d8c-4b18-47b7-b8cb-c8a550b573f6">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#C9C7C7"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+				</box>
+				<textElement>
+					<font fontName="黑体" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="465" y="0" width="75" height="20" isPrintWhenDetailOverflows="true" uuid="94904195-dc6c-4ac7-bbfb-8bcd3fa61368">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#C9C7C7"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+				</box>
+				<textElement>
+					<font fontName="黑体" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="540" y="0" width="75" height="20" isPrintWhenDetailOverflows="true" uuid="47eb3532-170e-4d5e-b1a2-f3893965c788">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#C9C7C7"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+				</box>
+				<textElement>
+					<font fontName="黑体" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{offsetAmount}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="615" y="0" width="75" height="20" isPrintWhenDetailOverflows="true" uuid="ab0bb4eb-861d-4642-bfc5-d33acbe87ba2">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#C9C7C7"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+				</box>
+				<textElement>
+					<font fontName="黑体" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amountPaid}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="690" y="0" width="90" height="20" isPrintWhenDetailOverflows="true" uuid="8af6e51e-c612-42f9-a543-7c6c4c072ba5">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#C9C7C7"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+				</box>
+				<textElement>
+					<font fontName="黑体" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{memo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="45" height="20" uuid="acda0207-ba4f-4473-b744-b4a5e51e3c19">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#C9C7C7"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#C9C7C7"/>
+				</box>
+				<textElement>
+					<font fontName="黑体" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

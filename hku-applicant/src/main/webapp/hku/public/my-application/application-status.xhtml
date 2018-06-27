@@ -1,0 +1,308 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="./my-application-status.xhtml">
+
+	<f:view locale="#{language.locale}">
+		<f:loadBundle basename="i18n.offer-status.offerstatus" var="offer" />
+	</f:view>
+	<ui:define name="main-content">
+		<p:outputLabel
+			value="#{offer['fullName']} : #{applicationStatusBean.applicantInformationVo.givenName} #{applicationStatusBean.applicantInformationVo.surname}"
+			style="font-size:16px;margin:10px 0px 10px 5px;" />
+		<div class="ax-section-title">#{offer['application']}</div>
+		<p:growl id="growlMsg" showDetail="true" />
+		<h:form id="formStatus">
+			<p:repeat value="#{applicationStatusBean.applicationVos}"
+				var="applicationVo">
+				<div class="ax-section-title type-b">
+					<span>#{offer['admissionYear']} #{applicationVo.year}</span> <span
+						style="margin-left: 50px">#{offer['appNo']}
+						#{applicationVo.applicationNo}</span>
+				</div>
+				<p:dataTable reflow="true"
+					value="#{applicationVo.programmeChoiceVos}" var="programmeChoiceVo">
+					<p:column headerText="#{offer['curriculum']}">
+						<h:outputText value="#{programmeChoiceVo.hkuProgrammeDesc}" />
+					</p:column>
+
+					<p:column headerText="#{offer['offerType']}">
+						<h:outputText value="#{programmeChoiceVo.offerType}" />
+					</p:column>
+
+					<p:column headerText="#{offer['replyDead']}">
+						<h:outputText
+							value="#{applicationStatusBean.dateFormat(programmeChoiceVo.replyDeadline)}" />
+					</p:column>
+
+					<p:column headerText="#{offer['replyOn']}">
+						<h:outputText
+							value="#{applicationStatusBean.dateFormat(programmeChoiceVo.repliedOn)}" />
+					</p:column>
+
+					<p:column headerText="#{offer['status']}">
+						<h:outputText
+							rendered="#{programmeChoiceVo.offerStatusCd != 'OR' and programmeChoiceVo.offerStatusCd != 'REJECTED' and programmeChoiceVo.offerStatusCd != 'OFFERED' and programmeChoiceVo.offerStatusCd != 'OFFERACC'}"
+							value="#{offer['submitted']}" styleClass="status-label green" />
+						<h:outputText
+							rendered="#{programmeChoiceVo.offerStatusCd == 'OR' or programmeChoiceVo.offerStatusCd == 'REJECTED' or programmeChoiceVo.offerStatusCd == 'OFFERED' or programmeChoiceVo.offerStatusCd == 'OFFERACC'}"
+							value="#{programmeChoiceVo.statusValue}"
+							styleClass="status-label blue" />
+					</p:column>
+
+					<p:column headerText="#{offer['action']}" width="33%">
+						<!-- <p:commandButton value="#{offer['enrolInThisProgramme']}"
+							rendered="#{programmeChoiceVo.offerStatusCd == 'OFFERACC'}" />
+
+						<p:commandButton value="#{offer['downloadOfferLetter']}"
+							rendered="#{programmeChoiceVo.offerStatusCd == 'OFFERACC'}"
+							onclick="if(confirm('Start downloading the PDF file.')){}" />
+
+						<p:commandButton value="#{offer['downloadScholarLetter']}"
+							rendered="#{programmeChoiceVo.offerStatusCd == 'OFFERACC'}" />
+
+						<p:commandButton value="#{offer['withdrawAcceptance']}"
+							rendered="#{programmeChoiceVo.offerStatusCd == 'OFFERACC'}"
+							action="#{applicationStatusBean.editApplicationStatus(programmeChoiceVo.id)}"
+							update="formWithdrawReason" resetValues="true"
+							onclick="PF('withdrawAcceptDialog').show()" />
+
+						<p:commandButton value="#{offer['withdrawApp']}"
+							rendered="#{programmeChoiceVo.offerStatusCd == 'ASC'}"
+							update="formWithdrawReason"
+							onclick="PF('withdrawAcceptDialog').show()" />
+
+						<p:commandButton
+							rendered="#{programmeChoiceVo.offerStatusCd == 'OW'}"
+							value="#{offer['requestReinstatement']}" /> -->
+
+						<p:commandButton value="#{offer['viewOfferDetail']}"
+							action="#{applicationStatusBean.editApplicationStatus(programmeChoiceVo.id)}"
+							resetValues="true"
+							rendered="#{programmeChoiceVo.offerStatusCd == 'OFFERED'}"
+							update="formReply" onclick="PF('responseDialog').show()" />
+
+						<p:commandButton
+							rendered="#{programmeChoiceVo.offerStatusCd == 'OFFERED'}"
+							value="#{offer['viewScholarOfferDetail']}" />
+					</p:column>
+				</p:dataTable>
+			</p:repeat>
+		</h:form>
+
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.offer-status.offerstatus"
+				var="offerStatus" />
+			<p:dialog header="#{offerStatus['responseOffer']}"
+				widgetVar="responseDialog" width="60%" height="430" modal="true">
+				<h:form id="formReply">
+					<div style="margin-bottom: 10px;">
+						<p:selectBooleanCheckbox
+							style="margin-left:10px;margin-right:10px;" />
+						#{offerStatus['iAgree']}<a href="javascript:void(0)"
+							style="color: #6e7ac7;"
+							onmouseover="this.style.cssText='font-style: normal;color: black;;'"
+							onmouseout="this.style.cssText='font-style: normal;color: #6e7ac7;'">#{offerStatus['termsAndConditions']}
+						</a>#{offerStatus['onOffer']}
+					</div>
+					<div class="ax-section-title">#{offerStatus['reply']}</div>
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-3,ui-grid-col-9"
+						styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+						<p:outputLabel value="#{offerStatus['paymentType']}" />
+						<p:column>
+							<p:selectOneMenu style="width:50%;">
+								<f:selectItem itemLabel="#{offerStatus['select']}" itemValue="0" />
+								<f:selectItem itemLabel="#{offerStatus['tt']}" itemValue="1" />
+								<f:selectItem itemLabel="#{offerStatus['atm']}" itemValue="2" />
+								<f:selectItem itemLabel="#{offerStatus['onlineBank']}"
+									itemValue="3" />
+								<f:selectItem itemLabel="#{offerStatus['bankDraft']}"
+									itemValue="4" />
+							</p:selectOneMenu>
+							<p:commandButton style="width:28%;margin-left:3px;" ajax="false"
+								value="#{offer['paymentInstruction']}"
+								actionListener="#{applicationStatusBean.downloadPaymentInstruction}">
+								<p:fileDownload value="#{applicationStatusBean.downloadFile}" />
+							</p:commandButton>
+						</p:column>
+
+						<p:column>
+							<h:outputLink id="helpInfoC" value="#" disabled="true"
+								styleClass="ax-pf-tooltip-icon">
+								<i class="ti-help"></i>
+							</h:outputLink>
+							<p:tooltip showEvent="click" id="toolTipC" for="helpInfoC"
+								position="right">
+								<div class="info-popover">
+									#{offer['helpInfo1']}
+									<ol class="list">
+										<li>#{offer['helpInfo2']}</li>
+										<li>#{offer['helpInfo3']}</li>
+										<li>#{offer['helpInfo4']}</li>
+									</ol>
+								</div>
+							</p:tooltip>
+							<p:outputLabel value="#{offerStatus['uploadDeposit']}" />
+						</p:column>
+						<p:column>
+							<p:fileUpload value="" mode="simple" skinSimple="true" />
+						</p:column>
+					</p:panelGrid>
+					<div style="margin-top: 40px;">
+						<p:commandButton value="#{offerStatus['accept']}"
+							rendered="#{applicationStatusBean.programmeChoiceVo.offerStatusCd == 'OFFERED'}"
+							onclick="PF('acceptedDialog').show()" />
+						<p:commandButton value="#{offerStatus['reject']}"
+							rendered="#{applicationStatusBean.programmeChoiceVo.offerStatusCd == 'OFFERED'}"
+							onclick="PF('rejectDialog').show()"
+							styleClass="ui-priority-secondary" />
+
+						<!-- <p:commandButton value="#{offerStatus['appeal']}"
+							rendered="#{applicationStatusBean.programmeChoiceVo.offerStatusCd == 'OFFERACC'}"
+							onclick="if(confirm('Confirm to accept this offer?')){PF('responseDialog').hide();}" /> -->
+
+						<p:commandButton value="#{offerStatus['close']}"
+							onclick="PF('responseDialog').hide()"
+							styleClass="ui-priority-secondary" />
+						<p:commandButton value="#{offerStatus['extensionDeadlines']}"
+							rendered="#{applicationStatusBean.programmeChoiceVo.offerStatusCd == 'OFFERED'}" />
+					</div>
+				</h:form>
+			</p:dialog>
+
+			<p:dialog header="#{offerStatus['responseOffer']}"
+				widgetVar="offerViewDialog" width="60%" height="430" modal="true">
+				<h:form id="formViewReply">
+					<div style="margin-bottom: 10px;">
+						<p:selectBooleanCheckbox
+							style="margin-left:10px;margin-right:10px;" />
+						#{offerStatus['iAgree']}<a href="javascript:void(0)"
+							style="color: #6e7ac7;"
+							onmouseover="this.style.cssText='font-style: normal;color: black;;'"
+							onmouseout="this.style.cssText='font-style: normal;color: #6e7ac7;'">#{offerStatus['termsAndConditions']}
+						</a>#{offerStatus['onOffer']}
+					</div>
+					<div class="ax-section-title">#{offerStatus['reply']}</div>
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-3,ui-grid-col-9"
+						styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+						<p:outputLabel value="#{offerStatus['paymentType']}" />
+						<p:column>
+							<p:selectOneMenu style="width:50%;">
+								<f:selectItem itemLabel="#{offerStatus['select']}" itemValue="0" />
+								<f:selectItem itemLabel="#{offerStatus['tt']}" itemValue="1" />
+								<f:selectItem itemLabel="#{offerStatus['atm']}" itemValue="2" />
+								<f:selectItem itemLabel="#{offerStatus['onlineBank']}"
+									itemValue="3" />
+								<f:selectItem itemLabel="#{offerStatus['bankDraft']}"
+									itemValue="4" />
+							</p:selectOneMenu>
+							<p:commandButton style="width:28%;margin-left:3px;"
+								value="#{offer['paymentInstruction']}" />
+						</p:column>
+
+						<p:column>
+							<h:outputLink id="helpInfoD" value="#" disabled="true"
+								styleClass="ax-pf-tooltip-icon">
+								<i class="ti-help"></i>
+							</h:outputLink>
+							<p:tooltip showEvent="click" id="toolTipD" for="helpInfoD"
+								position="right">
+								<div class="info-popover">
+									#{offer['helpInfo1']}
+									<ol class="list">
+										<li>#{offer['helpInfo2']}</li>
+										<li>#{offer['helpInfo3']}</li>
+										<li>#{offer['helpInfo4']}</li>
+									</ol>
+								</div>
+							</p:tooltip>
+							<p:outputLabel value="#{offerStatus['uploadDeposit']}" />
+						</p:column>
+						<p:column>
+							<p:fileUpload value="" mode="simple" skinSimple="true" />
+						</p:column>
+					</p:panelGrid>
+					<div style="margin-top: 40px;">
+						<p:commandButton value="#{offerStatus['appeal']}"
+							onclick="if(confirm('Confirm to accept this offer?')){PF('offerViewDialog').hide();}" />
+						<p:commandButton value="#{offerStatus['close']}"
+							onclick="PF('offerViewDialog').hide()"
+							styleClass="ui-priority-secondary" />
+					</div>
+				</h:form>
+			</p:dialog>
+
+			<p:dialog header="#{offerStatus['withdrawAcceptance']}"
+				widgetVar="withdrawAcceptDialog" width="60%" height="300"
+				modal="true">
+				<h:form id="formWithdrawReason">
+					<p:growl showDetail="true" />
+					<div class="ax-section-title">#{offerStatus['areYouWithdraw']}</div>
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-3,ui-grid-col-9"
+						styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+						<p:outputLabel value="#{offerStatus['withdrawReason']}"
+							for="withdrawReason">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:selectOneMenu style="width:50%;" id="withdrawReason"
+								value="#{applicationStatusBean.programmeChoiceVo.wdraCd}">
+								<f:selectItem itemLabel="#{offerStatus['select']}" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{applicationStatusBean.reasons}"
+									var="reason" itemLabel="#{reason.value}"
+									itemValue="#{reason.cd}" />
+							</p:selectOneMenu>
+						</p:column>
+					</p:panelGrid>
+					<div style="margin-top: 20px;">
+						<p:commandButton value="#{offerStatus['confirm']}"
+							action="#{applicationStatusBean.withdrawnOffer()}"
+							update="formStatus formWithdrawReason" />
+						<p:commandButton value="#{offerStatus['close']}"
+							onclick="PF('withdrawAcceptDialog').hide()"
+							styleClass="ui-priority-secondary" />
+					</div>
+				</h:form>
+			</p:dialog>
+			<!--confirm accepte offer -->
+			<p:confirmDialog widgetVar="acceptedDialog"
+				message="#{offerStatus['conAccOff']}"
+				header="#{offerStatus['prompt']}" showEffect="fade"
+				hideEffect="fade">
+				<p:commandButton value="#{offerStatus['yes']}"
+					action="#{applicationStatusBean.responseOffer('OFFERACC')}"
+					update="formStatus formReply"
+					onclick="PF('acceptedDialog').hide();PF('responseDialog').hide();"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="#{offerStatus['no']}"
+					onclick="PF('acceptedDialog').hide();"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+			<!--confirm reject offer -->
+			<p:confirmDialog widgetVar="rejectDialog"
+				message="#{offerStatus['conRejOff']}"
+				header="#{offerStatus['prompt']}" showEffect="fade"
+				hideEffect="fade">
+				<p:commandButton value="#{offerStatus['yes']}"
+					action="#{applicationStatusBean.responseOffer('OR')}"
+					update="formStatus formReply"
+					onclick="PF('rejectDialog').hide();PF('responseDialog').hide();"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="#{offerStatus['no']}"
+					onclick="PF('rejectDialog').hide();"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+		</f:view>
+	</ui:define>
+</ui:composition>
+
+
+
+
+

@@ -1,0 +1,458 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="../application.xhtml">
+
+	<ui:define name="breadcrumb-3">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.applicationOffering"
+				var="appOffering" />
+			<li><a title="">#{appOffering['offering']}</a><i
+				class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+	<ui:define name="title">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.applicationOffering"
+				var="appOffering" />
+        #{appOffering['offerProcess']}
+        </f:view>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.applicationOffering"
+				var="appOffering" />
+			<p:panel id="toggleable" header="#{appOffering['searchApps']}"
+				toggleable="true" toggleSpeed="200" closeSpeed="200"
+				widgetVar="panel">
+				<h:form id="offerProcessForm">
+					<p:growl id="growl1" showDetail="true" />
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-2,ui-grid-col-10" layout="grid"
+						styleClass="ui-panelgrid-blank ui-fluid">
+						<p:outputLabel for="faculty" value="#{appOffering['faculty']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:selectOneMenu id="faculty"
+							value="#{offerProcessBean.facultyCode}">
+							<p:ajax event="change"
+								listener="#{offerProcessBean.loadProgrammes}"
+								update="offerProcessForm:programme" />
+							<f:selectItem itemLabel="#{appOffering['select']}" itemValue=""
+								noSelectionOption="true" />
+							<f:selectItems value="#{offerProcessBean.facultyCodes}"
+								var="facultyCode" itemLabel="#{facultyCode}"
+								itemValue="#{facultyCode}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="programme" value="#{appOffering['programme']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:selectOneMenu id="programme"
+							value="#{offerProcessBean.programmeChoiceVo.hkuProgrammeId}">
+							<f:selectItem itemLabel="#{appOffering['select']}" itemValue="" />
+							<f:selectItems value="#{offerProcessBean.hkuProgrammeVos}"
+								var="hkuProgramme"
+								itemLabel="#{hkuProgramme.hkuProgrammeCd} #{hkuProgramme.hkuProgrammeDesc}"
+								itemValue="#{hkuProgramme.id}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="qualification"
+							value="#{appOffering['qualification']}" />
+						<p:selectCheckboxMenu id="qualification" multiple="true"
+							filter="true" value="#{offerProcessBean.selectQualifications}">
+							<p:ajax event="change" update="formShortList" />
+							<p:ajax event="toggleSelect" update="formShortList" />
+							<f:selectItems value="#{offerProcessBean.opQualifications}"
+								var="qualification" itemLabel="#{qualification.value}"
+								itemValue="#{qualification.cd}" />
+						</p:selectCheckboxMenu>
+					</p:panelGrid>
+
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+						<p:outputLabel for="searchStatus" value="#{appOffering['status']}" />
+						<p:selectOneMenu id="searchStatus"
+							value="#{offerProcessBean.programmeChoiceVo.offerStatusCd}">
+							<f:selectItem itemLabel="#{appOffering['all']}" itemValue="" />
+							<f:selectItems value="#{offerProcessBean.offerStatus}"
+								var="offerStatu" itemLabel="#{offerStatu.value}"
+								itemValue="#{offerStatu.cd}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="localOverseasMainland"
+							value="#{appOffering['localOverseasMainland']}" />
+						<p:selectOneMenu id="localOverseasMainland"
+							value="#{offerProcessBean.programmeChoiceVo.region}">
+							<f:selectItem itemLabel="#{appOffering['all']}" itemValue="" />
+							<f:selectItem itemLabel="Local" itemValue="L" />
+							<f:selectItem itemLabel="Non-Local" itemValue="O" />
+							<f:selectItem itemLabel="Mainland" itemValue="N" />
+						</p:selectOneMenu>
+					</p:panelGrid>
+
+					<div class="ax-btn-set">
+						<p:commandButton value="#{appOffering['search']}"
+							update="offerProcessForm viewForm formShortList"
+							action="#{offerProcessBean.search}" />
+						<p:commandButton value="#{appOffering['reset']}"
+							styleClass="ui-priority-secondary"
+							update="offerProcessForm viewForm formShortList"
+							action="#{offerProcessBean.reset}" />
+					</div>
+				</h:form>
+			</p:panel>
+			<h:form id="viewForm">
+				<h:panelGroup rendered="#{offerProcessBean.status}" layout="block"
+					id="viewPanelGroup">
+					<div class="ax-section-title">#{appOffering['targetProgramme']}#{offerProcessBean.hkuProgrammeCdAndDesc}</div>
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-3,ui-grid-col-2,ui-grid-col-3,ui-grid-col-2"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+						<p:column>
+							<h:outputLink id="helpInfoA" value="#" disabled="true"
+								styleClass="ax-pf-tooltip-icon">
+								<i class="ti-help"></i>
+							</h:outputLink>
+							<p:tooltip showEvent="click" id="toolTipA" for="helpInfoA"
+								position="left">
+								<div>#{appOffering['helpInfo1']}</div>
+								<div>#{appOffering['helpInfo2']}</div>
+							</p:tooltip>
+							<p:outputLabel value="#{appOffering['totalQuota']}" />
+						</p:column>
+						<p:inputText value="#{offerProcessBean.totalQuota}"
+							disabled="true" />
+
+						<p:column></p:column>
+						<p:column></p:column>
+
+						<p:outputLabel value="#{appOffering['quotaLocal']}" />
+						<p:inputText value="0 / #{offerProcessBean.localQuota}"
+							disabled="true" />
+
+						<p:outputLabel value="#{appOffering['quotaNonLocal']}" />
+						<p:inputText value="0 / #{offerProcessBean.nonLocalQuota}"
+							disabled="true" />
+					</p:panelGrid>
+					<div style="padding: 25px 0px 10px 0px;" align="right">
+						<h:panelGrid columns="2" cellpadding="5">
+							<p:outputLabel for="view">
+								<label style="font-weight: bold; color: black;">#{appOffering['view']}
+									:&#160;</label>
+							</p:outputLabel>
+							<p:selectOneButton id="view"
+								value="#{offerProcessBean.predictedActual}">
+								<p:ajax event="change" update="formShortList" />
+								<f:selectItem itemLabel="#{appOffering['actual']}" itemValue="A" />
+								<f:selectItem itemLabel="#{appOffering['preAndActual']}"
+									itemValue="PA" />
+							</p:selectOneButton>
+						</h:panelGrid>
+					</div>
+				</h:panelGroup>
+			</h:form>
+			<h:form id="formShortList">
+				<p:dataTable rendered="#{offerProcessBean.status}"
+					id="shortlistingDataTable" reflow="true"
+					value="#{offerProcessBean.lazyDataModel}" var="shortlist"
+					paginator="true" paginatorPosition="bottom" rows="15" lazy="true"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					draggableColumns="true"
+					selection="#{offerProcessBean.selectProgrammeChoiceVos}"
+					sortBy="#{shortlist.applicationNo}" sortOrder="descending">
+					<p:ajax event="rowSelect"
+						listener="#{offerProcessBean.rowSelectCheckbox}"
+						update="formShortList" />
+					<p:ajax event="rowSelectCheckbox"
+						listener="#{offerProcessBean.rowSelectCheckbox}"
+						update="formShortList" />
+					<p:ajax event="rowUnselectCheckbox"
+						listener="#{offerProcessBean.rowSelectCheckbox}"
+						update="formShortList" />
+					<p:ajax event="toggleSelect"
+						listener="#{offerProcessBean.rowSelectCheckbox}"
+						update="formShortList" />
+
+					<f:facet name="header">
+						#{appOffering['shortList']}
+						<p:commandButton id="toggler" type="button" value="Columns"
+							style="float:right" icon="ui-icon-calculator" />
+						<p:columnToggler datasource="shortlistingDataTable"
+							trigger="toggler" />
+					</f:facet>
+
+					<p:column selectionMode="multiple"
+						style="width:40px;text-align:center">
+					</p:column>
+
+					<p:column headerText="#{appOffering['appNo']}">
+						<p:commandLink
+							action="#{applicantApplicationsBean.toEditApplicant(shortlist.applicationId)}">
+							<h:outputText value="#{shortlist.applicationNo}" />
+						</p:commandLink>
+					</p:column>
+
+					<p:column headerText="#{appOffering['lom']}">
+						<h:outputText rendered="#{shortlist.region == 'L'}"
+							value="#{appOffering['local']}" />
+						<h:outputText rendered="#{shortlist.region == 'O'}"
+							value="#{appOffering['overseas']}" />
+						<h:outputText rendered="#{shortlist.region == 'N'}"
+							value="#{appOffering['mainland']}" />
+					</p:column>
+
+					<p:column headerText="#{appOffering['sat']}"
+						rendered="#{offerProcessBean.selectQualifications.contains('SAT')}">
+						<h:outputText />
+					</p:column>
+
+					<p:column headerText="#{appOffering['gcea']}"
+						rendered="#{offerProcessBean.selectQualifications.contains('GCE') and offerProcessBean.predictedActual eq 'A'}">
+						<ui:repeat var="gce" value="#{shortlist.actualGCEs}">
+							<h:outputText value="#{gce.examGradeCd} "
+								title="#{gce.examSubjectDesc}/ #{gce.examTypeMonth} #{gce.examTypeYear}" />
+						</ui:repeat>
+					</p:column>
+					<p:column headerText="#{appOffering['gcea']}"
+						rendered="#{offerProcessBean.selectQualifications.contains('GCE') and offerProcessBean.predictedActual eq 'PA'}">
+						<ui:repeat var="gce" value="#{shortlist.predictedActualGCEs}">
+							<h:outputText value="#{gce.examGradeCd} "
+								title="#{gce.examSubjectDesc}/ #{gce.examTypeMonth} #{gce.examTypeYear}" />
+						</ui:repeat>
+					</p:column>
+
+					<p:column headerText="#{appOffering['ib42']}"
+						rendered="#{offerProcessBean.selectQualifications.contains('IB42')}">
+						<h:outputText
+							rendered="#{offerProcessBean.predictedActual eq 'A'}"
+							value="#{shortlist.actualIbd42.totalRslt}" />
+						<h:outputText
+							rendered="#{offerProcessBean.predictedActual eq 'PA'}"
+							value="#{shortlist.predictedActualIbd42.totalRslt}" />
+					</p:column>
+
+					<p:column headerText="#{appOffering['ib45']}"
+						rendered="#{offerProcessBean.selectQualifications.contains('IB45')}">
+						<h:outputText
+							rendered="#{offerProcessBean.predictedActual eq 'A'}"
+							value="#{shortlist.actualIbd45.totalRslt}" />
+						<h:outputText
+							rendered="#{offerProcessBean.predictedActual eq 'PA'}"
+							value="#{shortlist.predictedActualIbd45.totalRslt}" />
+					</p:column>
+
+					<p:column headerText="#{appOffering['englishReq']}">
+						<span class="status-label #{shortlist.engReq?'green':'red'}">
+							<i class="#{shortlist.engReq?'ti-check':'ti-close'}"></i>
+						</span>
+					</p:column>
+
+					<p:column headerText="#{appOffering['progInter']}">
+						<h:outputText value="#{shortlist.progInterviewScore}" />
+					</p:column>
+
+					<p:column headerText="#{appOffering['otherProgInter']}">
+						<h:outputText value="#{shortlist.otherInterview}" />
+					</p:column>
+
+					<p:column headerText="#{appOffering['status']}"
+						styleClass="ax-action-w dont-print">
+						<h:outputText
+							styleClass="status-label #{shortlist.offerStatusCd=='Submitted'?'green':'blue'}"
+							value="#{shortlist.offerStatusCd}" />
+					</p:column>
+				</p:dataTable>
+				<h:panelGroup rendered="#{offerProcessBean.status}">
+					<div class="ax-btn-set">
+						<p:commandButton
+							value="#{appOffering['assignOfferAndConditions']}"
+							disabled="#{offerProcessBean.disableAssignCond}"
+							action="#{offerProcessBean.getApplicationNoForProgrammeChoices('Assign Offer and Conditions')}"
+							update="assignOfferDialogForm" />
+
+						<p:commandButton value="#{appOffering['confirmAssignment']}"
+							disabled="#{offerProcessBean.disableConfirmOffer}"
+							action="#{offerProcessBean.updateProgrammeChoiceStatus('OAFA')}"
+							update="formShortList" />
+
+						<p:commandButton
+							value="#{appOffering['approveOfferConditionsAndSendToAAL']}"
+							disabled="#{offerProcessBean.disableApproveCond}"
+							action="#{offerProcessBean.updateProgrammeChoiceStatus('OA')}"
+							update="formShortList" />
+					</div>
+				</h:panelGroup>
+			</h:form>
+			<p:dialog header="#{appOffering['addSupDoc']}"
+				widgetVar="addSupDocDialog" modal="true" width="40%" height="300">
+				<div class="ng-scope">
+					<h:form id="supDocDialogForm">
+						<p:growl id="appOfferGrowlMsg" showDetail="true" />
+						<p:panelGrid columns="1" columnClasses="ui-grid-col-12"
+							layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+							<p:outputLabel for="documentType"
+								value="#{appOffering['docType']}" style="text-align:left;">
+							</p:outputLabel>
+
+							<p:selectOneMenu id="documentType">
+								<f:selectItem itemLabel="#{appOffering['select']}" itemValue="" />
+								<f:selectItem itemLabel="#{appOffering['personalIdenti']}"
+									itemValue="1" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{appOffering['add']}" role="button" />
+							<p:commandButton value="#{appOffering['cancel']}"
+								onclick="PF('addSupDocDialog').hide()"
+								styleClass="ui-priority-secondary" />
+						</div>
+					</h:form>
+				</div>
+			</p:dialog>
+
+			<p:dialog header="#{appOffering['assignCondOffer']}"
+				widgetVar="assignOfferDialog" modal="true" width="1000px"
+				height="719">
+				<div class="ng-scope">
+					<h:form id="assignOfferDialogForm">
+						<p:growl id="assignOfferGrowlMsg" showDetail="true" />
+						<div style="margin-bottom: 2.2%;">
+							<p:dataTable id="selectedAppDataTable" reflow="true"
+								value="#{offerProcessBean.selectProgrammeChoiceVos}"
+								var="programmeChoiceVo" lazy="true">
+								<f:facet name="header">#{appOffering['selectApps']}</f:facet>
+
+								<p:column headerText="#{appOffering['appNo']}">
+									<h:outputText value="#{programmeChoiceVo.applicationNo}" />
+								</p:column>
+
+								<p:column headerText="#{appOffering['interScore']}">
+									<h:outputText value="#{programmeChoiceVo.progInterviewScore}" />
+								</p:column>
+
+								<p:column headerText="#{appOffering['status']}">
+									<h:outputText
+										styleClass="status-label #{programmeChoiceVo.offerStatusCd=='SUBMITTED'?'green':'blue'}"
+										value="#{programmeChoiceVo.statusValue}" />
+								</p:column>
+
+								<p:column headerText="#{appOffering['action']}"
+									styleClass="ax-action-w dont-print">
+									<p:menuButton value="#{appOffering['action']}">
+										<p:menuitem value="#{appOffering['remove']}"
+											action="#{offerProcessBean.removeProgrammeChoice(programmeChoiceVo.id)}"
+											update="assignOfferDialogForm" />
+									</p:menuButton>
+								</p:column>
+							</p:dataTable>
+						</div>
+						<h:panelGroup>
+							<div class="ax-section-title">#{appOffering['offerConditions']}</div>
+							<div class="ui-fluid" style="margin-top: 1%;">
+								<p:panelGrid columns="4"
+									columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3"
+									layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+									<p:outputLabel for="conditionType"
+										value="#{appOffering['offerType']}">
+									</p:outputLabel>
+									<p:selectOneMenu id="conditionType"
+										value="#{offerProcessBean.conditionType}">
+										<p:ajax event="change"
+											listener="#{offerProcessBean.changeOfferType}"
+											update="assignOfferDialogForm" process="@this" />
+										<f:selectItem itemLabel="#{appOffering['select']}"
+											itemValue="" />
+										<f:selectItems value="#{offerProcessBean.conditionTypes}"
+											var="type" itemLabel="#{type.value}" itemValue="#{type.cd}" />
+									</p:selectOneMenu>
+								</p:panelGrid>
+								<p:panelGrid columns="2"
+									columnClasses="ui-grid-col-3,ui-grid-col-9" layout="grid"
+									styleClass="ui-panelgrid-blank ui-fluid">
+									<p:outputLabel for="mainQualificationForAssignment"
+										value="#{appOffering['mainQualificationForAssignment']}">
+									</p:outputLabel>
+									<p:selectOneMenu id="mainQualificationForAssignment">
+										<f:selectItem itemLabel="#{appOffering['select']}"
+											itemValue="" />
+										<f:selectItem
+											itemLabel="General Certification Education (GCE)"
+											itemValue="" />
+										<f:selectItem itemLabel="International Baccalaureate (IB)"
+											itemValue="" />
+										<f:selectItem
+											itemLabel="SAT / Advanced Placement Program (AP)"
+											itemValue="" />
+										<f:selectItem itemLabel="GCEA/ TOEFL" itemValue="" />
+										<f:selectItem itemLabel="HKALE / HKCEE / HKDSE" itemValue="" />
+										<f:selectItem itemLabel="India Board Examinations"
+											itemValue="" />
+									</p:selectOneMenu>
+								</p:panelGrid>
+								<p:panelGrid columns="2"
+									columnClasses="ui-grid-col-3,ui-grid-col-9" layout="grid"
+									id="ConditionaOfferPane1"
+									styleClass="ui-panelgrid-blank ui-fluid"
+									rendered="#{offerProcessBean.offerTypeStatus}">
+									<p:outputLabel for="generalAcademicRequirement"
+										value="#{appOffering['generalAcademicRequirement']}">
+									</p:outputLabel>
+									<p:selectOneMenu id="generalAcademicRequirement">
+										<f:selectItem itemLabel="#{appOffering['select']}"
+											itemValue="" />
+									</p:selectOneMenu>
+
+									<p:outputLabel for="other" value="">
+									</p:outputLabel>
+									<p:inputTextarea id="other" cols="4"
+										placeholder="#{appOffering['other']}" />
+
+									<p:outputLabel for="englishLanguageRequirement"
+										value="#{appOffering['englishLanguageRequirement']}">
+									</p:outputLabel>
+									<p:selectOneMenu id="englishLanguageRequirement">
+										<f:selectItem itemLabel="#{appOffering['select']}"
+											itemValue="" />
+									</p:selectOneMenu>
+
+									<p:outputLabel for="secoundLanguageRequirement"
+										value="#{appOffering['secoundLanguageRequirement']}">
+									</p:outputLabel>
+									<p:selectOneMenu id="secoundLanguageRequirement">
+										<f:selectItem itemLabel="#{appOffering['select']}"
+											itemValue="" />
+									</p:selectOneMenu>
+								</p:panelGrid>
+								<p:panelGrid columns="1" columnClasses="ui-grid-col-12"
+									layout="grid" id="ConditionaOfferPane2"
+									styleClass="ui-panelgrid-blank ui-fluid"
+									rendered="#{offerProcessBean.conditionaOfferStatus}">
+									<p:outputLabel value="#{appOffering['combinedConditions']}"
+										style="text-align:left;"></p:outputLabel>
+									<p:inputTextarea cols="4"
+										value="This is a conditional offer of admission subject to your satisfying of the following on or before Auguest 19, 2018: 1. University Entrance Requirements Please refer to http://www.aal.hku.hk/admissions/ for details. and [Condition(s) of Offer]" />
+								</p:panelGrid>
+							</div>
+						</h:panelGroup>
+						<div class="ax-btn-set">
+							<p:commandButton rendered="#{offerProcessBean.offerTypeStatus}"
+								value="#{appOffering['combinedConditions']}"
+								action="#{offerProcessBean.changeConditionaOfferStatus}"
+								update="assignOfferDialogForm" />
+							<p:commandButton value="#{appOffering['assign']}"
+								action="#{offerProcessBean.assignOffer}" update="formShortList"
+								oncomplete="PF('assignOfferDialog').hide()" />
+							<p:commandButton value="#{appOffering['cancel']}"
+								onclick="PF('assignOfferDialog').hide()"
+								styleClass="ui-priority-secondary" />
+						</div>
+					</h:form>
+				</div>
+			</p:dialog>
+		</f:view>
+	</ui:define>
+</ui:composition>

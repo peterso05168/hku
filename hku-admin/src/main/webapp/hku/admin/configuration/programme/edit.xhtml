@@ -1,0 +1,320 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="../configuration.xhtml">
+
+	<ui:define name="breadcrumb-2">
+		<f:loadBundle basename="i18n.configuration.programme" var="program" />
+		<li><a title="">#{program['programmeAdmissionControls']}</a><i
+			class="ti-angle-right"></i></li>
+	</ui:define>
+
+	<ui:define name="title">
+		<f:loadBundle basename="i18n.configuration.programme" var="program" />
+		<a class="ax-back-icon-url" onclick="_ACTION('search')"
+			href="javascript:void(0)"> <i class="ax-icon ti-arrow-left"></i>
+			#{program['programmeAdmissionControls']}
+		</a>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<f:loadBundle basename="i18n.configuration.programme" var="program" />
+		<p:panel id="toggleable" header="#{program['programmeInfo']}"
+			toggleable="true" toggleSpeed="200" widgetVar="panel">
+			<div>
+				<div class="ui-fluid">
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+
+						<p:outputLabel for="admissionYear" value="#{program['admissionYear']}" />
+						<p:inputText id="admissionYear" value="#{programmeEditBean.formProgVo.admissionYear}"
+							styleClass="ui-state-disabled" readonly="true" />
+
+						<p:column></p:column>
+						<p:column></p:column>
+
+						<p:outputLabel for="programmeCode" value="#{program['programmeCode']}" />
+						<p:inputText id="programmeCode" value="#{programmeEditBean.formProgVo.programmeCode}"
+							styleClass="ui-state-disabled" readonly="true" />
+
+						<p:outputLabel for="programmeTitle" value="#{program['programmeTitle']}" />
+						<p:inputText id="programmeTitle"
+							value="#{programmeEditBean.formProgVo.programmeTitle}"
+							styleClass="ui-state-disabled" readonly="true" />
+
+						<p:outputLabel for="level" value="#{program['levelOfEntry']}" />
+						<p:inputText id="level" value="#{programmeEditBean.formProgVo.levelOfEntry}" styleClass="ui-state-disabled"
+							readonly="true" />
+
+						<p:outputLabel for="faculty" value="#{program['faculty']}" />
+						<p:inputText id="faculty" value="#{programmeEditBean.formProgVo.faculty}"
+							styleClass="ui-state-disabled" readonly="true" />
+					</p:panelGrid>
+				</div>
+			</div>
+		</p:panel>
+		<div class="ax-tab">
+			<h:form id="entranceRequirementForm">
+				<p:growl id="growlMsg" showDetail="true" />
+				<p:tabView activeIndex="0">
+					<p:tab title="#{program['entranceRequirement']}" titleStyle="margin-right: 3px;">
+						<p:panelGrid columns="2"
+							columnClasses="ui-grid-col-2,ui-grid-col-10" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+
+							<p:outputLabel id="atoolTipFocus" for="multiple"
+								value="#{program['generalEntranceRequirement']}">
+								<span style="color:red">*</span>
+							</p:outputLabel>
+							<p:selectCheckboxMenu id="multiple" label="Cities"
+								multiple="true" filter="true" filterMatchMode="contains" 
+								panelStyle="width:250px" value="#{programmeEditBean.requirementIds}">
+								<f:selectItems value="#{programmeEditBean.requirements}" var="requirement" 
+									itemLabel="#{requirement.description}" itemValue="#{requirement.id}" />
+							</p:selectCheckboxMenu>
+						</p:panelGrid>
+					</p:tab>
+					<p:tab title="#{program['scoringFormula']}" titleStyle="margin-right: 3px;">
+						<p:dataTable value="#{programmeEditBean.scoringFormulas}" var="formula" reflow="true" draggableColumns="true">
+							<p:column headerText="#{program['formulaName']}">
+								<p:commandLink action="#{programmeEditBean.loadScoringFormulaDialog}"
+									style="font-style: normal;color: #222;font-weight: bold;"
+									oncomplete="PF('scoringFormulaDialog').show()" update="scoringFormulaForm">
+									<h:outputText value="#{formula.formulaName}" />
+									<f:setPropertyActionListener value="#{formula}" target="#{programmeEditBean.scoringFormulaVo}" />
+								</p:commandLink>
+							</p:column>
+
+							<p:column headerText="#{program['formulaType']}">
+								<h:outputText value="#{formula.formulaType}" />
+							</p:column>
+
+							<p:column headerText="#{program['action']}" styleClass="ax-action-w dont-print">
+								<p:menuButton value="Action">
+									<p:menuitem value="Edit" action="#{programmeEditBean.loadScoringFormulaDialog}"
+										oncomplete="PF('scoringFormulaDialog').show()" update="scoringFormulaForm">
+										<f:setPropertyActionListener value="#{formula}" target="#{programmeEditBean.scoringFormulaVo}" />
+									</p:menuitem>
+								</p:menuButton>
+							</p:column>
+						</p:dataTable>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{program['scoringFormula']}" icon="ti-plus"
+								styleClass="ui-priority-primary" action="#{programmeEditBean.loadScoringFormulaDialog}"
+								oncomplete="PF('scoringFormulaDialog').show()" update="scoringFormulaForm">
+								<f:setPropertyActionListener value="#{null}" target="#{programmeEditBean.scoringFormulaVo}" />
+							</p:commandButton>	
+						</div>
+					</p:tab>
+
+				</p:tabView>
+
+				<div class="ax-btn-set">
+					<p:commandButton value="#{program['back']}" styleClass="ui-priority-secondary"
+						icon="ti-arrow-left" onclick="_ACTION('search')" />
+					<p:commandButton value="#{program['save']}" action="#{programmeEditBean.save}" update="entranceRequirementForm" />
+				</div>
+			</h:form>
+			<p:dialog header="#{program['scoringFormula']}" widgetVar="scoringFormulaDialog"
+				modal="true" width="70%" height="600">
+				<h:form id="scoringFormulaForm">
+					<p:growl id="growlMsg" showDetail="true" />
+					<div class="ui-fluid">
+						<p:panelGrid columns="2"
+							columnClasses="ui-grid-col-2,ui-grid-col-10" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+							<p:outputLabel for="formulaName" value="#{program['formulaName']}">
+								<span style="color: red">*</span>
+							</p:outputLabel>
+							<p:inputText id="formulaName" value="#{programmeEditBean.scoringFormulaVo.formulaName}" />
+
+							<p:outputLabel for="description" value="#{program['description']}" />
+							<p:inputTextarea id="description" value="#{programmeEditBean.scoringFormulaVo.description}" />
+
+							<p:outputLabel for="formulaType" value="#{program['formulaType']}">
+								<span style="color:red">*</span>
+							</p:outputLabel>
+							<p:selectOneMenu id="formulaType" disabled="#{programmeEditBean.scoringFormulaVo.id != null}" 
+								value="#{programmeEditBean.scoringFormulaVo.formulaType}">
+								<p:ajax event="change" update=":scoringFormulaForm:gpsPanel" />
+								<f:selectItem itemLabel="- Select -" itemValue="" />
+								<f:selectItem itemLabel="GPS" itemValue="GPS" />
+								<f:selectItem itemLabel="GPA" itemValue="GPA" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+						<h:panelGroup id="gpsPanel">
+							<h:panelGroup rendered="#{'GPS'.equals(programmeEditBean.scoringFormulaVo.formulaType)}">
+								<div class="ax-section-title">#{program['gpsFormulaDetail']}</div>
+								<p:panelGrid columns="2"
+									columnClasses="ui-grid-col-2,ui-grid-col-10" layout="grid"
+									styleClass="ui-panelgrid-blank ui-fluid">
+									<p:outputLabel for="examination" value="#{program['exam']}">
+										<span style="color:red">*</span>
+									</p:outputLabel>
+									<p:selectOneMenu id="examination" value="#{programmeEditBean.scoringFormulaVo.examTypeId}">
+										<p:ajax event="change" listener="#{programmeEditBean.renderedMultiSelectSubjects}" 
+											update="levelBoard,including,excluding" />
+										<f:selectItem itemLabel="- Select -" itemValue=" " />
+										<f:selectItems value="#{programmeEditBean.examTypes}" var="examType" 
+											itemLabel="#{examType.examDesc}" itemValue="#{examType.id}" itemDisabled="#{examType.disabled}" />
+									</p:selectOneMenu>
+								</p:panelGrid>
+									
+								<p:panelGrid columns="2" id="levelBoard"
+									columnClasses="ui-grid-col-2,ui-grid-col-10" layout="grid"
+									styleClass="ui-panelgrid-blank ui-fluid">
+									<p:outputLabel for="examLevel" value="#{program['examLevel']}" rendered="#{programmeEditBean.showExamLevel}">
+										<span style="color:red">*</span>
+									</p:outputLabel>
+									<p:selectOneMenu id="examLevel" value="#{programmeEditBean.scoringFormulaVo.examLevel}" rendered="#{programmeEditBean.showExamLevel}">
+										<p:ajax event="change" listener="#{programmeEditBean.renderedMultiSelectSubjects}" 
+											update="examBoard,including,excluding" />
+										<f:selectItem itemLabel="- Select -" itemValue="" />
+										<f:selectItems value="#{programmeEditBean.examLevels}" var="level" 
+											itemLabel="#{level}" itemValue="#{level}" />
+									</p:selectOneMenu>
+							
+									<p:outputLabel for="examBoard" value="#{program['examBoard']}" rendered="#{programmeEditBean.showExamBoard}">
+										<span style="color:red">*</span>
+									</p:outputLabel>
+									<p:selectOneMenu id="examBoard" value="#{programmeEditBean.scoringFormulaVo.examBoard}" rendered="#{programmeEditBean.showExamBoard}">
+										<p:ajax event="change" listener="#{programmeEditBean.renderedMultiSelectSubjects}" 
+											update="examLevel,including,excluding" />
+										<f:selectItem itemLabel="- Select -" itemValue="" />
+										<f:selectItems value="#{programmeEditBean.examBoards}" var="board" 
+											itemLabel="#{board}" itemValue="#{board}" />
+									</p:selectOneMenu>
+								</p:panelGrid>
+								
+								<p:panelGrid columns="2"
+									columnClasses="ui-grid-col-2,ui-grid-col-10" layout="grid"
+									styleClass="ui-panelgrid-blank ui-fluid">
+									<p:outputLabel for="including" value="#{program['including']}">
+										<span style="color:red">*</span>
+									</p:outputLabel>
+									<p:selectCheckboxMenu id="including" label="Cities" 
+										value="#{programmeEditBean.includingSubjectIds}" disabled="#{programmeEditBean.disableSubjects}"
+										multiple="true" filter="true" filterMatchMode="startsWith">
+										<f:selectItems value="#{programmeEditBean.subjectVos}" var="subject" 
+											itemLabel="#{subject.examSubjectDesc}" itemValue="#{subject.id}" />
+									</p:selectCheckboxMenu>
+
+									<p:outputLabel value="#{program['including']}" />
+									<h:panelGroup>
+										<span>#{program['any']}   </span>   
+										<p:inputText style="width:60px" value="#{programmeEditBean.scoringFormulaVo.including}" />   
+										<span>   #{program['subjects']}</span>
+									</h:panelGroup>
+
+									<p:outputLabel for="excluding" value="#{program['excluding']}" />
+									<p:selectCheckboxMenu id="excluding" label="Cities" 
+										value="#{programmeEditBean.excludingSubjectIds}" disabled="#{programmeEditBean.disableSubjects}"
+										multiple="true" filter="true" filterMatchMode="startsWith">
+										<f:selectItems value="#{programmeEditBean.subjectVos}" var="subject" 
+											itemLabel="#{subject.examSubjectDesc}" itemValue="#{subject.id}" />
+									</p:selectCheckboxMenu>
+								</p:panelGrid>
+							</h:panelGroup>
+							<h:panelGroup rendered="#{'GPA'.equals(programmeEditBean.scoringFormulaVo.formulaType)}">
+								<div class="ax-section-title">#{program['gpaFormulaDetail']}</div>
+								<div>
+									<p:dataTable value="#{programmeEditBean.gpaFormulaItms}" var="formulaItm" 
+										reflow="true" draggableColumns="true">
+										<p:column headerText="#{program['maxcGpa']}">
+											<p:commandLink action="#{programmeEditBean.loadGpaFormulaItm}" 
+												style="font-style: normal;color: #222;font-weight: bold;"
+												oncomplete="PF('GPAFormulaItemDialog').show()" update="formulaItmForm">
+												<f:setPropertyActionListener value="false" target="#{programmeEditBean.createFormulaItm}" />
+												<f:setPropertyActionListener value="#{formulaItm}" target="#{programmeEditBean.gpaFormulaItmVo}" />
+												<h:outputText value="#{formulaItm.maxCgpa}" />
+											</p:commandLink>
+										</p:column>
+
+										<p:column headerText="#{program['minFinalYearcGpa']}">
+											<h:outputText value="#{formulaItm.minFinalYearCgpa}" />
+										</p:column>
+
+										<p:column headerText="#{program['minYear1cGpa']}">
+											<h:outputText value="#{formulaItm.minYearOneCgpa}" />
+										</p:column>
+
+										<p:column headerText="#{program['action']}"
+											styleClass="ax-action-w dont-print">
+											<p:menuButton value="#{program['action']}">
+												<p:menuitem value="#{program['edit']}" oncomplete="PF('GPAFormulaItemDialog').show()" 
+													action="#{programmeEditBean.loadGpaFormulaItm}" update="formulaItmForm">
+													<f:setPropertyActionListener value="false" target="#{programmeEditBean.createFormulaItm}" />
+													<f:setPropertyActionListener value="#{formulaItm}" target="#{programmeEditBean.gpaFormulaItmVo}" />
+												</p:menuitem>
+												<p:menuitem value="#{program['delete']}" action="#{programmeEditBean.removeGpaFormulaItm}" 
+													update="scoringFormulaForm">
+													<f:setPropertyActionListener value="#{formulaItm}" target="#{programmeEditBean.gpaFormulaItmVo}" />
+												</p:menuitem>
+											</p:menuButton>
+										</p:column>
+									</p:dataTable>
+									<div class="ax-btn-set">
+										<p:commandButton value="#{program['gpaFormulaItem']}" icon="ti-plus"
+											styleClass="ui-priority-primary" style="width:160px;"
+											oncomplete="PF('GPAFormulaItemDialog').show()" 
+											 action="#{programmeEditBean.loadGpaFormulaItm}" update="formulaItmForm">
+											<f:setPropertyActionListener value="true" target="#{programmeEditBean.createFormulaItm}" />
+										</p:commandButton>
+									</div>
+								</div>
+							</h:panelGroup>
+						</h:panelGroup>
+					</div>
+					<div class="ax-btn-set">
+						<p:commandButton value="#{program['save']}" action="#{programmeEditBean.saveScoringFormula}" 
+							update="scoringFormulaForm" />
+						<p:commandButton value="#{program['cancel']}" styleClass="ui-priority-secondary" immediate="true"
+							oncomplete="PF('scoringFormulaDialog').hide()" />
+					</div>
+				</h:form>
+			</p:dialog>
+			<p:dialog header="#{program['gpaFormulaItem']} #{program['edit']}"
+				widgetVar="GPAFormulaItemDialog" modal="true" width="23%">
+				<h:form id="formulaItmForm">
+					<p:growl id="growlMsg" showDetail="true" />
+					<p:panelGrid columns="1" columnClasses="ui-grid-col-12"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+						<p:outputLabel for="maxcGPA" value="#{program['maxcGpa']}"
+							style="text-align:left;">
+							<span style="color:red">*</span>
+						</p:outputLabel>
+						<p:inputNumber id="maxcGPA" 
+							decimalSeparator="." decimalPlaces="2" minValue="0" maxValue="9.99"
+							value="#{programmeEditBean.gpaFormulaItmVo.maxCgpa}" />
+	
+						<p:outputLabel for="minYearcGPA" value="#{program['minYear1cGpa']}"
+							style="text-align:left;">
+							<span style="color:red">*</span>
+						</p:outputLabel>
+						<p:inputNumber id="minYearcGPA" 
+							decimalSeparator="." decimalPlaces="2" minValue="0" maxValue="9.99"
+							value="#{programmeEditBean.gpaFormulaItmVo.minYearOneCgpa}" />
+	
+						<p:outputLabel for="minFinalYearcGPA" value="#{program['minFinalYearcGpa']}"
+							style="text-align:left;">
+							<span style="color:red">*</span>
+						</p:outputLabel>
+						<p:inputNumber id="minFinalYearcGPA" 
+							decimalSeparator="." decimalPlaces="2" minValue="0" maxValue="9.99"
+							value="#{programmeEditBean.gpaFormulaItmVo.minFinalYearCgpa}" />
+					</p:panelGrid>
+	
+					<div class="ax-btn-set">
+						<p:commandButton value="#{program['save']}" action="#{programmeEditBean.saveGpaFormulaItm}"
+							update="formulaItmForm" />
+						<p:commandButton value="#{program['cancel']}" styleClass="ui-priority-secondary" immediate="true"
+							oncomplete="PF('GPAFormulaItemDialog').hide()" />
+					</div>
+				</h:form>
+			</p:dialog>
+		</div>
+		<ui:insert name="main-content-2" />
+	</ui:define>
+</ui:composition>

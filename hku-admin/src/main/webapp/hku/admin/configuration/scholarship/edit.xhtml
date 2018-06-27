@@ -1,0 +1,184 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="../configuration.xhtml">
+
+	<ui:define name="breadcrumb-3">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.configuration.scholarship"
+				var="scholarship" />
+			<li><a title="">#{scholarship['edit']}</a><i
+				class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+
+	<ui:define name="title">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.configuration.scholarship"
+				var="scholarship" />
+			<a class="ax-back-icon-url" onclick="_ACTION('search')"
+				href="javascript:void(0)"> <i class="ax-icon ti-arrow-left"></i>
+				#{scholarship['scholarshipSetup']}
+			</a>
+		</f:view>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<f:loadBundle basename="i18n.configuration.scholarship" var="scholarship" />
+		<div class="ax-tab">
+			<h:form id="formTier">
+				<p:growl id="growlMsg" showDetail="true" globalOnly="true" />
+				<p:panel id="toggleable" header="#{scholarship['basicInfo']}"
+					toggleable="true" toggleSpeed="200" closeSpeed="200"
+					widgetVar="panel">
+					<div>
+						<div class="ui-fluid">
+							<p:panelGrid columns="4"
+								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+								<p:outputLabel value="#{scholarship['scholarshipName']}" />
+								<p:inputText value="#{scholarEditBean.scholarVo.name}" />
+					
+								<p:outputLabel value="#{scholarship['status']}" />
+								<p:inputText value="#{scholarEditBean.scholarVo.status}" disabled="true" />
+					
+								<p:outputLabel value="#{scholarship['notTheSame']}" />
+								<p:selectBooleanCheckbox value="#{scholarEditBean.scholarVo.notAppEndDate}" />
+					
+								<p:outputLabel value="#{scholarship['startOrEndDate']}" />
+								<p:column>
+									<p:calendar id="startDate" readonlyInput="true" value="#{scholarEditBean.scholarVo.scholarStartDate}"
+										placeholder="#{scholarship['startDate']}" mindate="#{commonBean.minDate}" maxdate="#{commonBean.maxDate}"
+										onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+										navigator="true" maxlength="10" locale="de" yearRange="c-35:c+35"
+										pattern="dd-MM-yyyy" showOn="button">
+									</p:calendar>
+									<p:calendar id="endtDate" readonlyInput="true" value="#{scholarEditBean.scholarVo.scholarEndDate}"
+										placeholder="#{scholarship['endDate']}" mindate="#{commonBean.minDate}" maxdate="#{commonBean.maxDate}"
+										onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+										navigator="true" maxlength="10" locale="de" yearRange="c-35:c+35"
+										pattern="dd-MM-yyyy" showOn="button">
+									</p:calendar>
+								</p:column>
+							</p:panelGrid>
+						</div>
+					</div>
+				</p:panel>
+				<p:tabView activeIndex="0">
+					<p:tab title="#{scholarship['tier']}"
+						titleStyle="margin-right: 3px;">
+							<p:dataTable value="#{scholarEditBean.scholarDtlVos}" var="scholarDtlVo" reflow="true">
+								<p:column headerText="#{scholarship['tier']}">
+									<p:commandLink onclick="PF('editTierDialog').show()" update="formEditTier"
+										style="font-style: normal; font-size: 12px !important;">
+										<f:setPropertyActionListener value="#{scholarDtlVo}" target="#{scholarEditBean.scholarDtlVo}" />
+										<f:setPropertyActionListener value="#{scholarDtlVo.tier}" target="#{scholarEditBean.editTier}" />
+										<h:outputText value="#{scholarDtlVo.tier}" />
+									</p:commandLink>
+								</p:column>
+
+								<p:column headerText="#{scholarship['condition']}">
+									<ul class="list type-02">
+										<ui:repeat value="#{scholarDtlVo.requirementNames}" var="requirementName">
+											<li>#{requirementName}</li>
+										</ui:repeat>
+									</ul>
+								</p:column>
+
+								<p:column headerText="#{scholarship['amount']}">
+									<h:outputText value="$#{scholarDtlVo.amount}" />
+								</p:column>
+
+								<p:column headerText="#{scholarship['action']}"
+									styleClass="ax-action-w">
+									<p:menuButton value="#{scholarship['action']}">
+										<p:menuitem value="#{scholarship['edit']}" update="formEditTier"
+											onclick="PF('editTierDialog').show()">
+											<f:setPropertyActionListener value="#{scholarDtlVo}" target="#{scholarEditBean.scholarDtlVo}" />
+											<f:setPropertyActionListener value="#{scholarDtlVo.tier}" target="#{scholarEditBean.editTier}" />
+										</p:menuitem>
+										<p:menuitem value="#{scholarship['delete']}" action="#{scholarEditBean.removeScholarDtl}" update="formTier">
+											<f:setPropertyActionListener value="#{scholarDtlVo}" target="#{scholarEditBean.scholarDtlVo}" />
+											<p:confirm header="#{scholarship['prompt']}"
+												message="#{scholarship['deleteMessage']}"
+												icon="ui-icon-alert" />
+										</p:menuitem>
+									</p:menuButton>
+								</p:column>
+							</p:dataTable>
+							<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+								<p:commandButton value="#{scholarship['yes']}" type="button"
+									styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+								<p:commandButton value="#{scholarship['no']}" type="button"
+									styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+							</p:confirmDialog>
+							<div class="ax-btn-set">
+								<p:commandButton value="#{scholarship['tier']}" icon="ti-plus" update="formEditTier"
+									styleClass="ui-priority-primary" action="#{scholarEditBean.resetEditScholarDtlDlg}"
+									onclick="PF('editTierDialog').show()" />
+							</div>
+					</p:tab>
+				</p:tabView>
+
+				<div class="ax-btn-set">
+					<p:commandButton value="#{scholarship['back']}"
+						styleClass="ui-priority-secondary" icon="ti-arrow-left"
+						onclick="_ACTION('search')" />
+					<p:commandButton value="#{scholarship['save']}" action="#{scholarEditBean.save}" update="formTier" />
+				</div>
+			</h:form>
+
+			<p:dialog header="#{scholarship['editScholarshipTier']}"
+				height="450" widgetVar="editTierDialog" modal="true" width="900"
+				minHeight="50">
+				<h:form id="formEditTier">
+					<p:growl id="growlMsg" showDetail="true" />
+					<div class="ui-fluid">
+						<p:panelGrid columns="2"
+							columnClasses="ui-grid-col-2,ui-grid-col-10" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+							<p:outputLabel value="#{scholarship['tier']}">
+								<span style="color: red">*</span>
+							</p:outputLabel>
+							<p:column>
+								<p:selectOneMenu id="tier" style="width:40%;" value="#{scholarEditBean.scholarDtlVo.tier}">
+									<f:selectItem itemLabel="#{scholarship['select']}"
+										itemValue="" />
+									<f:selectItems value="#{scholarEditBean.tiers}" var="tier" itemLabel="#{tier.tier}" itemValue="#{tier.tier}" 
+										itemDisabled="#{tier.itemDisabled}" />
+								</p:selectOneMenu>
+							</p:column>
+							<p:outputLabel value="#{scholarship['condition']}">
+								<span style="color: red">*</span>
+							</p:outputLabel>
+							<p:column>
+								<p:selectCheckboxMenu id="multipleCondition" multiple="true"
+									filter="true" value="#{scholarEditBean.scholarDtlVo.requirementNames}">
+									<f:selectItems value="#{scholarEditBean.requirementVos}" var="req" 
+										itemLabel="#{req.description}" itemValue="#{req.description}" />
+								</p:selectCheckboxMenu>
+							</p:column>
+
+							<p:outputLabel value="#{scholarship['amount']}">
+								<span style="color: red">*</span>
+							</p:outputLabel>
+							<p:inputText id="amount" value="#{scholarEditBean.scholarDtlVo.amount}" style="width:40%;" 
+								converterMessage="#{scholarship['amountValid']}" />
+
+							<p:outputLabel value="#{scholarship['letterContent']}" />
+							<p:inputTextarea value="#{scholarEditBean.scholarDtlVo.letterContent}" rows="8" autoResize="false" />
+						</p:panelGrid>
+					</div>
+					<div class="ax-btn-set">
+						<p:commandButton value="#{scholarship['save']}" action="#{scholarEditBean.saveScholarDtl}" update="formTier, formEditTier" />
+						<p:commandButton value="#{scholarship['cancel']}"
+							styleClass="ui-priority-secondary" immediate="true"
+							onclick="PF('editTierDialog').hide()" />
+					</div>
+				</h:form>
+			</p:dialog>
+		</div>
+		<ui:insert name="main-content-2" />
+	</ui:define>
+</ui:composition>

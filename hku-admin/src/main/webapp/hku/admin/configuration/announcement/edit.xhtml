@@ -1,0 +1,58 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="../configuration.xhtml">
+
+	<ui:define name="breadcrumb-2">
+		<f:loadBundle basename="i18n.configuration.announcement" var="announcement" />
+		<li><a title="">#{announcement['sysAnncmntTemplate']}</a><i class="ti-angle-right"></i></li>
+	</ui:define>
+
+	<ui:define name="title">
+		<f:loadBundle basename="i18n.configuration.announcement" var="announcement" />
+		<a class="ax-back-icon-url" onclick="_ACTION('search')"
+			href="javascript:void(0)"> <i class="ax-icon ti-arrow-left"></i>
+			#{announcement['sysAnncmntTemplate']}
+		</a>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<f:loadBundle basename="i18n.configuration.announcement" var="announcement" />
+		<div class="ax-tab">
+			<h:form id="announcementDetails">
+				<p:growl id="growlMsg" showDetail="true" globalOnly="true" />
+				<p:tabView id="announcementTab" activeIndex="0">
+					<p:tab title="#{announcement['basicInfo']}">
+						<p:panelGrid columns="2"
+							columnClasses="ui-grid-col-3,ui-grid-col-7" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+
+							<p:outputLabel for="templateName" value="#{announcement['templateName']}" />
+							<p:inputText id="templateName" value="#{announcementEditBean.anncmntVo.templateName}" disabled="true" />
+
+							<p:outputLabel for="subject" value="#{announcement['subject']}" />
+							<p:inputText id="subject" value="#{announcementEditBean.anncmntVo.subject}" disabled="true" />
+
+							<p:outputLabel for="content" value="#{announcement['content']}" />
+							<p:inputTextarea id="content" value="#{announcementEditBean.anncmntVo.content}" />
+
+							<p:outputLabel for="createDate" value="#{announcement['createDate']}" />
+							<p:inputText id="createDate" value="#{announcementEditBean.formatDateMmddyyyy(announcementEditBean.anncmntVo.createDate)}" disabled="true" />
+
+							<p:outputLabel for="modifyDate" value="#{announcement['modifyDate']}" />
+							<p:inputText id="modifyDate" value="#{announcementEditBean.formatDateMmddyyyy(announcementEditBean.anncmntVo.modifyDate)}" disabled="true" />
+						</p:panelGrid>
+					</p:tab>
+				</p:tabView>
+
+				<div class="ax-btn-set">
+					<p:commandButton value="#{announcement['back']}" styleClass="ui-priority-secondary"
+						icon="ti-arrow-left" onclick="_ACTION('search')" />
+					<p:commandButton value="#{announcement['save']}" action="#{announcementEditBean.save}" update="announcementDetails" />
+				</div>
+			</h:form>
+		</div>
+		<ui:insert name="main-content-2" />
+	</ui:define>
+</ui:composition>

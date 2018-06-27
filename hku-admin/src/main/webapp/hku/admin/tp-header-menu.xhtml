@@ -1,0 +1,138 @@
+<!DOCTYPE html [
+    <!ENTITY bull "&#8226;">
+]>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	template="./tp-base.xhtml">
+	<ui:define name="page-content">
+		<script>
+			_initMenuCheckbox('mainLayout')
+		</script>
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.index.index" var="index" />
+		</f:view>
+		<div class="menu-layout" data-layout-id="mainLayout" data-layout-type="side-menu">
+			<div class="tx-menu accordion lv1 rwd" data-menu-id="mainMenu" data-menu-collasped="true">
+				<ul>
+					<li><a href="#{request.contextPath}/hku/admin/dashboard/dashboard.xhtml" title="Home"><i class="ti-home"></i><span>Home</span></a></li>
+					<li><a href="javascript:void(0)" title="Management"><i class="ti-files"></i><span>Management</span></a>
+						<ul>
+							<li>
+								<a href="javascript:void(0)"><span>Application</span></a>
+								<ul>
+									<li style="display: #{indexBean.findModule('Shortlisting', 'View Only')?'inline':'none'};"><a href="#{request.contextPath}/hku/admin/management/application/shortlisting/search.xhtml"><span>Shortlisting</span></a></li>
+									<li style="display: #{indexBean.findModule('Offer Process', 'View Only')?'inline':'none'};"><a href="#{request.contextPath}/hku/admin/management/application/offerProcess/search.xhtml"><span>Offer Process</span></a></li>
+									<li style="display: #{indexBean.findModule('Application Approval', 'View Only')?'inline':'none'};"><a href="#{request.contextPath}/hku/admin/management/application/applicationApproval/search.xhtml"><span>Offer Approval</span></a></li>
+								</ul>
+							</li>
+							<li style="display: #{indexBean.findModule('Applicant Enquiry', 'View Only')?'inline':'none'};"><a href="#{request.contextPath}/hku/admin/management/applicantEnquiry/search.xhtml"><span>Applicant Enquiry</span></a></li>
+							<li style="display: #{indexBean.findModule('Audit Log Approval', 'View Only')?'inline':'none'};"><a href="#{request.contextPath}/hku/admin/management/auditLogApproval/search.xhtml"><span>Audit Log Approval</span></a></li>
+							<li style="display: #{indexBean.findModule('De-duplication', 'View Only')?'inline':'none'};"><a href="#{request.contextPath}/hku/admin/management/de-duplication/search.xhtml"><span>De-duplication</span></a></li>
+							<li style="display: #{indexBean.findModule('Counsellor Maintenance', 'View Only')?'inline':'none'};"><a href="#{request.contextPath}/hku/admin/management/counsellorMaintenance/search.xhtml"><span>Counsellor Maintenance</span></a></li>
+						</ul></li>
+					<li><a href="javascript:void(0)" title="Configuration"><i class="ti-crown"></i><span>Configuration</span></a>
+						<ul>
+							<li>
+								<a href="javascript:void(0)"><span>Campaign</span></a>
+								<ul>
+									<li style="display: #{indexBean.findModule('Campaign Maintenance', 'View Only')?'inline':'none'};"><a href="#{request.contextPath}/hku/admin/configuration/campaign/search.xhtml"><span>Campaign Maintenance</span></a></li>
+									<li style="display: #{indexBean.findModule('Campaign Mapping', 'View Only')?'inline':'none'};"><a href="#{request.contextPath}/hku/admin/configuration/campaign/mapping.xhtml"><span>Campaign Mapping</span></a></li>
+								</ul>
+							</li>
+							<li style="display: #{indexBean.findModule('Admission Exercise', 'View Only')?'inline':'none'};"><a href="#{request.contextPath}/hku/admin/configuration/admission-exercise/result.xhtml"><span>Admission Exercise</span></a></li>
+							<li style="display: #{indexBean.findModule('Programme Admission Controls', 'View Only')?'inline':'none'};"><a href="#{request.contextPath}/hku/admin/configuration/programme/search.xhtml"><span>Programme Admission Controls</span></a></li>
+							<li style="display: #{indexBean.findModule('Entrance Requirement', 'View Only')?'inline':'none'};"><a href="#{request.contextPath}/hku/admin/configuration/requirement/search.xhtml"><span>Entrance Requirement</span></a></li>
+							<li style="display: #{indexBean.findModule('Scholarship Setup', 'View Only')?'inline':'none'};"><a href="#{request.contextPath}/hku/admin/configuration/scholarship/search.xhtml"><span>Scholarship Setup</span></a></li>
+							<li style="display: #{indexBean.findModule('System Announcement Template', 'View Only')?'inline':'none'};"><a href="#{request.contextPath}/hku/admin/configuration/announcement/search.xhtml"><span>System Announcement Template</span></a></li>
+							<li style="display: #{indexBean.findModule('Counsellor Setting', 'View Only')?'inline':'none'};"><a href="#"><span>Counsellor Setting</span></a></li>
+						</ul></li>
+					<li style="display: #{indexBean.findModule('Reports', 'View Only')?'inline':'none'};"><a href="#{request.contextPath}/hku/admin/reports/reports.xhtml" title="Report"><i
+							class="ti-pie-chart"></i><span>Reports</span></a></li>
+					<li><a href="javascript:void(0)"><i class="ti-settings"></i><span>System</span></a>
+						<ul>
+							<li style="display: #{indexBean.findModule('User', 'View Only')?'inline':'none'};"><a href="#{request.contextPath}/hku/admin/system/user/search.xhtml"><span>User</span></a></li>
+							<li style="display: #{indexBean.findModule('Role', 'View Only')?'inline':'none'};"><a href="#{request.contextPath}/hku/admin/system/role/search.xhtml"><span>Role</span></a></li>
+							<li style="display: #{indexBean.findModule('System Setting', 'View Only')?'inline':'none'};"><a href="#{request.contextPath}/hku/admin/system/setting/setting.xhtml"><span>System Setting</span></a></li>
+						</ul></li>
+					<li><a href="#" onclick="PF('indexDialog').show()" title="Logout"><i class="ti-share"></i><span>Logout</span></a></li>
+				</ul>
+				<div class="extra-top">
+					<div class="logo">logo</div>
+				</div>
+			</div>
+			<div class="menu-content">
+				<div class="body-header">
+					<div class="header">
+						<div class="logo">
+							<a href="index.html" title=""><img src="images/logo.png" alt="HKU" /></a>
+						</div>
+						<div class="app-name">
+							<div class="sep"></div>
+							<div class="text">
+								<div class="row-01">HKU - NJS</div>
+								<div class="row-02 Arial">Administration</div>
+							</div>
+						</div>
+						<div class="ax-printing">
+							<ul>
+								<li class="printer" onClick="_printPreview()" title="Print Preview"><i class="ti-printer"></i></li>
+								<li class="print-now" onClick="_printNow()" title="Print Now"><i class="ti-printer"></i></li>
+								<li class="print-cancel" onClick="_printCancel()" title="Cancel"><i class="ti-close"></i></li>
+							</ul>
+						</div>
+						<!-- <div class="lang">
+							<ul>
+								<li class="selected"><a href="javascript:void(0)">Eng</a></li>
+								<li class="sep">
+									<div></div>
+								</li>
+								<li><a href="javascript:void(0)">中文</a></li>
+							</ul>
+						</div> -->
+					</div>
+				</div>
+				<div class="body-content">
+					<div>
+						<ui:insert name="page-view-container" />
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			_initAllTxMenu();
+		</script>
+		<p:dialog header="Notification" widgetVar="notiDialogAtMenu" modal="true" width="920" minHeight="50">
+			<div>
+				<div class="title type-b">
+					<h1>
+						<span class="ax-list-icon"><i class="ti-crown green"></i></span> Profile of Mobile development is be created.
+					</h1>
+				</div>
+				<div>
+					<br /> If athe notification letter carries unpleasant news, the recommended action is to give a detailed and
+					honest explanation of the reason behi <br />
+				</div>
+			</div>
+			<div class="ax-btn-set">
+				<p:commandButton value="Close" styleClass="ui-priority-secondary" onclick="PF('notiDialogAtMenu').hide();" />
+			</div>
+		</p:dialog>
+
+		<p:dialog header="#{index['prompt']}" widgetVar="indexDialog" modal="true" width="300" minHeight="50">
+			<h:form id="indexFormE">
+				<div class="ui-fluid">
+					<H5>#{index['message']}</H5>
+				</div>
+				<div class="ax-btn-set">
+					<p:commandButton value="#{index['confirm']}" type="submit" actionListener="#{logoutBean.logout}"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="#{index['cancel']}" type="button" styleClass="ui-confirmdialog-no"
+						onclick="PF('indexDialog').hide()" icon="ui-icon-close" />
+				</div>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>
+
+
+

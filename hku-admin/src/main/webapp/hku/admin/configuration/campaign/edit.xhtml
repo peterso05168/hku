@@ -1,0 +1,777 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	template="./campaign.xhtml">
+
+	<ui:define name="breadcrumb-2">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.configuration.campaign" var="cpgn" />
+			<li><a title="">#{cpgn['campaign']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+	<ui:define name="breadcrumb-3">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.configuration.campaign" var="cpgn" />
+			<li><a title="">#{cpgn['edit']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+	<ui:define name="title">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.configuration.campaign" var="cpgn" />
+			<a class="ax-back-icon-url" onclick="_ACTION('search')" href="javascript:void(0)"> <i
+				class="ax-icon ti-arrow-left"></i> #{cpgn['campaignMaintenance']}
+			</a>
+		</f:view>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.configuration.campaign" var="campaignContent" />
+			<div>
+				<p:panel id="toggleable" header="#{campaignContent['campaignInformation']}" toggleable="true" toggleSpeed="200"
+					closeSpeed="200" widgetVar="panel">
+					<h:form id="campaignForm">
+						<div>
+							<p:panelGrid columns="4" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" layout="grid"
+								styleClass="ui-panelgrid-blank ui-fluid">
+								<p:outputLabel value="#{campaignContent['campaignName']}" />
+								<p:inputText value="#{editCampaignBean.campaignVo.cpgnName}" id="campaignName" />
+
+								<p:outputLabel value="#{campaignContent['campaignCode']}" />
+								<p:inputText disabled="true" value="#{editCampaignBean.campaignVo.cpgnCd}" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="4" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" layout="grid"
+								styleClass="ui-panelgrid-blank ui-fluid">
+								<p:outputLabel value="#{campaignContent['country']}" />
+								<p:selectOneMenu value="#{editCampaignBean.campaignVo.countryId}"
+									disabled="#{editCampaignBean.centreVos.size()>0?true:false}">
+									<f:selectItem itemLabel="#{campaignContent['select']}" itemValue="" />
+									<f:selectItems value="#{editCampaignBean.countries}" var="country" itemLabel="#{country.description}"
+										itemValue="#{country.id}" />
+								</p:selectOneMenu>
+
+								<p:outputLabel value="#{campaignContent['mappingby']}" />
+								<p:selectOneMenu value="#{editCampaignBean.campaignVo.mappedBy}"
+									disabled="#{editCampaignBean.centreVos.size()>0?true:false}">
+									<f:selectItem itemLabel="#{campaignContent['select']}" itemValue="" />
+									<f:selectItem itemLabel="#{campaignContent['province']}" itemValue="#{campaignContent['province']}" />
+									<f:selectItem itemLabel="#{campaignContent['city']}" itemValue="#{campaignContent['city']}" />
+								</p:selectOneMenu>
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" columnClasses="ui-grid-col-2,ui-grid-col-10" layout="grid"
+								styleClass="ui-panelgrid-blank ui-fluid">
+								<p:outputLabel value="#{campaignContent['detail']}" />
+								<p:inputTextarea rows="3" autoResize="false" value="#{editCampaignBean.campaignVo.cpgnDtl}" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="4" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" layout="grid"
+								styleClass="ui-panelgrid-blank ui-fluid">
+								<p:outputLabel value="#{campaignContent['status']}" />
+								<p:inputText disabled="true" value="#{editCampaignBean.campaignVo.statusCd}" />
+							</p:panelGrid>
+						</div>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{campaignContent['save']}" action="#{editCampaignBean.save}"
+								update="campaignForm viewInfoGroup formAddEvent" />
+						</div>
+					</h:form>
+				</p:panel>
+
+				<h:panelGroup id="viewInfoGroup">
+					<h:panelGroup id="tabViewGroup">
+						<!-- tabView -->
+						<p:tabView activeIndex="0" id="campaignTabView">
+							<p:tab title="#{campaignContent['centres']}" titleStyle="margin-right: 3px;">
+								<h:form id="formEvent">
+									<p:dataTable value="#{editCampaignBean.centreVos}" var="centreVo" reflow="true" id="centreDataTable">
+										<p:column headerText="#{campaignContent['centreName']}">
+											<p:commandLink style="font-style: normal; font-size: 12px !important;" onclick="_ACTION('create')"
+												action="#{editCampaignBean.toEditCentre(centreVo.id)}" update=":formAddEvent">
+												<h:outputText value="#{centreVo.centreName}" />
+											</p:commandLink>
+										</p:column>
+
+										<p:column headerText="#{campaignContent['provinceOrCity']}">
+											<h:outputText value="#{centreVo.provinceOrCityName}" />
+										</p:column>
+
+										<p:column headerText="#{campaignContent['sessionDateTime']}">
+											<p:commandLink style="font-style: normal; font-size: 12px !important;" onclick="_ACTION('createSession')"
+												action="#{editCampaignBean.toEditSession(centreVo.cpgnSessionId)}" update=":formEditSession">
+												<h:outputText value="#{centreVo.sessionDatetime}">
+													<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+												</h:outputText>
+											</p:commandLink>
+										</p:column>
+
+										<p:column headerText="#{campaignContent['label']}">
+											<h:outputText value="#{centreVo.dayName}" />
+										</p:column>
+
+										<p:column headerText="#{campaignContent['assignedQuota']}">
+											<h:outputText value="#{centreVo.assignedQuota}" />
+										</p:column>
+
+										<p:column headerText="#{campaignContent['reservedQuota']}">
+											<h:outputText value="#{centreVo.reservedQuota}" />
+										</p:column>
+
+										<p:column headerText="#{campaignContent['action']}" styleClass="ax-action-w">
+											<p:menuButton value="#{campaignContent['action']}">
+												<p:menuitem rendered="#{centreVo.id!=null?true:false}" value="#{campaignContent['editCentre']}"
+													onclick="_ACTION('create')" update=":formAddEvent" action="#{editCampaignBean.toEditCentre(centreVo.id)}" />
+												<p:menuitem rendered="#{centreVo.id!=null?true:false}" action="#{editCampaignBean.delete(centreVo.id)}"
+													value="#{campaignContent['removeCentre']}" update="campaignTabView:formEvent">
+													<p:confirm header="#{campaignContent['prompt']}" message="#{campaignContent['deleteMessage']}"
+														icon="ui-icon-alert" />
+												</p:menuitem>
+												<p:menuitem rendered="#{centreVo.id!=null?true:false}" value="#{campaignContent['addSession']}"
+													onclick="_ACTION('createSession')" action="#{editCampaignBean.createSession(centreVo.id)}"
+													update=":formEditSession" />
+
+												<p:menuitem rendered="#{centreVo.id!=null?false:true}" value="#{campaignContent['editSession']}"
+													onclick="_ACTION('createSession')" action="#{editCampaignBean.toEditSession(centreVo.cpgnSessionId)}"
+													update=":formEditSession" />
+												<p:menuitem rendered="#{centreVo.id!=null?false:true}"
+													action="#{editCampaignBean.deleteSession(centreVo.cpgnSessionId)}"
+													value="#{campaignContent['removeSession']}" update="campaignTabView:formEvent">
+													<p:confirm header="#{campaignContent['prompt']}" message="#{campaignContent['deleteMessage']}"
+														icon="ui-icon-alert" />
+												</p:menuitem>
+											</p:menuButton>
+										</p:column>
+									</p:dataTable>
+
+									<div class="ax-btn-set">
+										<p:commandButton value="#{campaignContent['centre']}" icon="ti-plus" styleClass="ui-priority-primary"
+											onclick="_ACTION('create')" action="#{editCampaignBean.toCreateCentreDialog}" update=":formAddEvent"
+											disabled="#{editCampaignBean.campaignVo.countryId!=null and editCampaignBean.campaignVo.countryId!='' and editCampaignBean.campaignVo.mappedBy!=null and editCampaignBean.campaignVo.mappedBy!=''?false:true}" />
+									</div>
+								</h:form>
+							</p:tab>
+
+							<p:tab title="#{campaignContent['shortlistingCriteria']}" titleStyle="margin-right: 3px;">
+								<h:form id="formShortlisting">
+									<p:dataTable value="#{editCampaignBean.critChinaAndNjVos}" var="ccan" reflow="true">
+										<p:column headerText="#{campaignContent['criteriaName']}" sortBy="">
+											<p:commandLink update="formEditCriteria"
+												action="#{editCampaignBean.toCritNJOrChina(ccan.id,ccan.type,ccan.selectedForShortlist,ccan.name)}"
+												style="font-style: normal; font-size: 12px !important;">
+												<h:outputText value="#{ccan.name}" />
+											</p:commandLink>
+										</p:column>
+
+										<p:column headerText="#{campaignContent['selectedForShortlisting']}">
+											<span class="status-label #{ccan.selectedForShortlist?'green':'grey'}"> <span
+												class="#{ccan.selectedForShortlist?'ti-check':'ti-close'}"></span>
+											</span>
+										</p:column>
+
+										<p:column headerText="#{campaignContent['action']}" styleClass="ax-action-w">
+											<p:menuButton value="#{campaignContent['action']}">
+												<p:menuitem value="#{campaignContent['edit']}" update="formEditCriteria"
+													action="#{editCampaignBean.toCritNJOrChina(ccan.id,ccan.type,ccan.selectedForShortlist,ccan.name)}" />
+											</p:menuButton>
+										</p:column>
+									</p:dataTable>
+
+									<div class="ax-btn-set">
+										<p:commandButton value="#{campaignContent['criteria']}" update="formEditCriteria" icon="ti-plus"
+											styleClass="ui-priority-primary" action="#{editCampaignBean.toNewCritNJOrChina}" />
+									</div>
+								</h:form>
+							</p:tab>
+
+							<p:tab title="#{campaignContent['mapping']}" titleStyle="margin-right: 3px;">
+								<h:form id="formMapping">
+									<p:dataTable value="#{editCampaignBean.mapCentre.entrySet()}" var="mapCentre" reflow="true">
+										<p:column headerText="#{campaignContent['provinceOrCity']}" sortBy="">
+											<p:commandLink action="#{editCampaignBean.toMapping(mapCentre.key)}" update="formEditMapping"
+												style="font-style: normal; font-size: 12px !important;">
+												<h:outputText value="#{mapCentre.value.provinceOrCityName}" />
+											</p:commandLink>
+										</p:column>
+
+										<p:column headerText="#{campaignContent['centres']}">
+											<h:outputText value="#{mapCentre.value.centreNames}" />
+										</p:column>
+
+										<p:column headerText="#{campaignContent['action']}" styleClass="ax-action-w">
+											<p:menuButton value="#{campaignContent['action']}">
+												<p:menuitem value="#{campaignContent['edit']}" action="#{editCampaignBean.toMapping(mapCentre.key)}"
+													update="formEditMapping" />
+											</p:menuButton>
+										</p:column>
+									</p:dataTable>
+								</h:form>
+							</p:tab>
+
+							<p:tab title="#{campaignContent['run']}" titleStyle="margin-right: 3px;">
+								<h:panelGroup id="runGroup">
+									<!-- processGroup -->
+									<h:panelGroup id="processGroup" rendered="#{editCampaignBean.isActiveRunGroup == true}">
+										<div class="ax-btn-set">
+											<p:commandButton action="#{editCampaignBean.changeRunTabGroup('processGroup')}" update="runGroup"
+												value="#{campaignContent['processAndGetQuotaSummary']}" icon="ti-control-shuffle"
+												styleClass="ui-priority-primary" />
+										</div>
+									</h:panelGroup>
+
+									<!-- confirmGroup -->
+									<h:panelGroup id="confirmGroup" rendered="#{editCampaignBean.isActiveRunGroup == false}">
+										<p:dataTable value="" var="" reflow="true">
+											<p:column headerText="#{campaignContent['country']}">
+												<h:outputText value="#{qualificationVo.ibSchoolCd}" />
+											</p:column>
+
+											<p:column headerText="#{campaignContent['centreName']}">
+											</p:column>
+
+											<p:column headerText="#{campaignContent['sessionDate']}">
+											</p:column>
+
+											<p:column headerText="#{campaignContent['quota']}">
+											</p:column>
+
+											<p:column headerText="#{campaignContent['noOfApplicants']}">
+												<p:commandLink onclick="PF('confirmAndAssignDialog').show()"
+													style="font-style: normal; font-size: 12px !important;">
+													<h:outputText value="#{qualificationVo.ibSessionNo}" />
+												</p:commandLink>
+											</p:column>
+										</p:dataTable>
+										<div class="ax-btn-set">
+											<p:commandButton action="#{editCampaignBean.changeRunTabGroup('confirmGroup')}" update="runGroup"
+												value="#{campaignContent['confirmAndAssignInter']}" icon="ti-check" styleClass="ui-priority-primary" />
+											<p:commandButton value="#{campaignContent['processAgain']}" icon="ti-control-shuffle"
+												styleClass="ui-priority-primary" />
+										</div>
+									</h:panelGroup>
+
+									<!-- centreDataGroup -->
+									<h:panelGroup id="centreDataGroup" rendered="#{editCampaignBean.isActiveRunGroup == null}">
+										<div class="ui-fluid" style="margin-bottom: 5px;">
+											<p:panelGrid columns="2" columnClasses="ui-grid-col-2,ui-grid-col-4" layout="grid"
+												styleClass="ui-panelgrid-blank ui-fluid">
+												<p:outputLabel value="#{campaignContent['country']}" />
+												<p:column>
+													<p:selectOneMenu>
+														<f:selectItem itemLabel="#{campaignContent['select']}" itemValue="0" />
+														<f:selectItem itemLabel="United Kingdom" itemValue="1" />
+														<f:selectItem itemLabel="USA" itemValue="2" />
+														<f:selectItem itemLabel="China" itemValue="3" />
+													</p:selectOneMenu>
+												</p:column>
+											</p:panelGrid>
+										</div>
+
+										<p:dataTable value="" var="" reflow="true">
+											<p:column headerText="#{campaignContent['centreName']}">
+												<h:outputText value="#{qualificationVo.ibSchoolCd}" />
+											</p:column>
+
+											<p:column headerText="#{campaignContent['sessionDateTime']}">
+											</p:column>
+
+											<p:column headerText="#{campaignContent['quota']}">
+												<p:commandLink onclick="PF('interviewSessionDialog').show()"
+													style="font-style: normal; font-size: 12px !important;">
+													<h:outputText value="#{qualificationVo.ibSessionNo}" />
+												</p:commandLink>
+											</p:column>
+										</p:dataTable>
+
+										<div class="ax-btn-set">
+											<p:commandButton action="#{editCampaignBean.changeRunTabGroup('centreDataGroup')}" update="runGroup"
+												value="#{campaignContent['cancelAssignInterview']}" styleClass="ui-priority-primary" />
+										</div>
+									</h:panelGroup>
+								</h:panelGroup>
+							</p:tab>
+						</p:tabView>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{campaignContent['back']}" onclick="_ACTION('search')" icon="ti-arrow-left"
+								class="ui-priority-secondary" />
+						</div>
+					</h:panelGroup>
+
+				</h:panelGroup>
+			</div>
+
+			<!-- Add Create createDialog -->
+			<p:dialog header="#{campaignContent['addCentre']}" height="300" widgetVar="createDialog" modal="true" width="500"
+				minHeight="50">
+				<h:form id="formAddEvent">
+					<p:growl id="growl1" showDetail="true" globalOnly="true" />
+					<div class="ui-fluid">
+						<p:panelGrid columns="1" columnClasses="ui-grid-col-12" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+							<p:column>
+								<p:outputLabel for="country" value="#{campaignContent['country']}" style="text-align:left;" />
+								<p:inputText id="country" disabled="true" value="#{editCampaignBean.campaignVo.countryName}" />
+							</p:column>
+							<p:column>
+								<p:outputLabel for="provinceOrCity" value="#{campaignContent['provinceOrCity']}" style="text-align:left;">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:selectOneMenu id="provinceOrCity" value="#{editCampaignBean.centreVo.provinceOrCityId}">
+									<f:selectItem itemLabel="#{campaignContent['select']}" itemValue="" />
+									<f:selectItems value="#{editCampaignBean.provinceCityVos}" var="provinceCity"
+										itemLabel="#{provinceCity.description}" itemValue="#{provinceCity.id}" />
+								</p:selectOneMenu>
+							</p:column>
+							<p:column>
+								<p:outputLabel for="centreName" value="#{campaignContent['centreName']}" style="text-align:left;">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:inputText id="centreName" value="#{editCampaignBean.centreVo.centreName}" maxlength="30" />
+							</p:column>
+						</p:panelGrid>
+					</div>
+					<div class="ax-btn-set">
+						<p:commandButton value="#{campaignContent['save']}" action="#{editCampaignBean.saveCentre}"
+							update="campaignTabView:formEvent formAddEvent campaignForm campaignTabView:formMapping" />
+						<p:commandButton value="#{campaignContent['cancel']}" styleClass="ui-priority-secondary"
+							onclick="_ACTION('create-cancel')" />
+					</div>
+				</h:form>
+			</p:dialog>
+
+			<!-- Edit Criteria Dialog -->
+			<p:dialog header="#{campaignContent['editCriteria']}" height="570" widgetVar="editCriteriaDialog" modal="true"
+				width="920" minHeight="50">
+				<h:form id="formEditCriteria">
+					<p:growl id="growlMsg" showDetail="true" />
+					<div class="ui-fluid">
+						<p:panelGrid columns="2" columnClasses="ui-grid-col-5,ui-grid-col-10" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+							<p:outputLabel value="#{campaignContent['selectedForShortlisting']}" />
+							<p:selectBooleanCheckbox style="margin-top: 5px;"
+								value="#{editCampaignBean.critChinaAndNjVo.selectedForShortlist}" />
+
+							<p:outputLabel value="#{campaignContent['criteriaName']}" for="criteriaName">
+								<span style="color: red;">*</span>
+							</p:outputLabel>
+							<p:inputText value="#{editCampaignBean.critChinaAndNjVo.name}" id="criteriaName" />
+
+							<p:outputLabel value="#{campaignContent['criteriaType']}" for="criteriaType">
+								<span style="color: red;">*</span>
+							</p:outputLabel>
+							<p:column>
+								<p:selectOneMenu style="width:50%;" id="criteriaType" value="#{editCampaignBean.critChinaAndNjVo.type}"
+									disabled="#{editCampaignBean.critChinaAndNjVo.status}">
+									<p:ajax event="change" update=":formEditCriteria:criteriaTypeGroup"
+										listener="#{editCampaignBean.loadCriteriaType}" />
+									<f:selectItem itemLabel="#{campaignContent['select']}" itemValue="0" />
+									<f:selectItem itemLabel="#{campaignContent['nj']}" itemValue="1" />
+									<f:selectItem itemLabel="#{campaignContent['china']}" itemValue="2" />
+								</p:selectOneMenu>
+							</p:column>
+						</p:panelGrid>
+					</div>
+
+					<h:panelGroup id="criteriaTypeGroup">
+						<h:panelGroup id="njGroup" rendered="#{editCampaignBean.isActiveCriteriaType1}">
+							<div class="ui-fluid">
+								<p:panelGrid columns="2" columnClasses="ui-grid-col-5,ui-grid-col-10" layout="grid"
+									styleClass="ui-panelgrid-blank ui-fluid">
+									<p:outputLabel value="#{campaignContent['progShortlistedForInterview']}">
+										<span style="color: red;">*</span>
+									</p:outputLabel>
+									<p:selectCheckboxMenu id="multipleProg" multiple="true" filter="true"
+										value="#{editCampaignBean.critNjVo.formProgList}">
+										<f:selectItems value="#{editCampaignBean.formProgs}" var="formProg"
+											itemLabel="#{formProg.appHkuProgrammeName}" itemValue="#{formProg.id}" />
+									</p:selectCheckboxMenu>
+
+									<p:outputLabel value="#{campaignContent['notstudying']}" />
+									<p:selectBooleanCheckbox style="margin-top: 5px;" value="#{editCampaignBean.critNjVo.isNotStudying}" />
+								</p:panelGrid>
+								<p:panelGrid id="provinceOrCity" columns="2" columnClasses="ui-grid-col-5,ui-grid-col-10" layout="grid"
+									styleClass="ui-panelgrid-blank ui-fluid">
+									<p:outputLabel value="#{campaignContent['studyIsPursued']}" />
+									<p:column>
+										<p:selectOneMenu style="width:50%;" value="#{editCampaignBean.critNjVo.countryId}">
+											<p:ajax event="change" listener="#{editCampaignBean.loadProvinceOrCityList}" update="provinceOrCity" />
+											<f:selectItem itemLabel="#{campaignContent['select']}" itemValue="" />
+											<f:selectItems value="#{editCampaignBean.countryVos}" var="country" itemLabel="#{country.description}"
+												itemValue="#{country.id}" />
+										</p:selectOneMenu>
+									</p:column>
+
+									<p:outputLabel value="#{campaignContent['province']}" for="province"
+										rendered="#{editCampaignBean.isActiveProvince}" />
+									<p:selectOneMenu rendered="#{editCampaignBean.isActiveProvince}" style="width:50%;" id="province"
+										value="#{editCampaignBean.critNjVo.provinceId}">
+										<p:ajax event="change" listener="#{editCampaignBean.loadCity}" update="provinceOrCity" />
+										<f:selectItem itemLabel="#{campaignContent['select']}" itemValue="" />
+										<f:selectItems value="#{editCampaignBean.provinces}" var="province" itemLabel="#{province.description}"
+											itemValue="#{province.id}" />
+									</p:selectOneMenu>
+
+									<p:outputLabel value="#{campaignContent['city']}" for="city" rendered="#{editCampaignBean.isActiveCity}" />
+									<p:selectOneMenu rendered="#{editCampaignBean.isActiveCity}" style="width:50%;" id="city"
+										value="#{editCampaignBean.critNjVo.cityId}">
+										<p:ajax event="change" listener="#{editCampaignBean.loadInstitutionList}" update="provinceOrCity" />
+										<f:selectItem itemLabel="#{campaignContent['select']}" itemValue="" />
+										<f:selectItems value="#{editCampaignBean.citys}" var="city" itemLabel="#{city.description}"
+											itemValue="#{city.id}" />
+									</p:selectOneMenu>
+
+									<p:outputLabel value="#{campaignContent['nameOfSchool']}" />
+									<p:column>
+										<p:selectOneMenu value="#{editCampaignBean.critNjVo.institutionId}">
+											<f:selectItem itemLabel="#{campaignContent['select']}" itemValue="" />
+											<f:selectItems value="#{editCampaignBean.institutions}" var="institution"
+												itemLabel="#{institution.description}" itemValue="#{institution.id}" />
+										</p:selectOneMenu>
+									</p:column>
+								</p:panelGrid>
+								<p:panelGrid columns="2" columnClasses="ui-grid-col-5,ui-grid-col-10" layout="grid"
+									styleClass="ui-panelgrid-blank ui-fluid">
+									<p:outputLabel value="#{campaignContent['definedTag']}" />
+									<p:selectCheckboxMenu id="multipleDefinedTag" multiple="true" filter="true"
+										value="#{editCampaignBean.critNjVo.tagList}">
+										<f:selectItems value="#{editCampaignBean.tagVos}" var="tag" itemLabel="#{tag.desc}" itemValue="#{tag.id}" />
+									</p:selectCheckboxMenu>
+								</p:panelGrid>
+							</div>
+						</h:panelGroup>
+
+						<h:panelGroup id="chinaGroup" rendered="#{editCampaignBean.isActiveCriteriaType2}">
+							<p:panelGrid id="tagPanelGrid" columns="2" columnClasses="ui-grid-col-5,ui-grid-col-10" layout="grid"
+								styleClass="ui-panelgrid-blank ui-fluid">
+								<p:outputLabel value="#{campaignContent['definedTag']}" />
+								<p:selectCheckboxMenu multiple="true" filter="true" value="#{editCampaignBean.critChinaVo.tagList}">
+									<f:selectItems value="#{editCampaignBean.tagVos}" var="tag" itemLabel="#{tag.desc}" itemValue="#{tag.id}" />
+								</p:selectCheckboxMenu>
+
+							</p:panelGrid>
+							<p:dataTable value="#{editCampaignBean.map.entrySet()}" var="critChinaDtl" reflow="true" style="margin-top:10px;"
+								id="provinceDataTable">
+								<p:column headerText="#{campaignContent['province']}" sortBy="">
+									<p:commandLink action="#{editCampaignBean.toEditProvince(critChinaDtl.key)}"
+										style="font-style: normal; font-size: 12px !important;" update="formEditProvince">
+										<h:outputText value="#{critChinaDtl.value.provinceName}" />
+									</p:commandLink>
+								</p:column>
+
+								<p:column headerText="#{campaignContent['qualification']}">
+									<h:outputText value="#{critChinaDtl.value.examTypeName}" />
+								</p:column>
+
+								<p:column headerText="#{campaignContent['stream']}">
+									<h:outputText value="#{critChinaDtl.value.streamName}" />
+								</p:column>
+
+								<p:column headerText="#{campaignContent['cutoffTotal']}">
+									<h:outputText value="#{critChinaDtl.value.cutoffTotal}" />
+								</p:column>
+
+								<p:column headerText="#{campaignContent['cutoffEnglish']}">
+									<h:outputText value="#{critChinaDtl.value.cutoffEnglish}" />
+								</p:column>
+
+								<p:column headerText="#{campaignContent['noOfEligible']}">
+									<h:outputText value="#{critChinaDtl.value.noEligAppl}" />
+								</p:column>
+
+								<p:column headerText="#{campaignContent['ofEligible']}">
+									<h:outputText value="#{critChinaDtl.value.pctEligAppl}" />
+								</p:column>
+
+								<p:column headerText="#{campaignContent['action']}" styleClass="ax-action-w">
+									<p:menuButton value="#{campaignContent['action']}">
+										<p:menuitem value="#{campaignContent['edit']}" action="#{editCampaignBean.toEditProvince(critChinaDtl.key)}"
+											update="formEditProvince" />
+									</p:menuButton>
+								</p:column>
+							</p:dataTable>
+
+							<div class="ax-btn-set">
+								<p:commandButton value="#{campaignContent['province']}" icon="ti-plus" styleClass="ui-priority-primary"
+									update="formEditProvince" action="#{editCampaignBean.toEditProvince(null)}" />
+								<p:commandButton value="#{campaignContent['calculate']}" styleClass="ui-priority-primary" />
+							</div>
+						</h:panelGroup>
+					</h:panelGroup>
+
+					<div class="ax-btn-set">
+						<p:commandButton value="#{campaignContent['save']}" action="#{editCampaignBean.saveCritNJOrChina}"
+							update="campaignTabView:formShortlisting formEditCriteria" />
+						<p:commandButton value="#{campaignContent['cancel']}" styleClass="ui-priority-secondary"
+							onclick="PF('editCriteriaDialog').hide()" />
+					</div>
+				</h:form>
+			</p:dialog>
+
+			<!-- Edit Province -->
+			<p:dialog header="#{campaignContent['editProvince']}" height="600" widgetVar="editProvinceDialog" modal="true"
+				width="520" minHeight="50">
+				<h:form id="formEditProvince">
+					<p:growl id="provinceGrowl" showDetail="true" globalOnly="true" />
+					<div class="ui-fluid">
+						<p:panelGrid columns="1" columnClasses="ui-grid-col-12" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+
+							<p:column>
+								<p:outputLabel value="#{campaignContent['province']}" style="text-align:left;">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:selectOneMenu value="#{editCampaignBean.critChinaDtlVo.provinceId}" id="critChinaDtlVoProvinceId">
+									<f:selectItem itemLabel="#{campaignContent['select']}" itemValue="" />
+									<f:selectItems value="#{editCampaignBean.provinces}" var="province" itemLabel="#{province.description}"
+										itemValue="#{province.id}" />
+								</p:selectOneMenu>
+							</p:column>
+
+							<p:column>
+								<p:outputLabel value="#{campaignContent['qualification']}" style="text-align:left;">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:selectOneMenu value="#{editCampaignBean.critChinaDtlVo.examTypeId}" id="critChinaDtlVoExamTypeId">
+									<f:selectItem itemLabel="#{campaignContent['select']}" itemValue="" />
+									<f:selectItems value="#{editCampaignBean.typeVos}" var="type" itemLabel="#{type.examDesc}"
+										itemValue="#{type.id}" />
+								</p:selectOneMenu>
+							</p:column>
+
+							<p:column>
+								<p:outputLabel value="#{campaignContent['stream']}" style="text-align:left;">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:selectOneMenu value="#{editCampaignBean.critChinaDtlVo.stream}" id="critChinaDtlVoStream">
+									<f:selectItem itemLabel="#{campaignContent['select']}" itemValue="" />
+									<f:selectItem itemLabel="Arts" itemValue="1" />
+									<f:selectItem itemLabel="Science" itemValue="2" />
+								</p:selectOneMenu>
+							</p:column>
+
+							<p:column>
+								<p:outputLabel value="#{campaignContent['cutoffTotal']}" style="text-align:left;">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:inputText value="#{editCampaignBean.critChinaDtlVo.cutoffTotal}" id="critChinaDtlVoCutoffTotal" />
+							</p:column>
+
+							<p:column>
+								<p:outputLabel value="#{campaignContent['cutoffEnglish']}" style="text-align:left;">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:inputText value="#{editCampaignBean.critChinaDtlVo.cutoffEnglish}" id="critChinaDtlVoCutoffEnglish" />
+							</p:column>
+
+							<p:column>
+								<p:outputLabel value="#{campaignContent['noOfEligible']}" style="text-align:left;" />
+								<p:inputText value="#{editCampaignBean.critChinaDtlVo.noEligAppl}" />
+							</p:column>
+
+							<p:column>
+								<p:outputLabel value="#{campaignContent['ofEligible']}" style="text-align:left;" />
+								<p:inputText value="#{editCampaignBean.critChinaDtlVo.pctEligAppl}" />
+							</p:column>
+						</p:panelGrid>
+					</div>
+					<div class="ax-btn-set">
+						<p:commandButton value="#{campaignContent['save']}" action="#{editCampaignBean.saveCritChinaDtlToProvince}"
+							update="formEditCriteria:chinaGroup formEditProvince" />
+						<p:commandButton value="#{campaignContent['cancel']}" styleClass="ui-priority-secondary"
+							onclick="PF('editProvinceDialog').hide()" />
+					</div>
+				</h:form>
+			</p:dialog>
+
+			<!-- Edit Mapping -->
+			<p:dialog header="#{campaignContent['mappingCentre']}" height="470" widgetVar="editMappingDialog" modal="true"
+				width="800" minHeight="50">
+				<h:form id="formEditMapping">
+					<div class="ui-fluid">
+						<p:panelGrid columns="2" columnClasses="ui-grid-col-3,ui-grid-col-10" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+							<p:outputLabel value="#{campaignContent['country']}" />
+							<p:inputText disabled="true" value="#{editCampaignBean.centre.countryName}" />
+
+							<p:outputLabel value="#{campaignContent['provinceOrCity']}" />
+							<p:inputText disabled="true" value="#{editCampaignBean.centre.provinceOrCityName}" />
+
+							<p:outputLabel value="#{campaignContent['mappingToCentre']}" />
+							<p:selectCheckboxMenu multiple="true" filter="true" value="#{editCampaignBean.centre.centreIds}">
+								<f:selectItems value="#{editCampaignBean.centre.centreVos}" var="centre" itemLabel="#{centre.centreName}"
+									itemValue="#{centre.id}" />
+							</p:selectCheckboxMenu>
+						</p:panelGrid>
+					</div>
+
+					<div class="ax-btn-set">
+						<p:commandButton value="#{campaignContent['save']}" action="#{editCampaignBean.saveMappin}"
+							update="campaignTabView:formMapping" />
+						<p:commandButton value="#{campaignContent['cancel']}" styleClass="ui-priority-secondary"
+							onclick="PF('editMappingDialog').hide()" />
+					</div>
+				</h:form>
+			</p:dialog>
+
+			<!-- Edit Centre -->
+			<p:dialog header="#{campaignContent['editCentre']}" height="330" widgetVar="editCentreDialog" modal="true"
+				width="500" minHeight="50">
+				<h:form id="formEditCentre">
+					<div class="ui-fluid">
+						<p:panelGrid columns="1" columnClasses="ui-grid-col-12" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+
+							<p:column>
+								<p:outputLabel value="#{campaignContent['country']}" style="text-align:left;" />
+								<p:inputText disabled="true" maxlength="30" />
+							</p:column>
+
+							<p:column>
+								<p:outputLabel value="#{campaignContent['provinceOrCity']}" style="text-align:left;">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:selectOneMenu>
+									<f:selectItem itemLabel="#{campaignContent['select']}" itemValue="0" />
+									<f:selectItem itemLabel="London" itemValue="1" />
+									<f:selectItem itemLabel="Manchester" itemValue="2" />
+									<f:selectItem itemLabel="Manchester" itemValue="3" />
+								</p:selectOneMenu>
+							</p:column>
+
+							<p:column>
+								<p:outputLabel value="#{campaignContent['centreName']}" style="text-align:left;">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:inputText maxlength="30" />
+							</p:column>
+						</p:panelGrid>
+					</div>
+					<div class="ax-btn-set">
+						<p:commandButton value="#{campaignContent['create']}" />
+						<p:commandButton value="#{campaignContent['cancel']}" styleClass="ui-priority-secondary"
+							onclick="PF('editCentreDialog').hide()" />
+					</div>
+				</h:form>
+			</p:dialog>
+
+			<!-- Edit Session -->
+			<p:dialog header="#{campaignContent['editSession']}" height="430" widgetVar="editSessionDialog" modal="true"
+				width="500" minHeight="50">
+				<h:form id="formEditSession">
+					<p:growl id="sessionGrowl" showDetail="true" globalOnly="true" />
+					<div class="ui-fluid">
+						<p:panelGrid columns="1" columnClasses="ui-grid-col-12" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+							<p:column>
+								<p:outputLabel value="#{campaignContent['centreName']}" style="text-align:left;" />
+								<p:inputText disabled="true" value="#{editCampaignBean.centreVo.centreName}" maxlength="30" />
+							</p:column>
+
+							<p:column>
+								<p:outputLabel for="sessionDateTime" value="#{campaignContent['sessionDateTime']}" style="text-align:left;">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:calendar id="sessionDateTime" value="#{editCampaignBean.cpgnSessionVo.sessionDatetime}" readonlyInput="true"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" maxlength="10" locale="de" pattern="dd-MM-yyyy HH:mm" showOn="button"
+									mindate="#{commonBean.minDate}" maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35">
+								</p:calendar>
+							</p:column>
+
+							<p:column>
+								<p:outputLabel for="label" value="#{campaignContent['label']}" style="text-align:left;" />
+								<p:inputText id="label" value="#{editCampaignBean.cpgnSessionVo.dayName}" maxlength="20" />
+							</p:column>
+
+							<p:column>
+								<p:outputLabel for="assignedQuota" value="#{campaignContent['assignedQuota']}" style="text-align:left;">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:inputNumber decimalPlaces="0" thousandSeparator="" id="assignedQuota" maxValue="99999999"
+									value="#{editCampaignBean.cpgnSessionVo.assignedQuota}" />
+							</p:column>
+
+							<p:column>
+								<p:outputLabel value="#{campaignContent['reservedQuota']}" for="reservedQuota" style="text-align:left;" />
+								<p:inputNumber decimalPlaces="0" thousandSeparator="" id="reservedQuota" maxValue="99999999"
+									value="#{editCampaignBean.cpgnSessionVo.reservedQuota}" />
+							</p:column>
+						</p:panelGrid>
+					</div>
+					<div class="ax-btn-set">
+						<p:commandButton value="#{campaignContent['create']}" action="#{editCampaignBean.saveSession}"
+							update="campaignTabView:formEvent formEditSession" />
+						<p:commandButton value="#{campaignContent['cancel']}" styleClass="ui-priority-secondary"
+							onclick="PF('editSessionDialog').hide()" />
+					</div>
+				</h:form>
+			</p:dialog>
+
+			<!-- Confirm and Assign Time Dialog -->
+			<p:dialog header="#{campaignContent['confirmAndAssignTime']}" height="470" widgetVar="confirmAndAssignDialog"
+				modal="true" width="800" minHeight="50">
+				<h:form id="formConfirmAndAssign">
+					<p:dataTable var="" value="" rows="8" reflow="true" paginator="true" paginatorPosition="bottom"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+						<p:column width="5%">
+							<p:selectBooleanCheckbox />
+						</p:column>
+
+						<p:column headerText="#{campaignContent['applicationNo']}" sortBy="">
+							<h:outputText value="APP00001" />
+						</p:column>
+
+						<p:column headerText="#{campaignContent['totalScore']}">
+							<h:outputText value="100" />
+						</p:column>
+					</p:dataTable>
+					<div class="ax-btn-set">
+						<p:commandButton value="#{campaignContent['confirmAndAssignTime']}" onclick="PF('confirmAndAssignDialog').hide()" />
+						<p:commandButton value="#{campaignContent['cancel']}" styleClass="ui-priority-secondary"
+							onclick="PF('confirmAndAssignDialog').hide()" />
+					</div>
+				</h:form>
+			</p:dialog>
+
+			<!-- Interview Session Dialog -->
+			<p:dialog header="#{campaignContent['interviewSession']}" height="560" widgetVar="interviewSessionDialog"
+				modal="true" width="900" minHeight="50">
+				<div class="ui-fluid" style="margin-bottom: 10px;">
+					<p:panelGrid columns="4" columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-2,ui-grid-col-2" layout="grid"
+						styleClass="ui-panelgrid-blank ui-fluid">
+						<p:outputLabel value="#{campaignContent['centreName']}" />
+						<p:inputText disabled="true" />
+
+						<p:outputLabel value="#{campaignContent['sessionDateTime']}" />
+						<p:inputText disabled="true" />
+					</p:panelGrid>
+				</div>
+
+				<p:dataTable var="" value="" rows="10" reflow="true" paginator="true" paginatorPosition="bottom"
+					rowIndexVar="rowIndex"
+					paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+					<f:facet name="header">#{campaignContent['assignedApplicants']}</f:facet>
+					<p:column width="7%">
+						<h:outputText value="#{rowIndex+1}." />
+					</p:column>
+
+					<p:column headerText="#{campaignContent['applicationNo']}">
+						<h:outputText />
+					</p:column>
+
+					<p:column headerText="#{campaignContent['name']}">
+						<h:outputText />
+					</p:column>
+				</p:dataTable>
+
+				<div class="ax-btn-set">
+					<p:commandButton value="#{campaignContent['close']}" styleClass="ui-priority-secondary"
+						onclick="PF('interviewSessionDialog').hide()" />
+				</div>
+			</p:dialog>
+
+			<!-- delete confirmDialog-->
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="#{campaignContent['yes']}" type="button" styleClass="ui-confirmdialog-yes"
+					icon="ui-icon-check" />
+				<p:commandButton value="#{campaignContent['no']}" type="button" styleClass="ui-confirmdialog-no"
+					icon="ui-icon-close" />
+			</p:confirmDialog>
+		</f:view>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,2126 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:outputScript name="hku/js/updateCheckNum.js" />
+	<div class="ax-tab-02">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.my-application.otherqualification"
+				var="otherQualification" />
+		</f:view>
+
+		<h:form id="formQualifications">
+			<div style="margin-bottom: 20px;">
+				<p:commandButton value=" #{otherQualification['qualifi']}"
+					icon="ti-plus" styleClass="ui-priority-primary"
+					action="#{otherQualificationBean.editQualification()}"
+					resetValues="true" oncomplete="PF('qualificationDialog').show()"
+					update=":mainTab:formQualificationDialog" />
+			</div>
+			<p:accordionPanel id="panelQuali"
+				activeIndex="#{otherQualificationBean.currPanelIndex}"
+				value="#{otherQualificationBean.qualifications}" var="qualification">
+				<p:ajax event="tabChange"
+					listener="#{otherQualificationBean.onTabChange()}" />
+				<p:tab
+					title="#{qualification.type.examDesc} - (#{otherQualificationBean.setMonth(qualification.examTypeMonth)}#{qualification.examTypeYear})">
+					<p:growl id="growlMsg" showDetail="true" />
+					<div style="margin-bottom: 15px;">
+						<p:panelGrid columns="4"
+							rendered="#{!qualification.type.isActiveNJCEE}"
+							columnClasses="ui-grid-col-3,ui-grid-col-5,ui-grid-col-3,ui-grid-col-5"
+							styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+
+							<p:outputLabel for="ibSchoolCdInput"
+								value="#{otherQualification['schoolCode']}"
+								rendered="#{qualification.type.isActiveIB}">
+							</p:outputLabel>
+							<p:column rendered="#{qualification.type.isActiveIB}">
+								<p:inputText id="ibSchoolCdInput"
+									value="#{qualification.ibSchoolCd}" />
+							</p:column>
+							<p:outputLabel for="ibSessionNoInput"
+								value="#{otherQualification['sessionNo']}"
+								rendered="#{qualification.type.isActiveIB}">
+							</p:outputLabel>
+							<p:column rendered="#{qualification.type.isActiveIB}">
+								<p:inputText id="ibSessionNoInput"
+									value="#{qualification.ibSessionNo}" />
+							</p:column>
+
+							<p:outputLabel for="dateOfRelease"
+								rendered="#{!qualification.type.isActiveGCE}"
+								value="#{otherQualification['dateOfReleas']}">
+								<span style="color: red;">*</span>
+							</p:outputLabel>
+							<p:column>
+								<p:calendar id="dateOfRelease" locale="de"
+									mindate="#{commonBean.minDate}" maxdate="#{commonBean.maxDate}"
+									rendered="#{!qualification.type.isActiveGCE}"
+									yearRange="c-35:c+35"
+									onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+									navigator="true" readonlyInput="true"
+									value="#{qualification.dateOfReleaseOfRslt}"
+									pattern="dd-MM-yyyy" showOn="button">
+								</p:calendar>
+							</p:column>
+
+							<p:column>
+								<p:outputLabel for="toeflNoInput"
+									rendered="#{qualification.type.examCd == 'TOEFLPT' or qualification.type.examCd == 'TOEFLIT'}"
+									value="#{otherQualification['toeflNo']}">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+							</p:column>
+							<p:column>
+								<p:inputText id="toeflNoInput"
+									value="#{qualification.toeflIdno}"
+									rendered="#{qualification.type.examCd == 'TOEFLPT' or qualification.type.examCd == 'TOEFLIT'}" />
+							</p:column>
+						</p:panelGrid>
+					</div>
+
+					<!-- NJCEE -->
+					<p:panelGrid columns="4" id="provinceGrid"
+						rendered="#{qualification.type.isActiveNJCEE}"
+						columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+						styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+						<p:outputLabel for="njceeExamPlaceCdMenu"
+							rendered="#{qualification.type.examCd == 'NJCEE'}"
+							value="#{otherQualification['whereExamination']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:column rendered="#{qualification.type.examCd == 'NJCEE'}">
+							<p:selectOneMenu id="njceeExamPlaceCdMenu"
+								value="#{qualification.njceeExamProvinceId}">
+								<f:attribute name="qualificationId" value="#{qualification.id}" />
+								<p:ajax event="change"
+									listener="#{otherQualificationBean.changeExamProvince}"
+									update="streamGrid, mainTab:confirmForm" />
+								<p:ajax event="focus"
+									listener="#{otherQualificationBean.changeProvinceAndStream(qualification.njceeExamProvinceId,qualification.id,qualification.njceeStreamCd,'changeProvince')}" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItems value="#{otherQualificationBean.provinces}"
+									var="province" itemLabel="#{province.description}"
+									itemValue="#{province.id}"
+									itemDisabled="#{province.description == 'Hong Kong' or province.description == 'Macau' or province.description == 'Taiwan'}" />
+							</p:selectOneMenu>
+						</p:column>
+						<p:outputLabel for="hmtNjceeExamPlaceCdMenu"
+							rendered="#{qualification.type.examCd == 'HMTNJCEE'}"
+							value="#{otherQualification['whereExamination']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:column rendered="#{qualification.type.examCd == 'HMTNJCEE'}">
+							<p:selectOneMenu id="hmtNjceeExamPlaceCdMenu"
+								value="#{qualification.njceeExamProvinceId}">
+								<f:attribute name="qualificationId" value="#{qualification.id}" />
+								<p:ajax event="change"
+									listener="#{otherQualificationBean.changeExamProvince}"
+									update="streamGrid, mainTab:confirmForm" />
+								<p:ajax event="focus"
+									listener="#{otherQualificationBean.changeProvinceAndStream(qualification.njceeExamProvinceId,qualification.id,qualification.njceeStreamCd,'changeProvince')}" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItems value="#{otherQualificationBean.provinces}"
+									var="province" itemLabel="#{province.description}"
+									itemValue="#{province.id}"
+									itemDisabled="#{province.description != 'Hong Kong' and province.description != 'Macau' and province.description != 'Taiwan'}" />
+							</p:selectOneMenu>
+						</p:column>
+						<p:column></p:column>
+						<p:column></p:column>
+
+						<p:column>
+							<h:outputLink id="helpInfoA" value="#" disabled="true"
+								styleClass="ax-pf-tooltip-icon">
+								<i class="ti-help"></i>
+							</h:outputLink>
+							<p:tooltip id="toolTipA" for="helpInfoA" showEvent="click"
+								value="#{otherQualification['helpInfo6']} #{otherQualificationBean.formatAppEndDate()}"
+								position="right" />
+							<p:outputLabel value="#{otherQualification['candidateNumber']}" />
+						</p:column>
+						<p:column>
+							<p:inputText value="#{qualification.njceeCandidateNo}" />
+						</p:column>
+
+						<p:column>
+							<h:outputLink id="helpInfoB" value="#" disabled="true"
+								styleClass="ax-pf-tooltip-icon">
+								<i class="ti-help"></i>
+							</h:outputLink>
+							<p:tooltip id="toolTipB" for="helpInfoB" showEvent="click"
+								value="#{otherQualification['helpInfo6']} #{otherQualificationBean.formatAppEndDate()}"
+								position="right" />
+							<p:outputLabel value="#{otherQualification['examinationNumber']}" />
+						</p:column>
+						<p:column>
+							<p:inputText value="#{qualification.njceeExamNo}" />
+						</p:column>
+					</p:panelGrid>
+
+					<!-- NJCEE -->
+					<p:panelGrid rendered="#{qualification.type.isActiveNJCEE}"
+						columns="2" style="margin-bottom:20px;" id="streamGrid"
+						columnClasses="ui-grid-col-2,ui-grid-col-4"
+						styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+						<p:outputLabel for="njceeStreamCdMenu"
+							value="#{otherQualification['stream']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:selectOneMenu id="njceeStreamCdMenu"
+								disabled="#{qualification.njceeExamProvinceDesc == 'Zhejiang' or qualification.njceeExamProvinceDesc == 'Shanghai'}"
+								value="#{qualification.njceeStreamCd}">
+								<p:ajax update="streamGrid" />
+								<p:ajax event="change"
+									listener="#{otherQualificationBean.changeExamStream}"
+									update="mainTab:confirmForm" />
+								<p:ajax event="focus"
+									listener="#{otherQualificationBean.changeProvinceAndStream(qualification.njceeExamProvinceId,qualification.id,qualification.njceeStreamCd,'changeStream')}" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItems value="#{otherQualificationBean.streamRefCds}"
+									var="streamRefCd" itemLabel="#{streamRefCd.value}"
+									itemValue="#{streamRefCd.cd}" />
+								<f:selectItem itemLabel="#{otherQualification['others']}"
+									itemValue="others"
+									itemDisabled="#{qualification.njceeExamProvinceDesc !='Zhejiang' and qualification.njceeExamProvinceDesc !='Shanghai'}" />
+							</p:selectOneMenu>
+						</p:column>
+					</p:panelGrid>
+
+					<!-- table data -->
+					<!-- IB table -->
+					<p:dataTable rendered="#{qualification.type.isActiveIB}"
+						value="#{qualification.qualificationRslts}"
+						var="qualificationRslt" reflow="true">
+						<p:column headerText="#{otherQualification['subject']}">
+							<p:commandLink resetValues="true"
+								action="#{otherQualificationBean.editQualificationRslt(qualificationRslt.id,qualification.id,qualification.examTypeId)}"
+								style="font-size: 12px !important;font-style:normal;"
+								update="mainTab:formQualiRslt"
+								value="#{qualificationRslt.examSubjectDesc}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['level']}">
+							<p:outputLabel width="23%" value="#{qualificationRslt.examLevel}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['achievedGrade']}">
+							<p:outputLabel width="23%"
+								rendered="#{qualificationRslt.achievedGradeCd != 'others'}"
+								value="#{qualificationRslt.achievedGradeCd}"
+								style="font-size: 12px !important;" />
+							<p:outputLabel width="23%"
+								rendered="#{qualificationRslt.achievedGradeCd == 'others'}"
+								value="#{qualificationRslt.achievedGradeOthers}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['gradeBySchool']}"
+							width="23%">
+							<p:outputLabel
+								rendered="#{qualificationRslt.predictedGradeCd != 'others'}"
+								value="#{qualificationRslt.predictedGradeCd}"
+								style="font-size: 12px !important;" />
+							<p:outputLabel
+								rendered="#{qualificationRslt.predictedGradeCd == 'others'}"
+								value="#{qualificationRslt.predictedGradeOthers}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column>
+							<h:outputText styleClass="status-label red"
+								rendered="#{qualificationRslt.isDeleted and !qualificationRslt.isDeleteApproved}"
+								value="#{otherQualification['deleteRequest']}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['action']}"
+							styleClass="ax-action-w">
+							<p:menuButton value="#{otherQualification['action']}">
+								<p:menuitem value="#{otherQualification['edit']}"
+									action="#{otherQualificationBean.editQualificationRslt(qualificationRslt.id,qualification.id,qualification.examTypeId)}"
+									update="mainTab:formQualiRslt" resetValues="true">
+								</p:menuitem>
+								<p:menuitem value="#{otherQualification['delete']}"
+									action="#{otherQualificationBean.deleteQualificationRslt(qualificationRslt.id,qualification.examTypeId)}"
+									update=":mainTab:formQualifications">
+									<p:confirm header="#{otherQualification['prompt']}"
+										message="#{otherQualification['delMessage']}"
+										icon="ui-icon-alert" />
+								</p:menuitem>
+							</p:menuButton>
+						</p:column>
+					</p:dataTable>
+
+					<!-- GCE table -->
+					<p:dataTable rendered="#{qualification.type.isActiveGCE}"
+						value="#{qualification.qualificationRslts}"
+						var="qualificationRslt" reflow="true">
+						<p:column headerText="#{otherQualification['subject']}">
+							<p:commandLink resetValues="true"
+								action="#{otherQualificationBean.editQualificationRslt(qualificationRslt.id,qualification.id,qualification.examTypeId)}"
+								style="font-size: 12px !important;font-style:normal;"
+								update="mainTab:formQualiRslt"
+								value="#{qualificationRslt.examSubjectDesc}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['board']}">
+							<p:outputLabel value="#{qualificationRslt.examBoard}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['level']}">
+							<p:outputLabel value="#{qualificationRslt.examLevel}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['achievedGrade']}">
+							<p:outputLabel
+								rendered="#{qualificationRslt.achievedGradeCd != 'others'}"
+								value="#{qualificationRslt.achievedGradeCd}"
+								style="font-size: 12px !important;" />
+							<p:outputLabel
+								rendered="#{qualificationRslt.achievedGradeCd == 'others'}"
+								value="#{qualificationRslt.achievedGradeOthers}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['gradeBySchool']}">
+							<p:outputLabel
+								rendered="#{qualificationRslt.predictedGradeCd != 'others'}"
+								value="#{qualificationRslt.predictedGradeCd}"
+								style="font-size: 12px !important;" />
+							<p:outputLabel
+								rendered="#{qualificationRslt.predictedGradeCd == 'others'}"
+								value="#{qualificationRslt.predictedGradeOthers}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['dateRelease']}">
+							<p:outputLabel
+								value="#{otherQualificationBean.dateFormat(qualificationRslt.gceDateOfRelease)}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column>
+							<h:outputText styleClass="status-label red"
+								rendered="#{qualificationRslt.isDeleted and !qualificationRslt.isDeleteApproved}"
+								value="#{otherQualification['deleteRequest']}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['action']}"
+							styleClass="ax-action-w">
+							<p:menuButton value="#{otherQualification['action']}">
+								<p:menuitem value="#{otherQualification['edit']}"
+									action="#{otherQualificationBean.editQualificationRslt(qualificationRslt.id,qualification.id,qualification.examTypeId)}"
+									update="mainTab:formQualiRslt" resetValues="true">
+								</p:menuitem>
+								<p:menuitem value="#{otherQualification['delete']}"
+									action="#{otherQualificationBean.deleteQualificationRslt(qualificationRslt.id,qualification.examTypeId)}"
+									update=":mainTab:formQualifications">
+									<p:confirm header="#{otherQualification['prompt']}"
+										message="#{otherQualification['delMessage']}"
+										icon="ui-icon-alert" />
+								</p:menuitem>
+							</p:menuButton>
+						</p:column>
+					</p:dataTable>
+
+					<!-- HKDSE table -->
+					<p:dataTable rendered="#{qualification.type.examCd == 'HKDSE'}"
+						value="#{qualification.qualificationRslts}"
+						var="qualificationRslt" reflow="true">
+						<p:column headerText="#{otherQualification['subject']}">
+							<p:commandLink resetValues="true"
+								action="#{otherQualificationBean.editQualificationRslt(qualificationRslt.id,qualification.id,qualification.examTypeId)}"
+								style="font-size: 12px !important;font-style:normal;"
+								update="mainTab:formQualiRslt"
+								value="#{qualificationRslt.examSubjectDesc}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['achievedGrade']}">
+							<p:outputLabel width="23%"
+								rendered="#{qualificationRslt.achievedGradeCd != 'others'}"
+								value="#{qualificationRslt.achievedGradeCd}"
+								style="font-size: 12px !important;" />
+							<p:outputLabel width="23%"
+								rendered="#{qualificationRslt.achievedGradeCd == 'others'}"
+								value="#{qualificationRslt.achievedGradeOthers}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column>
+							<h:outputText styleClass="status-label red"
+								rendered="#{qualificationRslt.isDeleted and !qualificationRslt.isDeleteApproved}"
+								value="#{otherQualification['deleteRequest']}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['action']}"
+							styleClass="ax-action-w">
+							<p:menuButton value="#{otherQualification['action']}">
+								<p:menuitem value="#{otherQualification['edit']}"
+									action="#{otherQualificationBean.editQualificationRslt(qualificationRslt.id,qualification.id,qualification.examTypeId)}"
+									update="mainTab:formQualiRslt" resetValues="true">
+								</p:menuitem>
+								<p:menuitem value="#{otherQualification['delete']}"
+									action="#{otherQualificationBean.deleteQualificationRslt(qualificationRslt.id,qualification.examTypeId)}"
+									update=":mainTab:formQualifications">
+									<p:confirm header="#{otherQualification['prompt']}"
+										message="#{otherQualification['delMessage']}"
+										icon="ui-icon-alert" />
+								</p:menuitem>
+							</p:menuButton>
+						</p:column>
+					</p:dataTable>
+
+					<!-- NJCEE Table -->
+					<p:dataTable rendered="#{qualification.type.isActiveNJCEE}"
+						value="#{qualification.njceeRsltMap.entrySet()}" id="NJCEETable"
+						var="qualificationRslt" reflow="true">
+						<f:facet name="header">#{otherQualification['matura']}</f:facet>
+						<p:column headerText="#{otherQualification['subject']}">
+							<p:commandLink resetValues="true"
+								action="#{otherQualificationBean.editNjceeQualificationRslt(qualificationRslt.key,qualification.id,qualification.examTypeId,qualification.njceeExamProvinceId,qualification.njceeStreamCd,qualification.njceeRsltMap)}"
+								style="font-size: 12px !important;font-style:normal;"
+								update="mainTab:formQualiRslt"
+								value="#{qualificationRslt.value.examSubjectDesc}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['achievedPonit']}">
+							<p:outputLabel width="23%"
+								rendered="#{qualificationRslt.value.achievedGradeCd != null}"
+								value="#{qualificationRslt.value.achievedGradeCd}"
+								style="font-size: 12px !important;" />
+							<p:outputLabel width="23%"
+								rendered="#{qualificationRslt.value.achievedGradeCd == null}"
+								value="#{qualificationRslt.value.achievedGradeOthers}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column>
+							<h:outputText styleClass="status-label red"
+								rendered="#{qualificationRslt.value.isDeleted and !qualificationRslt.value.isDeleteApproved}"
+								value="#{otherQualification['deleteRequest']}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['action']}"
+							styleClass="ax-action-w">
+							<p:menuButton value="#{otherQualification['action']}">
+								<p:menuitem value="#{otherQualification['edit']}"
+									action="#{otherQualificationBean.editNjceeQualificationRslt(qualificationRslt.key,qualification.id,qualification.examTypeId,qualification.njceeExamProvinceId,qualification.njceeStreamCd,qualification.njceeRsltMap)}"
+									update="mainTab:formQualiRslt" resetValues="true">
+								</p:menuitem>
+								<p:menuitem value="#{otherQualification['delete']}"
+									action="#{otherQualificationBean.deleteNjceeQualificationRslt(qualificationRslt.key,qualification.id,qualification.njceeRsltMap)}"
+									update=":mainTab:formQualifications">
+									<p:confirm header="#{otherQualification['prompt']}"
+										message="#{otherQualification['delMessage']}"
+										icon="ui-icon-alert" />
+								</p:menuitem>
+							</p:menuButton>
+						</p:column>
+						<f:facet name="footer">
+							<div style="padding-left: 25%;">
+								<p:outputLabel for="totalScore"
+									value="#{otherQualification['totalScore']}">
+									<span style="color: red;">*</span>
+									<span>:&#160;</span>
+								</p:outputLabel>
+								<p:inputNumber decimalPlaces="0" thousandSeparator=""
+									maxValue="999" minValue="0" id="totalScore"
+									decimalSeparator="." inputStyle="width:60%;"
+									value="#{qualification.njceeTotalScore}" />
+							</div>
+						</f:facet>
+					</p:dataTable>
+
+					<!-- SAT table -->
+					<p:dataTable rendered="#{qualification.type.isActiveSAT}"
+						value="#{qualification.qualificationRslts}"
+						var="qualificationRslt" reflow="true">
+						<p:column headerText="#{otherQualification['subject']}">
+							<p:commandLink resetValues="true"
+								action="#{otherQualificationBean.editQualificationRslt(qualificationRslt.id,qualification.id,qualification.examTypeId)}"
+								style="font-size: 12px !important;font-style:normal;"
+								update="mainTab:formQualiRslt"
+								value="#{qualificationRslt.examSubjectDesc}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['level']}">
+							<p:outputLabel width="23%" value="#{qualificationRslt.examLevel}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['achievedScore']}">
+							<p:outputLabel width="23%"
+								value="#{qualificationRslt.achievedGradeOthers}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column>
+							<h:outputText styleClass="status-label red"
+								rendered="#{qualificationRslt.isDeleted and !qualificationRslt.isDeleteApproved}"
+								value="#{otherQualification['deleteRequest']}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['action']}"
+							styleClass="ax-action-w">
+							<p:menuButton value="#{otherQualification['action']}">
+								<p:menuitem value="#{otherQualification['edit']}"
+									action="#{otherQualificationBean.editQualificationRslt(qualificationRslt.id,qualification.id,qualification.examTypeId)}"
+									update="mainTab:formQualiRslt" resetValues="true">
+								</p:menuitem>
+								<p:menuitem value="#{otherQualification['delete']}"
+									action="#{otherQualificationBean.deleteQualificationRslt(qualificationRslt.id,qualification.examTypeId)}"
+									update=":mainTab:formQualifications">
+									<p:confirm header="#{otherQualification['prompt']}"
+										message="#{otherQualification['delMessage']}"
+										icon="ui-icon-alert" />
+								</p:menuitem>
+							</p:menuButton>
+						</p:column>
+					</p:dataTable>
+
+					<!-- IT table -->
+					<p:dataTable rendered="#{qualification.type.isActiveIT}"
+						value="#{qualification.qualificationRslts}"
+						var="qualificationRslt" reflow="true">
+						<p:column headerText="#{otherQualification['subject']}">
+							<p:commandLink resetValues="true"
+								action="#{otherQualificationBean.editQualificationRslt(qualificationRslt.id,qualification.id,qualification.examTypeId)}"
+								style="font-size: 12px !important;font-style:normal;"
+								update="mainTab:formQualiRslt"
+								value="#{qualificationRslt.examSubjectDesc}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['achievedScore']}">
+							<p:outputLabel width="23%"
+								value="#{qualificationRslt.achievedGradeOthers}"
+								style="font-size: 12px !important;" />
+						</p:column>
+
+						<p:column>
+							<h:outputText styleClass="status-label red"
+								rendered="#{qualificationRslt.isDeleted and !qualificationRslt.isDeleteApproved}"
+								value="#{otherQualification['deleteRequest']}" />
+						</p:column>
+
+						<p:column headerText="#{otherQualification['action']}"
+							styleClass="ax-action-w">
+							<p:menuButton value="#{otherQualification['action']}">
+								<p:menuitem value="#{otherQualification['edit']}"
+									action="#{otherQualificationBean.editQualificationRslt(qualificationRslt.id,qualification.id,qualification.examTypeId)}"
+									update="mainTab:formQualiRslt" resetValues="true">
+								</p:menuitem>
+								<p:menuitem value="#{otherQualification['delete']}"
+									action="#{otherQualificationBean.deleteQualificationRslt(qualificationRslt.id,qualification.examTypeId)}"
+									update=":mainTab:formQualifications">
+									<p:confirm header="#{otherQualification['prompt']}"
+										message="#{otherQualification['delMessage']}"
+										icon="ui-icon-alert" />
+								</p:menuitem>
+							</p:menuButton>
+						</p:column>
+					</p:dataTable>
+
+					<!-- delete and remove confirmDialog-->
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+						<p:commandButton value="#{otherQualification['yes']}"
+							type="button" styleClass="ui-confirmdialog-yes"
+							icon="ui-icon-check" />
+						<p:commandButton value="#{otherQualification['no']}" type="button"
+							styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</p:confirmDialog>
+
+					<!-- subject 按钮-->
+					<div style="margin-bottom: 20px; margin-top: 10px;">
+						<p:commandButton value=" #{otherQualification['subject']}"
+							icon="ti-plus" styleClass="ui-priority-primary"
+							action="#{otherQualificationBean.editQualificationRslt('',qualification.id,qualification.examTypeId)}"
+							update="mainTab:formQualiRslt" resetValues="true"
+							rendered="#{qualification.type.isActiveIB}" />
+					</div>
+					<div style="margin-bottom: 20px; margin-top: 10px;">
+						<p:commandButton value=" #{otherQualification['subject']}"
+							icon="ti-plus" styleClass="ui-priority-primary"
+							action="#{otherQualificationBean.editNjceeQualificationRslt('',qualification.id,qualification.examTypeId,qualification.njceeExamProvinceId,qualification.njceeStreamCd,qualification.njceeRsltMap)}"
+							update="mainTab:formQualiRslt" resetValues="true"
+							rendered="#{qualification.type.isActiveNJCEE}" />
+					</div>
+
+					<p:panelGrid columns="4"
+						rendered="#{qualification.type.isActiveIB and qualification.type.examCd == 'IBD'}"
+						columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+						styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+						<p:outputLabel for="etAchievedRsltMenu"
+							value="#{otherQualification['achievedResultGrade']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:selectOneMenu id="etAchievedRsltMenu"
+								value="#{qualification.ibAchievedRsltGradeCd}">
+								<p:ajax event="change"
+									listener="#{otherQualificationBean.changeTotalPoints(qualification.id)}"
+									update="ibAchievedRsltPoints" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{otherQualificationBean.eeTokGrades}"
+									var="grade" itemLabel="#{grade.value}" itemValue="#{grade.cd}" />
+							</p:selectOneMenu>
+						</p:column>
+						<p:outputLabel for="etPredictedRsltMenu"
+							value="#{otherQualification['predictedResultGrade']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:selectOneMenu id="etPredictedRsltMenu"
+								value="#{qualification.ibPredictedRsltGradeCd}">
+								<p:ajax event="change"
+									listener="#{otherQualificationBean.changeTotalPoints(qualification.id)}"
+									update="ibPredictedRsltPoints" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" noSelectionOption="true" />
+								<f:selectItems value="#{otherQualificationBean.eeTokGrades}"
+									var="grade" itemLabel="#{grade.value}" itemValue="#{grade.cd}" />
+							</p:selectOneMenu>
+						</p:column>
+
+						<p:outputLabel
+							value="#{otherQualification['achievedResultPoint']}" />
+						<p:column>
+							<p:inputText disabled="true" id="ibAchievedRsltPoints"
+								value="#{qualification.ibAchievedRsltPoints} / #{qualification.achievedTotalPoints}" />
+						</p:column>
+						<p:outputLabel
+							value="#{otherQualification['predictedResultPoint']}" />
+						<p:column>
+							<p:inputText disabled="true" id="ibPredictedRsltPoints"
+								value="#{qualification.ibPredictedRsltPoints} / #{qualification.predictedTotalPoints}" />
+						</p:column>
+
+						<p:outputLabel for="ibAchievedRsltMenu"
+							value="#{otherQualification['achievedResult']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:selectOneMenu id="ibAchievedRsltMenu"
+								value="#{qualification.ibAchievedRslt}">
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItem itemLabel="#{otherQualification['yes']}"
+									itemValue="yes" />
+								<f:selectItem itemLabel="#{otherQualification['no']}"
+									itemValue="no" />
+							</p:selectOneMenu>
+						</p:column>
+						<p:outputLabel for="ibPredictedRsltMenu"
+							value="#{otherQualification['diplomaAwarded']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:column>
+							<p:selectOneMenu id="ibPredictedRsltMenu"
+								value="#{qualification.ibPredictedRslt}">
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItem itemLabel="#{otherQualification['yes']}"
+									itemValue="yes" />
+								<f:selectItem itemLabel="#{otherQualification['no']}"
+									itemValue="no" />
+							</p:selectOneMenu>
+						</p:column>
+					</p:panelGrid>
+
+					<!-- NJCEE HKU Multi-faceted Excellence Scheme-->
+					<h:panelGroup rendered="#{qualification.type.isActiveNJCEE}">
+						<div class="ax-section-title">
+							#{otherQualification['excellenceScheme']}
+							<h:outputLink id="helpInfoC" value="#" disabled="true"
+								styleClass="ax-pf-tooltip-icon">
+								<i class="ti-help"></i>
+							</h:outputLink>
+							<p:tooltip showEvent="click" id="toolTipC" for="helpInfoC"
+								position="right">
+								<div>#{otherQualification['schemeHelpInfo1']}</div>
+								<div>#{otherQualification['schemeHelpInfo2']}</div>
+								<div>#{otherQualification['schemeHelpInfo3']}</div>
+								<div>#{otherQualification['schemeHelpInfo4']}</div>
+								<div>#{otherQualification['schemeHelpInfo5']}</div>
+								<div>#{otherQualification['schemeHelpInfo6']}</div>
+								<div>#{otherQualification['schemeHelpInfo7']}</div>
+								<div>#{otherQualification['schemeHelpInfo8']}</div>
+								<div>#{otherQualification['schemeHelpInfo9']}</div>
+							</p:tooltip>
+						</div>
+
+						<div style="margin: 10px 0px 10px 10px;">
+							<p:selectBooleanCheckbox style="margin-right:5px;"
+								value="#{qualification.njceeHkuMfExcellentSche}">
+								<p:ajax event="change" update="addResultBtn" />
+							</p:selectBooleanCheckbox>
+							<label style="color: rgb(85, 85, 85) !important;">#{otherQualification['schemeSelectBox']}</label>
+						</div>
+
+						<div style="margin: 10px 0px 30px 10px;">
+							<p:commandButton id="addResultBtn"
+								value="#{otherQualification['schoolResult']}"
+								disabled="#{!qualification.njceeHkuMfExcellentSche}"
+								action="#{otherQualificationBean.editSchoolResult(qualification.id)}"
+								update=":mainTab:formResult" icon="ti-plus"
+								styleClass="ui-priority-primary" onclick="PF('result').show()" />
+						</div>
+					</h:panelGroup>
+
+					<div style="margin-top: 10px;">
+						<!-- remove 按钮 -->
+						<p:commandButton value="#{otherQualification['remove']}"
+							styleClass="ui-priority-secondary"
+							action="#{otherQualificationBean.removeQualification(qualification.id)}"
+							update=":mainTab:formQualifications :mainTab">
+							<p:confirm header="#{otherQualification['prompt']}"
+								message="#{otherQualification['delMessage']}"
+								icon="ui-icon-alert" />
+						</p:commandButton>
+						<h:panelGroup style="margin-right: 0.3%;">
+							<h:outputText styleClass="status-label red"
+								rendered="#{qualification.isDeleted and !qualification.isDeleteApproved}"
+								value="#{otherQualification['removalRequest']}" />
+						</h:panelGroup>
+						<!-- subject 按钮 -->
+						<p:commandButton value=" #{otherQualification['subject']}"
+							icon="ti-plus" styleClass="ui-priority-primary"
+							action="#{otherQualificationBean.editQualificationRslt('',qualification.id,qualification.examTypeId)}"
+							update="mainTab:formQualiRslt" resetValues="true"
+							rendered="#{!qualification.type.isActiveIB and !qualification.type.isActiveNJCEE}" />
+					</div>
+				</p:tab>
+			</p:accordionPanel>
+
+			<div style="margin-top: 30px;">
+				<p:commandButton icon="ti-arrow-left"
+					styleClass="ui-priority-secondary"
+					value="#{otherQualification['saveAndPrevious']}"
+					action="#{otherQualificationBean.savePrePage(2)}" update=":mainTab">
+				</p:commandButton>
+				<p:commandButton icon="ti-arrow-right" iconPos="right"
+					value="#{otherQualification['saveAndNext']}&#160;&#160;&#160;&#160;&#160;"
+					action="#{otherQualificationBean.saveNextPage(2)}"
+					update=":mainTab:formQualifications :mainTab">
+				</p:commandButton>
+			</div>
+		</h:form>
+
+		<p:dialog header="#{otherQualification['qualifi']}"
+			widgetVar="qualificationDialog" width="70%" height="470" modal="true">
+			<h:form id="formQualificationDialog">
+				<p:panelGrid columns="2" columnClasses="ui-grid-col-3,ui-grid-col-8"
+					styleClass="ui-panelgrid-blank ui-fluid" layout="grid"
+					id="qualificationGrid">
+					<p:outputLabel for="examTypeMenu"
+						value="#{otherQualification['examinationTpye']}">
+						<span style="color: red;">*</span>
+					</p:outputLabel>
+					<p:column>
+						<p:selectOneMenu value="#{otherQualificationBean.examType}"
+							id="examTypeMenu">
+							<p:ajax event="change"
+								listener="#{otherQualificationBean.loadExamType}"
+								update="formQualificationDialog" />
+							<p:ajax event="change"
+								listener="#{otherQualificationBean.loadExamYear}"
+								update="examTypeYearMenu" />
+							<f:selectItem itemLabel="#{otherQualification['select']}"
+								itemValue="0" />
+							<f:selectItem itemLabel="#{otherQualification['gce']}"
+								itemValue="ALLGCE" />
+							<f:selectItem itemLabel="#{otherQualification['ib']}"
+								itemValue="IB" />
+							<f:selectItem itemLabel="#{otherQualification['sat']}"
+								itemValue="SAT" />
+							<f:selectItem itemLabel="#{otherQualification['it']}"
+								itemValue="IT" />
+							<f:selectItem itemLabel="#{otherQualification['hhh']}"
+								itemValue="HHH" />
+							<f:selectItem itemLabel="#{otherQualification['njcee']}"
+								itemValue="NJCEE" />
+						</p:selectOneMenu>
+					</p:column>
+
+					<h:panelGroup id="testGroup">
+						<p:outputLabel for="examTypeIdMenu"
+							rendered="#{otherQualificationBean.examType != 'SAT'}"
+							value="#{otherQualification['examination']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:outputLabel for="examTypeIdMenu"
+							rendered="#{otherQualificationBean.examType == 'SAT'}"
+							value="#{otherQualification['test']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+					</h:panelGroup>
+					<p:column>
+						<p:selectOneMenu id="examTypeIdMenu"
+							value="#{otherQualificationBean.editQualification.examTypeId}">
+							<f:selectItem itemLabel="#{otherQualification['select']}"
+								itemValue="0" />
+							<f:selectItems value="#{otherQualificationBean.examTypeList}"
+								var="type" itemLabel="#{type.examDesc}" itemValue="#{type.id}" />
+						</p:selectOneMenu>
+					</p:column>
+
+					<p:outputLabel for="examTypeYearMenu"
+						value="#{otherQualification['year']}">
+						<span style="color: red;">*</span>
+					</p:outputLabel>
+					<p:column>
+						<p:selectOneMenu id="examTypeYearMenu"
+							value="#{otherQualificationBean.editQualification.examTypeYear}">
+							<f:selectItem itemLabel="#{otherQualification['select']}"
+								itemValue="0" />
+							<f:selectItems value="#{otherQualificationBean.examYears}"
+								var="examYear" itemLabel="#{examYear}" itemValue="#{examYear}" />
+						</p:selectOneMenu>
+					</p:column>
+
+					<p:outputLabel for="examTypeMonthMenu"
+						rendered="#{!otherQualificationBean.editQualification.isSelectNJCEE}"
+						value="#{otherQualification['month']}">
+						<span style="color: red;">*</span>
+					</p:outputLabel>
+					<p:column>
+						<p:selectOneMenu id="examTypeMonthMenu"
+							rendered="#{!otherQualificationBean.editQualification.isSelectNJCEE}"
+							value="#{otherQualificationBean.editQualification.examTypeMonth}">
+							<f:selectItem itemLabel="#{otherQualification['select']}"
+								itemValue="0" />
+							<f:selectItem itemLabel="#{otherQualification['january']}"
+								itemValue="1" />
+							<f:selectItem itemLabel="#{otherQualification['february']}"
+								itemValue="2" />
+							<f:selectItem itemLabel="#{otherQualification['march']}"
+								itemValue="3" />
+							<f:selectItem itemLabel="#{otherQualification['april']}"
+								itemValue="4" />
+							<f:selectItem itemLabel="#{otherQualification['may']}"
+								itemValue="5" />
+							<f:selectItem itemLabel="#{otherQualification['june']}"
+								itemValue="6" />
+							<f:selectItem itemLabel="#{otherQualification['july']}"
+								itemValue="7" />
+							<f:selectItem itemLabel="#{otherQualification['august']}"
+								itemValue="8" />
+							<f:selectItem itemLabel="#{otherQualification['september']}"
+								itemValue="9" />
+							<f:selectItem itemLabel="#{otherQualification['october']}"
+								itemValue="10" />
+							<f:selectItem itemLabel="#{otherQualification['november']}"
+								itemValue="11" />
+							<f:selectItem itemLabel="#{otherQualification['december']}"
+								itemValue="12" />
+						</p:selectOneMenu>
+					</p:column>
+				</p:panelGrid>
+				<br />
+				<div>
+					<p:commandButton value="#{otherQualification['add']}"
+						action="#{otherQualificationBean.saveQualification()}"
+						update=":mainTab:formQualifications :mainTab:formQualificationDialog :mainTab" />
+					<p:commandButton value="#{otherQualification['cancel']}"
+						oncomplete="PF('qualificationDialog').hide()"
+						styleClass="ui-priority-secondary" />
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="#{otherQualification['qualificationAndSubject']}"
+			widgetVar="subjectDialog" width="70%" height="350" modal="true">
+			<p:ajax event="close" listener="#{otherQualificationBean.initNjcee}" />
+			<h:form id="formQualiRslt">
+				<p:panelGrid columns="4" id="subjectGrid"
+					rendered="#{!otherQualificationBean.examTypeVo.isActiveGCE}"
+					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+					styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+					<p:column
+						rendered="#{otherQualificationBean.examTypeVo.examCd != 'HKDSE' and otherQualificationBean.examTypeVo.isActiveSAT}">
+						<p:outputLabel for="rsltExamLevel"
+							rendered="#{!otherQualificationBean.isSelectLevel}"
+							value="#{otherQualification['level']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+					</p:column>
+					<p:column
+						rendered="#{otherQualificationBean.examTypeVo.examCd != 'HKDSE' and otherQualificationBean.examTypeVo.isActiveSAT}">
+						<h:panelGroup id="rsltExamLevelGroup">
+							<p:selectOneMenu id="rsltExamLevel"
+								rendered="#{!otherQualificationBean.isSelectLevel}"
+								value="#{otherQualificationBean.editQualificationRslt.examLevel}">
+								<p:ajax event="change"
+									listener="#{otherQualificationBean.loadSubjectDesc}"
+									update="rsltExamSubjectDescGroup rsltExamLevelGroup" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="0" />
+								<f:selectItems value="#{otherQualificationBean.displayLevel}"
+									var="level" itemLabel="#{level}" itemValue="#{level}" />
+							</p:selectOneMenu>
+						</h:panelGroup>
+					</p:column>
+
+					<p:outputLabel for="rsltExamSubjectDesc"
+						rendered="#{!otherQualificationBean.isSelectSubject}"
+						value="#{otherQualification['subject']}">
+						<span style="color: red;">*</span>
+					</p:outputLabel>
+					<p:outputLabel for="rsltSelectExamSubjectDesc"
+						rendered="#{otherQualificationBean.isSelectSubject}"
+						value="#{otherQualification['subject']}">
+						<span style="color: red;">*</span>
+					</p:outputLabel>
+					<p:column>
+						<h:panelGroup id="rsltExamSubjectDescGroup">
+							<p:selectOneMenu id="rsltExamSubjectDesc"
+								rendered="#{!otherQualificationBean.isSelectSubject}"
+								value="#{otherQualificationBean.editQualificationRslt.examSubjectId}">
+								<p:ajax event="change" update="subjectGrid"
+									listener="#{otherQualificationBean.changeSubject}" />
+								<p:ajax event="change" update="rsltIbExamLevelGroup"
+									listener="#{otherQualificationBean.loadIbExamLevel}" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="0" />
+								<f:selectItems value="#{otherQualificationBean.displaySubject}"
+									var="subject" itemLabel="#{subject.examSubjectDesc}"
+									itemValue="#{subject.id}"
+									itemDisabled="#{subject.subjectDisable}" />
+							</p:selectOneMenu>
+
+							<p:selectOneMenu id="rsltSelectExamSubjectDesc"
+								rendered="#{otherQualificationBean.isSelectSubject}"
+								value="#{otherQualificationBean.editQualificationRslt.examSubjectId}">
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="0" />
+								<f:selectItems value="#{otherQualificationBean.selectSubject}"
+									var="subject" itemLabel="#{subject.examSubjectDesc}"
+									itemValue="#{subject.id}"
+									itemDisabled="#{subject.subjectDisable}" />
+							</p:selectOneMenu>
+						</h:panelGroup>
+					</p:column>
+					<p:column
+						rendered="#{otherQualificationBean.examTypeVo.isActiveIB}">
+						<p:outputLabel for="rsltIbExamLevel"
+							value="#{otherQualification['level']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+					</p:column>
+					<p:column
+						rendered="#{otherQualificationBean.examTypeVo.isActiveIB}">
+						<h:panelGroup id="rsltIbExamLevelGroup">
+							<p:selectOneMenu id="rsltIbExamLevel"
+								value="#{otherQualificationBean.editQualificationRslt.examLevel}">
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="0" />
+								<f:selectItems value="#{otherQualificationBean.selectLevel}"
+									var="level" itemLabel="#{level}" itemValue="#{level}" />
+							</p:selectOneMenu>
+						</h:panelGroup>
+					</p:column>
+					<p:outputLabel for="itAchievedScore"
+						rendered="#{otherQualificationBean.examTypeVo.isActiveIT}"
+						value="#{otherQualification['achievedScore']}">
+						<span style="color: red;">*</span>
+					</p:outputLabel>
+					<p:column
+						rendered="#{otherQualificationBean.examTypeVo.isActiveIT}">
+						<p:inputText id="itAchievedScore"
+							placeholder="#{otherQualification['achievedScore']}"
+							value="#{otherQualificationBean.editQualificationRslt.achievedGradeOthers}" />
+					</p:column>
+					<p:column
+						rendered="#{otherQualificationBean.examTypeVo.examCd == 'HKDSE'}"></p:column>
+					<p:column
+						rendered="#{otherQualificationBean.examTypeVo.examCd == 'HKDSE'}"></p:column>
+
+					<p:outputLabel for="rsltPredictedGradeCd"
+						rendered="#{!otherQualificationBean.examTypeVo.isActiveNJCEE and !otherQualificationBean.examTypeVo.isActiveSAT and !otherQualificationBean.examTypeVo.isActiveIT}"
+						value="#{otherQualification['gradeBySchool']}">
+					</p:outputLabel>
+					<p:column
+						rendered="#{!otherQualificationBean.examTypeVo.isActiveNJCEE and !otherQualificationBean.examTypeVo.isActiveSAT and !otherQualificationBean.examTypeVo.isActiveIT}">
+						<p:selectOneMenu id="rsltPredictedGradeCd"
+							value="#{otherQualificationBean.editQualificationRslt.predictedGradeCd}">
+							<p:ajax event="change"
+								listener="#{otherQualificationBean.changeGrade()}"
+								update="predictedOthersGroup" />
+							<f:selectItem itemLabel="#{otherQualification['select']}"
+								itemValue="" />
+							<f:selectItems value="#{otherQualificationBean.grades}"
+								var="grade" itemLabel="#{grade.gradeCd}"
+								itemValue="#{grade.gradeCd}" />
+							<f:selectItem itemLabel="#{otherQualification['others']}"
+								itemValue="others"
+								itemDisabled="#{otherQualificationBean.examTypeVo.isActiveIB}" />
+						</p:selectOneMenu>
+					</p:column>
+					<p:outputLabel for="rsltAchievedGradeCd"
+						rendered="#{!otherQualificationBean.examTypeVo.isActiveNJCEE and !otherQualificationBean.examTypeVo.isActiveSAT and !otherQualificationBean.examTypeVo.isActiveIT}"
+						value="#{otherQualification['achievedGrade']}">
+					</p:outputLabel>
+					<p:column
+						rendered="#{!otherQualificationBean.examTypeVo.isActiveNJCEE and !otherQualificationBean.examTypeVo.isActiveSAT and !otherQualificationBean.examTypeVo.isActiveIT}">
+						<p:selectOneMenu id="rsltAchievedGradeCd"
+							value="#{otherQualificationBean.editQualificationRslt.achievedGradeCd}">
+							<p:ajax event="change"
+								listener="#{otherQualificationBean.changeGrade()}"
+								update="achievedOthersGroup" />
+							<f:selectItem itemLabel="#{otherQualification['select']}"
+								itemValue="" />
+							<f:selectItems value="#{otherQualificationBean.grades}"
+								var="grade" itemLabel="#{grade.gradeCd}"
+								itemValue="#{grade.gradeCd}" />
+							<f:selectItem itemLabel="#{otherQualification['others']}"
+								itemValue="others"
+								itemDisabled="#{otherQualificationBean.examTypeVo.isActiveIB}" />
+						</p:selectOneMenu>
+					</p:column>
+
+					<p:column
+						rendered="#{!otherQualificationBean.examTypeVo.isActiveNJCEE}"></p:column>
+					<h:panelGroup id="predictedOthersGroup"
+						rendered="#{!otherQualificationBean.examTypeVo.isActiveNJCEE}">
+						<p:column>
+							<p:inputText id="predictedGradeOthers"
+								rendered="#{otherQualificationBean.editQualificationRslt.isPredictedOthers}"
+								placeholder="#{otherQualification['others']}"
+								value="#{otherQualificationBean.editQualificationRslt.predictedGradeOthers}" />
+						</p:column>
+					</h:panelGroup>
+
+					<p:column
+						rendered="#{!otherQualificationBean.examTypeVo.isActiveNJCEE}"></p:column>
+					<h:panelGroup id="achievedOthersGroup"
+						rendered="#{!otherQualificationBean.examTypeVo.isActiveNJCEE}">
+						<p:column>
+							<p:inputText id="achievedGradeOthers"
+								placeholder="#{otherQualification['others']}"
+								rendered="#{otherQualificationBean.editQualificationRslt.isAchievedOthers}"
+								value="#{otherQualificationBean.editQualificationRslt.achievedGradeOthers}" />
+						</p:column>
+					</h:panelGroup>
+
+					<p:column
+						rendered="#{otherQualificationBean.examTypeVo.isActiveNJCEE and !otherQualificationBean.editQualificationRslt.isActiveAchievedGrade}">
+						<p:outputLabel for="achievedPoint"
+							value="#{otherQualification['achievedPonit']}">
+						</p:outputLabel>
+					</p:column>
+					<p:column
+						rendered="#{otherQualificationBean.examTypeVo.isActiveNJCEE and !otherQualificationBean.editQualificationRslt.isActiveAchievedGrade}">
+						<p:inputNumber decimalPlaces="0" thousandSeparator=""
+							id="achievedPoint" maxValue="999" minValue="0"
+							placeholder="#{otherQualification['ponit']}"
+							value="#{otherQualificationBean.editQualificationRslt.achievedGradeOthers}" />
+					</p:column>
+
+					<p:outputLabel for="rsltAchievedGradeCdJs"
+						rendered="#{otherQualificationBean.editQualificationRslt.isActiveAchievedGrade}"
+						value="#{otherQualification['achievedGrade']}">
+						<span style="color: red;">*</span>
+					</p:outputLabel>
+					<p:column
+						rendered="#{otherQualificationBean.editQualificationRslt.isActiveAchievedGrade}">
+						<p:selectOneMenu id="rsltAchievedGradeCdJs"
+							value="#{otherQualificationBean.editQualificationRslt.achievedGradeCd}">
+							<f:selectItem itemLabel="#{otherQualification['select']}"
+								itemValue="" />
+							<f:selectItems value="#{otherQualificationBean.grades}"
+								var="grade" itemLabel="#{grade.gradeCd}"
+								itemValue="#{grade.gradeCd}" />
+						</p:selectOneMenu>
+					</p:column>
+
+					<p:outputLabel for="satAchievedScore"
+						rendered="#{otherQualificationBean.examTypeVo.isActiveSAT}"
+						value="#{otherQualification['achievedScore']}">
+						<span style="color: red;">*</span>
+					</p:outputLabel>
+					<p:column
+						rendered="#{otherQualificationBean.examTypeVo.isActiveSAT}">
+						<p:inputText id="satAchievedScore"
+							placeholder="#{otherQualification['achievedScore']}"
+							value="#{otherQualificationBean.editQualificationRslt.achievedGradeOthers}" />
+					</p:column>
+				</p:panelGrid>
+
+				<!-- GCE level and board Grid -->
+				<p:panelGrid columns="4" id="gceSubjectGrid"
+					rendered="#{otherQualificationBean.examTypeVo.isActiveGCE}"
+					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+					styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+					<p:column>
+						<p:outputLabel for="rsltGceExamLevel"
+							rendered="#{!otherQualificationBean.isSelectLevel}"
+							value="#{otherQualification['level']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:outputLabel for="rsltGceSelectExamLevel"
+							rendered="#{otherQualificationBean.isSelectLevel}"
+							value="#{otherQualification['level']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+					</p:column>
+					<p:column>
+						<h:panelGroup id="rsltExamGceLevelGroup">
+							<p:selectOneMenu id="rsltGceExamLevel"
+								rendered="#{!otherQualificationBean.isSelectLevel}"
+								value="#{otherQualificationBean.editQualificationRslt.examLevel}">
+								<p:ajax event="change"
+									listener="#{otherQualificationBean.loadExamBoard}"
+									update="rsltExamBoardGroup rsltExamGceLevelGroup gceGradeGrid" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItems value="#{otherQualificationBean.displayLevel}"
+									var="level" itemLabel="#{level}" itemValue="#{level}" />
+							</p:selectOneMenu>
+
+							<p:selectOneMenu id="rsltGceSelectExamLevel"
+								rendered="#{otherQualificationBean.isSelectLevel}"
+								value="#{otherQualificationBean.editQualificationRslt.examLevel}">
+								<p:ajax event="change"
+									listener="#{otherQualificationBean.loadExamBoard}"
+									update="rsltExamBoardGroup rsltExamGceLevelGroup gceGradeGrid" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItems value="#{otherQualificationBean.selectLevel}"
+									var="level" itemLabel="#{level}" itemValue="#{level}" />
+							</p:selectOneMenu>
+						</h:panelGroup>
+					</p:column>
+
+					<p:column>
+						<p:outputLabel for="rsltGceExamBoard"
+							rendered="#{!otherQualificationBean.isSelectBoard}"
+							value="#{otherQualification['board']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+						<p:outputLabel for="rsltGceSelectExamBoard"
+							rendered="#{otherQualificationBean.isSelectBoard}"
+							value="#{otherQualification['board']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+					</p:column>
+					<p:column>
+						<h:panelGroup id="rsltExamBoardGroup">
+							<p:selectOneMenu id="rsltGceExamBoard"
+								rendered="#{!otherQualificationBean.isSelectBoard}"
+								value="#{otherQualificationBean.editQualificationRslt.examBoard}">
+								<p:ajax event="change"
+									listener="#{otherQualificationBean.loadGceExamLevel}"
+									update="rsltExamBoardGroup rsltExamGceLevelGroup gceGradeGrid" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItems value="#{otherQualificationBean.examBoards}"
+									var="examBoard" itemLabel="#{examBoard}"
+									itemValue="#{examBoard}" />
+							</p:selectOneMenu>
+
+							<p:selectOneMenu id="rsltGceSelectExamBoard"
+								rendered="#{otherQualificationBean.isSelectBoard}"
+								value="#{otherQualificationBean.editQualificationRslt.examBoard}">
+								<p:ajax event="change"
+									listener="#{otherQualificationBean.loadGceExamLevel}"
+									update="rsltExamBoardGroup rsltExamGceLevelGroup gceGradeGrid" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItems value="#{otherQualificationBean.selectBoards}"
+									var="examBoard" itemLabel="#{examBoard}"
+									itemValue="#{examBoard}" />
+							</p:selectOneMenu>
+						</h:panelGroup>
+					</p:column>
+				</p:panelGrid>
+				<!-- GCE Grade Grid -->
+				<p:panelGrid columns="4" id="gceGradeGrid"
+					rendered="#{otherQualificationBean.examTypeVo.isActiveGCE}"
+					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+					styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+					<p:column>
+						<p:outputLabel for="rsltExamGceSubjectDesc"
+							value="#{otherQualification['subject']}">
+							<span style="color: red;">*</span>
+						</p:outputLabel>
+					</p:column>
+					<p:column>
+						<h:panelGroup id="rsltExamGceSubjectDescGroup">
+							<p:selectOneMenu id="rsltExamGceSubjectDesc"
+								value="#{otherQualificationBean.editQualificationRslt.examSubjectId}">
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="0" />
+								<f:selectItems value="#{otherQualificationBean.selectSubject}"
+									var="subject" itemLabel="#{subject.examSubjectDesc}"
+									itemValue="#{subject.id}" />
+							</p:selectOneMenu>
+						</h:panelGroup>
+					</p:column>
+
+					<p:outputLabel for="gecDateOfRelease"
+						value="#{otherQualification['dateRelease']}">
+						<span style="color: red;">*</span>
+					</p:outputLabel>
+					<p:column>
+						<p:calendar id="gecDateOfRelease" locale="de"
+							mindate="#{commonBean.minDate}" maxdate="#{commonBean.maxDate}"
+							onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+							navigator="true" readonlyInput="true" placeholder="dd-mm-yyyy"
+							yearRange="c-35:c+35"
+							value="#{otherQualificationBean.editQualificationRslt.gceDateOfRelease}"
+							pattern="dd-MM-yyyy" showOn="button">
+						</p:calendar>
+					</p:column>
+
+					<p:outputLabel for="rsltGcePredictedGradeCd"
+						value="#{otherQualification['gradeBySchool']}">
+					</p:outputLabel>
+					<h:panelGroup id="predictedGradeGroup">
+						<p:column>
+							<p:selectOneMenu id="rsltGcePredictedGradeCd"
+								value="#{otherQualificationBean.editQualificationRslt.predictedGradeCd}">
+								<p:ajax event="change"
+									listener="#{otherQualificationBean.changeGrade()}"
+									update="gcePredictedOthersGroup" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItems value="#{otherQualificationBean.grades}"
+									var="grade" itemLabel="#{grade.gradeCd}"
+									itemValue="#{grade.gradeCd}" />
+								<f:selectItem itemLabel="#{otherQualification['others']}"
+									itemValue="others" />
+							</p:selectOneMenu>
+						</p:column>
+					</h:panelGroup>
+					<p:outputLabel for="rsltGceAchievedGradeCd"
+						value="#{otherQualification['achievedGrade']}">
+					</p:outputLabel>
+					<h:panelGroup id="achievedGradeGroup">
+						<p:column>
+							<p:selectOneMenu id="rsltGceAchievedGradeCd"
+								value="#{otherQualificationBean.editQualificationRslt.achievedGradeCd}">
+								<p:ajax event="change"
+									listener="#{otherQualificationBean.changeGrade()}"
+									update="gceAchievedOthersGroup" />
+								<f:selectItem itemLabel="#{otherQualification['select']}"
+									itemValue="" />
+								<f:selectItems value="#{otherQualificationBean.grades}"
+									var="grade" itemLabel="#{grade.gradeCd}"
+									itemValue="#{grade.gradeCd}" />
+								<f:selectItem itemLabel="#{otherQualification['others']}"
+									itemValue="others" />
+							</p:selectOneMenu>
+						</p:column>
+					</h:panelGroup>
+
+					<p:column></p:column>
+					<h:panelGroup id="gcePredictedOthersGroup">
+						<p:column>
+							<p:inputText id="gcePredictedGradeOthers"
+								rendered="#{otherQualificationBean.editQualificationRslt.isPredictedOthers}"
+								placeholder="#{otherQualification['others']}"
+								value="#{otherQualificationBean.editQualificationRslt.predictedGradeOthers}" />
+						</p:column>
+					</h:panelGroup>
+
+					<p:column></p:column>
+					<h:panelGroup id="gceAchievedOthersGroup">
+						<p:column>
+							<p:inputText id="gceAchievedOthers"
+								placeholder="#{otherQualification['others']}"
+								rendered="#{otherQualificationBean.editQualificationRslt.isAchievedOthers}"
+								value="#{otherQualificationBean.editQualificationRslt.achievedGradeOthers}" />
+						</p:column>
+					</h:panelGroup>
+				</p:panelGrid>
+				<div>
+					<br />
+					<p:commandButton value="#{otherQualification['save']}"
+						action="#{otherQualificationBean.saveQualificationRslt()}"
+						update=":mainTab:formQualifications :mainTab:formQualiRslt" />
+					<p:commandButton value="#{otherQualification['cancel']}"
+						oncomplete="PF('subjectDialog').hide()"
+						styleClass="ui-priority-secondary" />
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="#{otherQualification['schoolResult']}"
+			widgetVar="result" width="80%" height="650" modal="true">
+			<h:form id="formResult">
+				<p:growl showDetail="true" />
+				<div class="ax-section-title">#{otherQualification['seniorOne1']}</div>
+				<p:panelGrid columns="12" columnClasses="ui-grid-col-1"
+					styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+
+					<p:outputLabel value="#{otherQualification['language']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterOne.chinese}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['math']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterOne.maths}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['english']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterOne.english}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['physics']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterOne.physics}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['chemistry']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterOne.chemistry}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['biologys']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterOne.biology}" />
+					</p:column>
+
+					<p:outputLabel value="#{otherQualification['history']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterOne.history}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['geography']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterOne.geography}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['politics']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterOne.politics}" />
+					</p:column>
+					<p:column>
+						<h:outputLink id="helpInfoTe" value="#" disabled="true"
+							styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip id="toolTipTe" showEvent="click"
+							value="#{otherQualification['resultHelpInfo1']}" for="helpInfoTe"
+							position="right" />
+						<p:outputLabel value="#{otherQualification['technology']}" />
+					</p:column>
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterOne.technology}" />
+					</p:column>
+					<p:column>
+						<h:outputLink id="helpInfoE" value="#" disabled="true"
+							styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip id="toolTipE" showEvent="click"
+							value="#{otherQualification['resultHelpInfo2']}" for="helpInfoE"
+							position="right" />
+						<p:outputLabel value="#{otherQualification['heiheEducation']}" />
+					</p:column>
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterOne.integratedArts}" />
+					</p:column>
+					<p:column>
+						<h:outputLink id="helpInfoF" value="#" disabled="true"
+							styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip id="toolTipF" showEvent="click"
+							value="#{otherQualification['resultHelpInfo2']}" for="helpInfoF"
+							position="right" />
+						<p:outputLabel
+							value="#{otherQualification['integratedManagement']}" />
+					</p:column>
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterOne.integratedScience}" />
+					</p:column>
+
+					<p:outputLabel value="#{otherQualification['total']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.oneSemesterOne.total}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['classRank']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.oneSemesterOne.rank}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['schoolmates']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.oneSemesterOne.totalStudents}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['integratedRank']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.oneSemesterOne.integratedRank}" />
+					</p:column>
+				</p:panelGrid>
+
+				<div class="ax-section-title">#{otherQualification['seniorOne2']}</div>
+				<p:panelGrid columns="12" columnClasses="ui-grid-col-1"
+					styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+					<p:outputLabel value="#{otherQualification['language']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterTwo.chinese}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['math']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterTwo.maths}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['english']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterTwo.english}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['physics']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterTwo.physics}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['chemistry']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterTwo.chemistry}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['biologys']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterTwo.biology}" />
+					</p:column>
+
+					<p:outputLabel value="#{otherQualification['history']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterTwo.history}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['geography']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterTwo.geography}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['politics']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterTwo.politics}" />
+					</p:column>
+					<p:column>
+						<h:outputLink id="helpInfoG" value="#" disabled="true"
+							styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip id="toolTipG" showEvent="click"
+							value="#{otherQualification['resultHelpInfo1']}" for="helpInfoG"
+							position="right" />
+						<p:outputLabel value="#{otherQualification['technology']}" />
+					</p:column>
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterTwo.technology}" />
+					</p:column>
+					<p:column>
+						<h:outputLink id="helpInfoH" value="#" disabled="true"
+							styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip id="toolTipH" showEvent="click"
+							value="#{otherQualification['resultHelpInfo2']}" for="helpInfoH"
+							position="right" />
+						<p:outputLabel value="#{otherQualification['heiheEducation']}" />
+					</p:column>
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterTwo.integratedArts}" />
+					</p:column>
+					<p:column>
+						<h:outputLink id="helpInfoJ" value="#" disabled="true"
+							styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip id="toolTipJ" showEvent="click"
+							value="#{otherQualification['resultHelpInfo2']}" for="helpInfoJ"
+							position="right" />
+						<p:outputLabel
+							value="#{otherQualification['integratedManagement']}" />
+					</p:column>
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.oneSemesterTwo.integratedScience}" />
+					</p:column>
+
+					<p:outputLabel value="#{otherQualification['total']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.oneSemesterTwo.total}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['classRank']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.oneSemesterTwo.rank}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['schoolmates']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.oneSemesterTwo.totalStudents}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['integratedRank']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.oneSemesterTwo.integratedRank}" />
+					</p:column>
+				</p:panelGrid>
+
+				<div class="ax-section-title">#{otherQualification['seniorTwo1']}</div>
+				<p:panelGrid columns="12" columnClasses="ui-grid-col-1"
+					styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+					<p:outputLabel value="#{otherQualification['language']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterOne.chinese}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['math']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterOne.maths}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['english']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterOne.english}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['physics']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterOne.physics}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['chemistry']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterOne.chemistry}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['biologys']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterOne.biology}" />
+					</p:column>
+
+					<p:outputLabel value="#{otherQualification['history']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterOne.history}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['geography']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterOne.geography}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['politics']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterOne.politics}" />
+					</p:column>
+					<p:column>
+						<h:outputLink id="helpInfoK" value="#" disabled="true"
+							styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip id="toolTipK" showEvent="click"
+							value="#{otherQualification['resultHelpInfo1']}" for="helpInfoK"
+							position="right" />
+						<p:outputLabel value="#{otherQualification['technology']}" />
+					</p:column>
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterOne.technology}" />
+					</p:column>
+					<p:column>
+						<h:outputLink id="helpInfoL" value="#" disabled="true"
+							styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip id="toolTipL" showEvent="click"
+							value="#{otherQualification['resultHelpInfo2']}" for="helpInfoL"
+							position="right" />
+						<p:outputLabel value="#{otherQualification['heiheEducation']}" />
+					</p:column>
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterOne.integratedArts}" />
+					</p:column>
+					<p:column>
+						<h:outputLink id="helpInfoM" value="#" disabled="true"
+							styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip id="toolTipM" showEvent="click"
+							value="#{otherQualification['resultHelpInfo2']}" for="helpInfoM"
+							position="right" />
+						<p:outputLabel
+							value="#{otherQualification['integratedManagement']}" />
+					</p:column>
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterOne.integratedScience}" />
+					</p:column>
+
+					<p:outputLabel value="#{otherQualification['total']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.twoSemesterOne.total}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['classRank']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.twoSemesterOne.rank}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['schoolmates']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.twoSemesterOne.totalStudents}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['integratedRank']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.twoSemesterOne.integratedRank}" />
+					</p:column>
+				</p:panelGrid>
+
+				<div class="ax-section-title">#{otherQualification['seniorTwo2']}</div>
+				<p:panelGrid columns="12" columnClasses="ui-grid-col-1"
+					styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+					<p:outputLabel value="#{otherQualification['language']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterTwo.chinese}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['math']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterTwo.maths}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['english']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterTwo.english}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['physics']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterTwo.physics}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['chemistry']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterTwo.chemistry}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['biologys']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterTwo.biology}" />
+					</p:column>
+
+					<p:outputLabel value="#{otherQualification['history']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterTwo.history}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['geography']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterTwo.geography}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['politics']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterTwo.politics}" />
+					</p:column>
+					<p:column>
+						<h:outputLink id="helpInfoN" value="#" disabled="true"
+							styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip id="toolTipN" showEvent="click"
+							value="#{otherQualification['resultHelpInfo1']}" for="helpInfoN"
+							position="right" />
+						<p:outputLabel value="#{otherQualification['technology']}" />
+					</p:column>
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterTwo.technology}" />
+					</p:column>
+					<p:column>
+						<h:outputLink id="helpInfoO" value="#" disabled="true"
+							styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip id="toolTipO" showEvent="click"
+							value="#{otherQualification['resultHelpInfo2']}" for="helpInfoO"
+							position="right" />
+						<p:outputLabel value="#{otherQualification['heiheEducation']}" />
+					</p:column>
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterTwo.integratedArts}" />
+					</p:column>
+					<p:column>
+						<h:outputLink id="helpInfoP" value="#" disabled="true"
+							styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip id="toolTipP" showEvent="click"
+							value="#{otherQualification['resultHelpInfo2']}" for="helpInfoP"
+							position="right" />
+						<p:outputLabel
+							value="#{otherQualification['integratedManagement']}" />
+					</p:column>
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.twoSemesterTwo.integratedScience}" />
+					</p:column>
+
+					<p:outputLabel value="#{otherQualification['total']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.twoSemesterTwo.total}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['classRank']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.twoSemesterTwo.rank}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['schoolmates']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.twoSemesterTwo.totalStudents}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['integratedRank']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.twoSemesterTwo.integratedRank}" />
+					</p:column>
+				</p:panelGrid>
+
+				<div class="ax-section-title">#{otherQualification['seniorThree1']}</div>
+				<p:panelGrid columns="12" columnClasses="ui-grid-col-1"
+					styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+					<p:outputLabel value="#{otherQualification['language']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterOne.chinese}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['math']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterOne.maths}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['english']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterOne.english}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['physics']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterOne.physics}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['chemistry']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterOne.chemistry}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['biologys']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterOne.biology}" />
+					</p:column>
+
+					<p:outputLabel value="#{otherQualification['history']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterOne.history}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['geography']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterOne.geography}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['politics']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterOne.politics}" />
+					</p:column>
+					<p:column>
+						<h:outputLink id="helpInfoQ" value="#" disabled="true"
+							styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip id="toolTipQ" showEvent="click"
+							value="#{otherQualification['resultHelpInfo1']}" for="helpInfoQ"
+							position="right" />
+						<p:outputLabel value="#{otherQualification['technology']}" />
+					</p:column>
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterOne.technology}" />
+					</p:column>
+					<p:column>
+						<h:outputLink id="helpInfoR" value="#" disabled="true"
+							styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip id="toolTipR" showEvent="click"
+							value="#{otherQualification['resultHelpInfo2']}" for="helpInfoR"
+							position="right" />
+						<p:outputLabel value="#{otherQualification['heiheEducation']}" />
+					</p:column>
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterOne.integratedArts}" />
+					</p:column>
+					<p:column>
+						<h:outputLink id="helpInfoT" value="#" disabled="true"
+							styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip id="toolTipT" showEvent="click"
+							value="#{otherQualification['resultHelpInfo2']}" for="helpInfoT"
+							position="right" />
+						<p:outputLabel
+							value="#{otherQualification['integratedManagement']}" />
+					</p:column>
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterOne.integratedScience}" />
+					</p:column>
+
+					<p:outputLabel value="#{otherQualification['total']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.threeSemesterOne.total}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['classRank']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.threeSemesterOne.rank}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['schoolmates']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.threeSemesterOne.totalStudents}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['integratedRank']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.threeSemesterOne.integratedRank}" />
+					</p:column>
+				</p:panelGrid>
+
+				<div class="ax-section-title">#{otherQualification['seniorThree2']}</div>
+				<p:panelGrid columns="12" columnClasses="ui-grid-col-1"
+					styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+					<p:outputLabel value="#{otherQualification['language']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterTwo.chinese}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['math']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterTwo.maths}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['english']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterTwo.english}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['physics']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterTwo.physics}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['chemistry']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterTwo.chemistry}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['biologys']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterTwo.biology}" />
+					</p:column>
+
+					<p:outputLabel value="#{otherQualification['history']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterTwo.history}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['geography']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterTwo.geography}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['politics']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterTwo.politics}" />
+					</p:column>
+					<p:column>
+						<h:outputLink id="helpInfoS" value="#" disabled="true"
+							styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip id="toolTipS" showEvent="click"
+							value="#{otherQualification['resultHelpInfo1']}" for="helpInfoS"
+							position="right" />
+						<p:outputLabel value="#{otherQualification['technology']}" />
+					</p:column>
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterTwo.technology}" />
+					</p:column>
+					<p:column>
+						<h:outputLink id="helpInfoU" value="#" disabled="true"
+							styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip id="toolTipU" showEvent="click"
+							value="#{otherQualification['resultHelpInfo2']}" for="helpInfoU"
+							position="right" />
+						<p:outputLabel value="#{otherQualification['heiheEducation']}" />
+					</p:column>
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterTwo.integratedArts}" />
+					</p:column>
+					<p:column>
+						<h:outputLink id="helpInfoV" value="#" disabled="true"
+							styleClass="ax-pf-tooltip-icon">
+							<i class="ti-help"></i>
+						</h:outputLink>
+						<p:tooltip id="toolTipV" showEvent="click"
+							value="#{otherQualification['resultHelpInfo2']}" for="helpInfoV"
+							position="right" />
+						<p:outputLabel
+							value="#{otherQualification['integratedManagement']}" />
+					</p:column>
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="999"
+							value="#{otherQualificationBean.threeSemesterTwo.integratedScience}" />
+					</p:column>
+
+					<p:outputLabel value="#{otherQualification['total']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.threeSemesterTwo.total}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['classRank']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.threeSemesterTwo.rank}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['schoolmates']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.threeSemesterTwo.totalStudents}" />
+					</p:column>
+					<p:outputLabel value="#{otherQualification['integratedRank']}" />
+					<p:column>
+						<p:inputNumber thousandSeparator="" decimalSeparator="."
+							decimalPlaces="0" maxValue="9999999999"
+							value="#{otherQualificationBean.threeSemesterTwo.integratedRank}" />
+					</p:column>
+				</p:panelGrid>
+
+				<div>
+					<br />
+					<p:commandButton value="#{otherQualification['save']}"
+						action="#{otherQualificationBean.saveSchoolResult()}"
+						update=":mainTab:formQualifications :mainTab:formResult"
+						oncomplete="PF('result').hide()" />
+					<p:commandButton value="#{otherQualification['cancel']}"
+						oncomplete="PF('result').hide()"
+						styleClass="ui-priority-secondary" />
+				</div>
+			</h:form>
+		</p:dialog>
+		<!-- change province confirm -->
+		<p:dialog header="#{otherQualification['prompt']}"
+			widgetVar="changeProvinceDialog" modal="true" width="400"
+			minHeight="50" closable="false">
+			<h:form id="confirmForm">
+				<div class="ui-fluid">
+					<p:panel>#{otherQualificationBean.promptMsg}</p:panel>
+				</div>
+				<div class="ax-btn-set">
+					<p:commandButton value="#{otherQualification['yes']}"
+						action="#{otherQualificationBean.cleanSubject('yes')}"
+						update=":mainTab:formQualifications" icon="ui-icon-check" />
+					<p:commandButton value="#{otherQualification['no']}"
+						action="#{otherQualificationBean.cleanSubject('no')}"
+						update=":mainTab:formQualifications" icon="ui-icon-close" />
+				</div>
+			</h:form>
+		</p:dialog>
+		<!-- edit NJCEE exam confirm -->
+		<p:confirmDialog widgetVar="messageNjceeDialog"
+			message="#{otherQualification['editMsg']}"
+			header="#{otherQualification['prompt']}" showEffect="fade"
+			hideEffect="fade">
+			<p:commandButton value="#{otherQualification['yes']}" type="button"
+				onclick="PF('messageNjceeDialog').hide();"
+				styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+		</p:confirmDialog>
+		<!-- edit IB exam confirm -->
+		<p:confirmDialog widgetVar="messageIbDialog"
+			message="#{otherQualification['ibEditMsg']}"
+			header="#{otherQualification['prompt']}" showEffect="fade"
+			hideEffect="fade">
+			<p:commandButton value="#{otherQualification['yes']}" type="button"
+				onclick="PF('messageIbDialog').hide();"
+				styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+		</p:confirmDialog>
+		<!-- edit IT exam confirm -->
+		<p:confirmDialog widgetVar="messageItDialog"
+			message="#{otherQualification['itEditMsg']}"
+			header="#{otherQualification['prompt']}" showEffect="fade"
+			hideEffect="fade">
+			<p:commandButton value="#{otherQualification['yes']}" type="button"
+				onclick="PF('messageItDialog').hide();"
+				styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+		</p:confirmDialog>
+	</div>
+	<script type="text/javascript" language="javascript">_initAxToolTips() </script>
+</ui:composition>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

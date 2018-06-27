@@ -1,0 +1,93 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="./counsellor.xhtml">
+
+	<ui:define name="breadcrumb-2">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.counsellor" var="counsellor" />
+			<li><a title="">#{counsellor['counsellor']}</a><i
+				class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+	<ui:define name="breadcrumb-3">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.counsellor" var="counsellor" />
+			<li><a title="">#{counsellor['enquiry']}</a><i
+				class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.counsellor" var="counsellor" />
+			<div>
+				<p:panel id="toggleable" header="#{counsellor['searchCounsellor']}"
+					toggleable="true" toggleSpeed="200" closeSpeed="200"
+					widgetVar="panel">
+					<h:form id="formCounsellor">
+						<div>
+							<input type="checkbox" id="basicAdvance" name="basicAdvance"
+								class="basicAdvance hidden-checkbox" checked="checked" />
+							<div class="search-basic">
+								<p:panelGrid columns="1" layout="grid"
+									columnClasses="ui-grid-col-12"
+									styleClass="ui-panelgrid-blank ui-fluid">
+									<p:inputText />
+									<p:column>
+										<label for="basicAdvance" class="basicAdvanceLabel advance"><i
+											class="ti-search"></i> #{counsellor['advancedSearch']}</label>
+										<div class="note">#{counsellor['counsellorNameEmail']}</div>
+									</p:column>
+								</p:panelGrid>
+							</div>
+							<div class="search-advance">
+								<p:panelGrid columns="4"
+									columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+									layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+									<p:outputLabel for="school" value="#{counsellor['school']}" />
+									<p:column>
+										<p:selectOneMenu id="school">
+											<f:selectItem itemLabel="#{counsellor['all']}" itemValue="0" />
+											<f:selectItem itemLabel="#{counsellor['schoolA']}" itemValue="1" />
+										</p:selectOneMenu>
+									</p:column>
+									
+									<p:outputLabel for="status" value="#{counsellor['status']}" />
+									<p:column>
+										<p:selectOneMenu id="status">
+											<f:selectItem itemLabel="#{counsellor['all']}" itemValue="0" />
+											<f:selectItem itemLabel="#{counsellor['pending']}" itemValue="1" />
+											<f:selectItem itemLabel="#{counsellor['abandoned']}" itemValue="2" />
+											<f:selectItem itemLabel="#{counsellor['submitted']}" itemValue="3" />
+										</p:selectOneMenu>
+									</p:column>
+			
+									<p:outputLabel for="counsellorName" value="#{counsellor['counsellorName']}" />
+									<p:inputText id="counsellorName" />
+
+									<p:outputLabel for="counsellorEmail" value="#{counsellor['counsellorEmail']}" />
+									<p:inputText id="counsellorEmail" />
+								</p:panelGrid>
+								<p:panelGrid columns="6" columnClasses="ui-grid-col-12"
+									layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+									<p:column styleClass="ui-grid-col-12">
+										<label for="basicAdvance" class="basicAdvanceLabel advance"><i
+											class="ti-search"></i>#{counsellor['basicSearch']}</label>
+									</p:column>
+								</p:panelGrid>
+							</div>
+						</div>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{counsellor['search']}" onclick="_ACTION('result')" />
+							<p:commandButton value="#{counsellor['reset']}" styleClass="ui-priority-secondary"
+								onclick="_ACTION('search')" />
+						</div>
+					</h:form>
+				</p:panel>
+			</div>
+		</f:view>
+		<ui:insert name="main-content-2" />
+	</ui:define>
+</ui:composition>

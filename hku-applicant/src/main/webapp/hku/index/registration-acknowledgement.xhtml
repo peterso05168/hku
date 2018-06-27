@@ -1,0 +1,43 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	template="../public/tp-header-login.xhtml">
+
+	<ui:define name="breadcrumb">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.index.registration" var="registration" />
+			<li><a title="">#{registration['registration']}</a><i class="ti-angle-right"></i></li>
+			<li><a title="">#{registration['acknowledgement']}</a></li>
+		</f:view>
+	</ui:define>
+	<ui:define name="main-content">
+
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.my-profile.myprofile" var="myprofile" />
+			<div>
+				<div class="content-sec">
+					<div class="title">
+						<h1>
+							<a class="ax-back-icon-url" href="#{request.contextPath}/hku/index/login.xhtml"><i
+								class="ax-icon ti-arrow-left" />#{myprofile['registrationAcknowledgement']}</a>
+						</h1>
+					</div>
+					<div class="main-content" style="background-color: #FFF; padding: 10px; color: #333; font-size: 15px; margin: 1%;">
+						<div>
+							<h:outputText value="#{registration['registrationMessage1']}" />
+							<br />
+							<br />
+							<h:outputText value="#{registration['registrationMessage2']}" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</f:view>
+	</ui:define>
+</ui:composition>
+
+
+
+
+
+

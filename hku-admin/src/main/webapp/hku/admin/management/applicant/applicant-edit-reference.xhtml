@@ -1,0 +1,166 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<f:view locale="#{language.locale}">
+		<f:loadBundle basename="i18n.my-application.reference" var="reference" />
+		<div class="ax-tab-02">
+			<h:form id="refForm">
+				<div class="ax-section-title">#{reference['counselor']}</div>
+				<p:dataTable value="#{editReferenceBean.refereeVos}" var="refereeVo"
+					reflow="true" lazy="true">
+					<p:column headerText="#{reference['relationship']}" width="30%">
+						<h:outputText value="#{refereeVo.refereeRelationshipCd}" />
+					</p:column>
+
+					<p:column headerText="#{reference['name']}" width="30%">
+						<p:commandLink action="#{editReferenceBean.edit(refereeVo.id)}"
+							update=":mainTab:refDialog" value="#{refereeVo.name}"
+							oncomplete="PF('refDialog').show()" resetValues="true"
+							style="font-style: normal;color: #222;font-weight: bold;" />
+					</p:column>
+
+					<p:column headerText="#{reference['email']}" width="30%">
+						<h:outputText value="#{refereeVo.email}" />
+					</p:column>
+
+					<p:column headerText="#{reference['action']}">
+						<p:menuButton value="#{reference['action']}">
+							<p:menuitem value="#{reference['edit']}" resetValues="true"
+								action="#{editReferenceBean.edit(refereeVo.id)}"
+								oncomplete="PF('refDialog').show()" update=":mainTab:refDialog" />
+							<p:menuitem value="#{reference['delete']}"
+								action="#{editReferenceBean.delete(refereeVo.id)}"
+								update=":mainTab:refForm">
+								<p:confirm header="#{reference['prompt']}"
+									message="#{reference['delMessage']}" icon="ui-icon-alert" />
+							</p:menuitem>
+						</p:menuButton>
+					</p:column>
+				</p:dataTable>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="#{reference['yes']}" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="#{reference['no']}" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</h:form>
+			<p:dialog header="#{reference['referee']}" widgetVar="refDialog"
+				id="refDialog" width="39%" modal="true">
+				<h:form id="refDialogForm">
+					<p:growl id="refGrowlMsg" showDetail="true" globalOnly="true" />
+					<div class="ng-scope">
+						<div class="ui-fluid ng-scope">
+							<p:panelGrid columns="2"
+								columnClasses="ui-grid-col-2.8,ui-grid-col-9"
+								styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+								<p:outputLabel for="refereeRelationshipCd"
+									value="#{reference['relationship']}">
+									<span style="color: red">*</span>
+								</p:outputLabel>
+							</p:panelGrid>
+							<p:panelGrid columns="1" columnClasses="ui-grid-col-11"
+								styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+								<p:column>
+									<p:selectOneMenu id="refereeRelationshipCd"
+										value="#{editReferenceBean.refereeVo.refereeRelationshipCd}">
+										<p:ajax event="change"
+											listener="#{editReferenceBean.loadName}"
+											update=":mainTab:refDialogForm:name" />
+										<f:selectItem itemLabel="#{personalparticular['select']}"
+											itemValue="select" noSelectionOption="true" />
+										<f:selectItems value="#{editReferenceBean.relationships}"
+											var="relationship" itemLabel="#{relationship.value}"
+											itemValue="#{relationship.cd}" />
+										<f:selectItem itemLabel="#{academic['others']}"
+											itemValue="others" />
+									</p:selectOneMenu>
+								</p:column>
+							</p:panelGrid>
+
+							<p:panelGrid columns="2"
+								columnClasses="ui-grid-col-1.2,ui-grid-col-10"
+								styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+								<p:outputLabel for="selectName" value="#{reference['name']}">
+									<span style="color: red">*</span>
+								</p:outputLabel>
+							</p:panelGrid>
+							<p:panelGrid columns="1" columnClasses="ui-grid-col-11"
+								styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+								<h:panelGroup id="name">
+									<p:selectOneMenu id="selectName"
+										value="#{editReferenceBean.refereeVo.name}"
+										rendered="#{editReferenceBean.isActiveRefName}">
+										<p:ajax event="change"
+											listener="#{editReferenceBean.loadEmail}"
+											update=":mainTab:refDialogForm:loadEmail" />
+										<f:selectItem itemLabel="#{personalparticular['select']}"
+											itemValue="" noSelectionOption="true" />
+										<f:selectItems value="#{editReferenceBean.counselors}"
+											var="counselor" itemLabel="#{counselor.fullName}"
+											itemValue="#{counselor.fullName}" />
+									</p:selectOneMenu>
+									<p:inputText id="othersName"
+										value="#{editReferenceBean.refereeVo.name}"
+										placeholder="#{academic['others']}"
+										rendered="#{editReferenceBean.isActiveOthersRefName}" />
+								</h:panelGroup>
+							</p:panelGrid>
+
+							<p:panelGrid columns="2"
+								columnClasses="ui-grid-col-1.2,ui-grid-col-10"
+								styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+								<p:outputLabel for="email" value="#{reference['email']}">
+									<span style="color: red">*</span>
+								</p:outputLabel>
+							</p:panelGrid>
+							<p:panelGrid id="loadEmail" columns="1"
+								columnClasses="ui-grid-col-11"
+								styleClass="ui-panelgrid-blank ui-fluid" layout="grid">
+								<p:column>
+									<p:inputText id="email"
+										value="#{editReferenceBean.refereeVo.email}" />
+								</p:column>
+							</p:panelGrid>
+						</div>
+						<div class="ax-btn-set ng-scope">
+							<p:commandButton value="#{reference['save']}" role="button"
+								action="#{editReferenceBean.save()}"
+								update="@form :mainTab:refForm">
+							</p:commandButton>
+							<div class="ax-button type-a">
+								<p:commandButton value="#{reference['cancel']}"
+									onclick="PF('refDialog').hide();" role="button"
+									aria-disabled="false" transformed="true">
+								</p:commandButton>
+							</div>
+						</div>
+					</div>
+				</h:form>
+			</p:dialog>
+		</div>
+	</f:view>
+	<script type="text/javascript" language="javascript">
+		_initAxToolTips()
+	</script>
+</ui:composition>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

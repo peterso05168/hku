@@ -1,0 +1,146 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="./scholarship.xhtml">
+
+	<ui:define name="main-content">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.configuration.scholarship"
+				var="scholarship" />
+			<div>
+				<p:panel id="toggleable"
+					header="#{scholarship['searchScholarship']}" toggleable="true"
+					toggleSpeed="200" closeSpeed="200" widgetVar="panel">
+					<h:form>
+						<div>
+							<div class="search-basic">
+								<h:panelGroup rendered="#{scholarSearchBean.searchMode eq 'Basic'}">
+									<p:panelGrid columns="1" layout="grid"
+										columnClasses="ui-grid-col-12"
+										styleClass="ui-panelgrid-blank ui-fluid">
+										<p:inputText value="#{scholarSearchBean.basicSearchCriteria}" />
+										<p:column>
+											<label class="basicAdvanceLabel advance" style="float: right">
+												<i class="ti-search"></i>
+												<p:spacer width="10" /> 
+												<p:commandLink
+													value="#{scholarship['advancedSearch']}"
+													action="#{scholarSearchBean.switchSearchMode('Advance')}"
+													update="toggleable">
+												</p:commandLink>
+											</label>
+											<div class="note">#{scholarship['scholarshipName']}</div>
+										</p:column>
+									</p:panelGrid>
+								</h:panelGroup>
+							</div>
+							<div class="search-advance">
+								<h:panelGroup rendered="#{scholarSearchBean.searchMode eq 'Advance'}">
+									<p:panelGrid columns="4" 
+										columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+										layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+										<p:outputLabel value="#{scholarship['scholarshipName']}" />
+										<p:inputText value="#{scholarSearchBean.searchVo.name}" />
+	
+										<p:outputLabel for="status" value="#{scholarship['status']}" />
+										<p:selectOneMenu id="status" value="#{scholarSearchBean.searchVo.status}">
+											<f:selectItem itemLabel="#{scholarship['all']}" itemValue="" />
+											<f:selectItem itemLabel="#{scholarship['active']}"
+												itemValue="#{scholarship['active']}" />
+											<f:selectItem itemLabel="#{scholarship['inactive']}"
+												itemValue="#{scholarship['inactive']}" />
+										</p:selectOneMenu>
+									</p:panelGrid>
+									<p:panelGrid columns="6" columnClasses="ui-grid-col-12"
+										layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+										<p:column styleClass="ui-grid-col-12">
+											<label class="basicAdvanceLabel advance" style="float: right">
+												<i class="ti-search"></i>
+												<p:commandLink
+													value="#{scholarship['basicSearch']}"
+													action="#{scholarSearchBean.switchSearchMode('Basic')}"
+													update="toggleable">
+												</p:commandLink>
+											</label>
+										</p:column>
+									</p:panelGrid>
+								</h:panelGroup>
+							</div>
+						</div>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{scholarship['search']}" action="#{scholarSearchBean.search}" update="formScholarship" />
+							<p:commandButton value="#{scholarship['reset']}" action="#{scholarSearchBean.reset}"
+								styleClass="ui-priority-secondary" update="formScholarship,toggleable" />
+							<p:commandButton value="#{scholarship['create']}" oncomplete="PF('createDialog').show()" update="formCreateScholar" />
+						</div>
+					</h:form>
+				</p:panel>
+				
+				<p:dialog header="#{scholarship['createScholarship']}" height="250"
+					widgetVar="createDialog" modal="true" width="500" minHeight="50">
+					<h:form id="formCreateScholar">
+						<p:growl id="growlMsg" showDetail="true" />
+						<div class="ui-fluid">
+							<p:panelGrid columns="1" columnClasses="ui-grid-col-12"
+								layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+								<p:column>
+									<p:outputLabel for="scholarshipName"
+										value="#{scholarship['scholarshipName']}"
+										style="text-align:left;">
+										<span style="color: red">*</span>	
+									</p:outputLabel>
+									<p:inputText id="scholarshipName" value="#{scholarSearchBean.persistVo.name}" 
+										required="true" requiredMessage="#{scholarship['mandatory']}" />
+								</p:column>
+							</p:panelGrid>
+						</div>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{scholarship['create']}" action="#{scholarSearchBean.save}" update="formCreateScholar" />
+							<p:commandButton value="#{scholarship['cancel']}" styleClass="ui-priority-secondary" 
+								oncomplete="PF('createDialog').hide()" immediate="true" />
+						</div>
+					</h:form>
+				</p:dialog>
+			</div>
+			
+			<h:form id="formScholarship">
+				<p:dataTable var="scholarVo" value="#{scholarSearchBean.scholarVos}" reflow="true" rendered="#{scholarSearchBean.result}">
+					<f:facet name="header">#{scholarship['searchResult']}</f:facet>
+
+					<p:column headerText="#{scholarship['scholarshipName']}" width="70%" >
+						<p:commandLink href="javascript:void(0)" onclick="_ACTION('edit')"
+							action="#{scholarSearchBean.edit(scholarVo.id)}"
+							style="font-style: normal; font-size: 12px !important;">
+							<h:outputText value="#{scholarVo.name}" />
+						</p:commandLink>
+					</p:column>
+
+					<p:column headerText="#{scholarship['status']}">
+						<h:outputText styleClass="status-label #{scholarVo.color}" value="#{scholarVo.status}" />
+					</p:column>
+
+					<p:column headerText="#{scholarship['action']}"
+						styleClass="ax-action-w">
+						<p:menuButton value="#{scholarship['action']}">
+							<p:menuitem value="#{scholarship['edit']}" onclick="_ACTION('edit')" actionListener="#{programmeSearchBean.edit(scholarVo.id)}" />
+							<p:menuitem value="#{scholarship['delete']}" 
+								actionListener="#{programmeSearchBean.delete(scholarVo.id)}" update="formScholarship">
+								<p:confirm header="#{scholarship['prompt']}"
+									message="#{scholarship['deleteMessage']}" icon="ui-icon-alert" />
+							</p:menuitem>
+						</p:menuButton>
+					</p:column>
+				</p:dataTable>
+
+				<!-- delete confirmDialog-->
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="#{scholarship['yes']}" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="#{scholarship['no']}" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</h:form>
+		</f:view>
+	</ui:define>
+</ui:composition>

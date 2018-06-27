@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="./duplication.xhtml">
+
+	<ui:define name="breadcrumb-2">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.deDuplication"
+				var="duplication" />
+			<li><a title="">#{duplication['deDuplication']}</a><i
+				class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.management.deDuplication"
+				var="duplication" />
+			<div>
+				<p:panel id="toggleable"
+					header="#{duplication['searchDuplicateApp']}" toggleable="true"
+					toggleSpeed="200" closeSpeed="200" widgetVar="panel">
+					<h:form id="formDuplication">
+						<div>
+							<div class="search-advance">
+								<p:panelGrid columns="4"
+									columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+									layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+									<p:outputLabel for="admissionYear" value="#{duplication['admissionYear']}" />
+									<p:column>
+										<p:selectOneMenu id="admissionYear">
+											<f:selectItem itemLabel="#{duplication['select']}" itemValue="" />
+											<f:selectItem itemLabel="2017" itemValue="2017" />
+											<f:selectItem itemLabel="2018" itemValue="2018" />
+										</p:selectOneMenu>
+									</p:column>
+								</p:panelGrid>
+							</div>
+						</div>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{duplication['search']}"
+								onclick="_ACTION('result')" />
+							<p:commandButton value="#{duplication['reset']}"
+								styleClass="ui-priority-secondary" onclick="_ACTION('search')" />
+						</div>
+					</h:form>
+				</p:panel>
+			</div>
+		</f:view>
+		<ui:insert name="main-content-2" />
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,463 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="../public/tp-header-login.xhtml">
+
+	<ui:define name="breadcrumb">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.index.registration" var="registration" />
+			<li><a title="">#{registration['registration']}</a></li>
+		</f:view>
+		<style>
+.ui-panelgrid .ui-panelgrid-content .ui-grid-row .ui-panelgrid-cell .ax-tooltip
+	{
+	right: 5px;
+}
+</style>
+	</ui:define>
+	<ui:define name="main-content">
+		<!-- Load local properties for different languages -->
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.my-profile.myprofile" var="myprofile" />
+			<h:form id="registration_form">
+				<script>
+					window.onload = _initAxToolTips();
+				</script>
+				<p:growl id="growl" showDetail="true" globalOnly="true" />
+				<div>
+					<div class="content-sec">
+						<div class="title">
+							<h1>
+								<a class="ax-back-icon-url" href="javascript:void(0)"
+									onClick="window.location='#{request.contextPath}/hku/index/login.xhtml'"><i
+									class="ax-icon ti-arrow-left" />#{myprofile['registration']}</a>
+							</h1>
+						</div>
+						<div class="main-content"
+							style="background-color: #FFF; padding: 10px;">
+							<div class="note">
+								<h:outputText value="#{registration['note']}" />
+							</div>
+							<div class="hr"></div>
+							<p:panelGrid columns="3"
+								columnClasses="ui-grid-col-3,ui-grid-col-5,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+								<p:column>
+									<h:outputLink id="helpInfoA" value="#" disabled="true"
+										styleClass="ax-pf-tooltip-icon">
+										<i class="ti-help"></i>
+									</h:outputLink>
+									<p:tooltip showEvent="click" id="toolTipA" for="helpInfoA"
+										position="left">
+											#{registration['regEmailAddrTooltip1']}
+												<div>#{registration['regEmailAddrTooltip2']}</div>
+									</p:tooltip>
+									<p:outputLabel for="regEmailAddr"
+										value="#{registration['regEmailAddr']}">
+										<span style="color: red;">*</span>
+									</p:outputLabel>
+								</p:column>
+								<p:inputText id="regEmailAddr"
+									value="#{registrationBean.account.personEmail}" />
+								<p:column></p:column>
+
+								<p:column>
+									<h:outputLink id="helpInfoB" value="#" disabled="true"
+										styleClass="ax-pf-tooltip-icon">
+										<i class="ti-help"></i>
+									</h:outputLink>
+									<p:tooltip showEvent="click" id="toolTipB" for="helpInfoB"
+										value="#{registration['passwordTooltip1']}" position="left" />
+									<p:outputLabel for="password"
+										value="#{registration['password']}">
+										<span style="color: red;">*</span>
+									</p:outputLabel>
+								</p:column>
+								<p:column>
+									<p:inputText type="password" id="password" autocomplete="false"
+										value="#{registrationBean.account.password}" maxlength="16" />
+									<p:watermark for="password" value="**********"
+										id="passwordWatermark" />
+								</p:column>
+								<p:column></p:column>
+
+								<p:outputLabel for="retypePassword"
+									value="#{registration['retypePassword']}">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:column>
+									<p:inputText type="password" id="retypePassword" autocomplete="false"
+										value="#{registrationBean.account.verifyPassword}"
+										maxlength="16" />
+									<p:watermark for="retypePassword" value="**********"
+										id="retypePasswordWatermark" />
+								</p:column>
+								<p:column></p:column>
+
+								<p:column>
+									<h:outputLink id="helpInfoC" value="#" disabled="true"
+										styleClass="ax-pf-tooltip-icon">
+										<i class="ti-help"></i>
+									</h:outputLink>
+									<p:tooltip showEvent="click" id="toolTipC" for="helpInfoC"
+										value="#{registration['alterEmailAddrTooltip']}"
+										position="left" />
+									<p:outputLabel for="alterEmailAddr"
+										value="#{registration['alterEmailAddr']}">
+										<span style="color: red;">*</span>
+									</p:outputLabel>
+								</p:column>
+								<p:inputText id="alterEmailAddr"
+									value="#{registrationBean.applicantInformation.alternateEmail}" />
+								<p:column></p:column>
+
+								<p:outputLabel for="surname" value="#{registration['surname']}">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:column>
+									<p:inputText id="surname"
+										value="#{registrationBean.applicantInformation.surname}"
+										maxlength="60" />
+									<p:watermark for="surname" value="#{registration['inEng']}"
+										id="surnameWatermark" />
+								</p:column>
+								<p:column></p:column>
+
+								<p:outputLabel for="givenName"
+									value="#{registration['givenName']}">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:column>
+									<p:inputText id="givenName"
+										value="#{registrationBean.applicantInformation.givenName}"
+										maxlength="120" />
+									<p:watermark for="givenName" value="#{registration['inEng']}"
+										id="givenNameWatermark" />
+								</p:column>
+								<p:column></p:column>
+							</p:panelGrid>
+
+							<p:panelGrid columns="3"
+								columnClasses="ui-grid-col-3,ui-grid-col-5,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+								id="registration_area">
+								<p:outputLabel for="countryOfNationality"
+									value="#{registration['countryOfNationality']}">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:selectOneMenu id="countryOfNationality"
+									value="#{registrationBean.applicantInformation.nationalityCountryId}">
+									<p:ajax event="change"
+										listener="#{commonBean.loadProvinceOrCityList}"
+										update="registration_area" />
+									<p:ajax event="change"
+										listener="#{registrationBean.changeArea}"
+										update="registration_area" />
+									<f:selectItem itemLabel="#{registration['select']}"
+										itemValue="" noSelectionOption="true" />
+									<f:selectItems value="#{commonBean.countries}" var="country"
+										itemLabel="#{country.description}" itemValue="#{country.id}" />
+								</p:selectOneMenu>
+								<p:column></p:column>
+
+								<p:outputLabel for="provinceOfNationality"
+									rendered="#{commonBean.isActiveProvinceOrCity}"
+									value="#{registration['provinceOrCity']}">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:selectOneMenu id="provinceOfNationality"
+									value="#{registrationBean.applicantInformation.nationalityProvinceId}"
+									rendered="#{commonBean.isActiveProvinceOrCity}">
+									<f:selectItem itemLabel="#{registration['select']}"
+										itemValue="" noSelectionOption="true" />
+									<f:selectItems value="#{commonBean.provinces}" var="province"
+										itemLabel="#{province.description}" itemValue="#{province.id}" />
+								</p:selectOneMenu>
+								<p:column rendered="#{commonBean.isActiveProvinceOrCity}"></p:column>
+
+								<p:outputLabel for="cityOfNationality"
+									rendered="#{!commonBean.isActiveProvinceOrCity}"
+									value="#{registration['provinceOrCity']}">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:selectOneMenu id="cityOfNationality"
+									value="#{registrationBean.applicantInformation.nationalityCityId}"
+									rendered="#{!commonBean.isActiveProvinceOrCity}">
+									<f:selectItem itemLabel="#{registration['select']}"
+										itemValue="" noSelectionOption="true" />
+									<f:selectItems value="#{commonBean.citys}" var="city"
+										itemLabel="#{city.description}" itemValue="#{city.id}" />
+								</p:selectOneMenu>
+								<p:column rendered="#{!commonBean.isActiveProvinceOrCity}"></p:column>
+							</p:panelGrid>
+
+							<p:panelGrid columns="3"
+								columnClasses="ui-grid-col-3,ui-grid-col-5,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+								<p:outputLabel for="currCountryOfResidence"
+									value="#{registration['currCountryOfResidence']}">
+									<span style="color: red;">*</span>
+								</p:outputLabel>
+								<p:selectOneMenu id="currCountryOfResidence"
+									value="#{registrationBean.applicantInformation.residenceCountryId}">
+									<f:selectItem itemLabel="#{registration['select']}"
+										itemValue="" noSelectionOption="true" />
+									<f:selectItems value="#{commonBean.countries}" var="country"
+										itemLabel="#{country.description}" itemValue="#{country.id}" />
+								</p:selectOneMenu>
+								<p:column></p:column>
+							</p:panelGrid>
+
+							<h:panelGroup id="studtInfoGroup">
+								<h:panelGroup
+									rendered="#{registrationBean.applicantInformation.isNotStuding}"></h:panelGroup>
+								<h:panelGroup
+									rendered="#{!registrationBean.applicantInformation.isNotStuding}">
+									<p:panelGrid columns="3"
+										columnClasses="ui-grid-col-3,ui-grid-col-5,ui-grid-col-4"
+										layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+										id="registration_study_area">
+										<p:outputLabel for="currCountryOfStudy"
+											value="#{registration['currCountryOfStudy']}">
+											<span style="color: red;">*</span>
+										</p:outputLabel>
+										<h:panelGroup layout="block" id="registration_study_country">
+											<p:selectOneMenu id="currCountryOfStudy"
+												value="#{registrationBean.applicantInformation.studyCountryId}">
+												<p:ajax event="change"
+													listener="#{commonBean.loadProvinceOrCityListOfStudy}"
+													update="registration_form:registration_study_area" />
+												<p:ajax event="change"
+													listener="#{registrationBean.changeArea}"
+													update="registration_form:registration_study_area"
+													process="@this" />
+												<f:selectItem itemLabel="#{registration['select']}"
+													itemValue="" noSelectionOption="true" />
+												<f:selectItems value="#{commonBean.countries}" var="country"
+													itemLabel="#{country.description}"
+													itemValue="#{country.id}" />
+												<f:selectItem itemLabel="#{registration['others']}"
+													itemValue="others" />
+											</p:selectOneMenu>
+
+											<p:inputText id="currCountryOfStudyInputText"
+												rendered="#{commonBean.isActiveStudyCountry}"
+												style="margin-top:5px;"
+												value="#{registrationBean.applicantInformation.studyCountryOthers}" />
+											<p:watermark for="currCountryOfStudyInputText"
+												rendered="#{commonBean.isActiveStudyCountry}"
+												value="#{registration['others']}"
+												id="currCountryOfStudyInputTextWatermark" />
+										</h:panelGroup>
+										<p:column></p:column>
+
+										<p:outputLabel for="province"
+											value="#{registration['province']}"
+											rendered="#{commonBean.isActiveProvince}">
+											<span style="color: red;">*</span>
+										</p:outputLabel>
+										<p:selectOneMenu id="province"
+											rendered="#{commonBean.isActiveProvince}"
+											value="#{registrationBean.applicantInformation.studyProvinceId}">
+											<p:ajax event="change" listener="#{commonBean.loadCityList}"
+												update="registration_form:registration_study_area" />
+											<p:ajax event="change"
+												listener="#{registrationBean.changeArea}"
+												update="registration_form:registration_study_area" />
+											<f:selectItem itemLabel="#{registration['select']}"
+												itemValue="" noSelectionOption="true" />
+											<f:selectItems value="#{commonBean.provinceOfStudys}"
+												var="province" itemLabel="#{province.description}"
+												itemValue="#{province.id}" />
+										</p:selectOneMenu>
+										<p:column rendered="#{commonBean.isActiveProvince}"></p:column>
+
+										<p:outputLabel for="city" value="#{registration['city']}"
+											rendered="#{commonBean.isActiveCity}">
+											<span style="color: red;">*</span>
+										</p:outputLabel>
+										<p:selectOneMenu id="city"
+											rendered="#{commonBean.isActiveCity}"
+											value="#{registrationBean.applicantInformation.studyCityId}">
+											<p:ajax event="change"
+												listener="#{commonBean.loadInstitutionList}"
+												update="registration_form:registration_study_area" />
+											<p:ajax event="change"
+												listener="#{registrationBean.changeArea}"
+												update="registration_form:registration_study_area" />
+											<f:selectItem itemLabel="#{registration['select']}"
+												itemValue="" noSelectionOption="true" />
+											<f:selectItems value="#{commonBean.cityOfStudys}" var="city"
+												itemLabel="#{city.description}" itemValue="#{city.id}" />
+										</p:selectOneMenu>
+										<p:column rendered="#{commonBean.isActiveCity}"></p:column>
+
+										<p:outputLabel for="nameOfInstitution"
+											value="#{registration['nameOfInstitution']}">
+											<span style="color: red;">*</span>
+										</p:outputLabel>
+										<h:panelGroup layout="block"
+											id="registration_study_institution">
+											<p:selectOneMenu id="nameOfInstitution"
+												value="#{registrationBean.applicantInformation.institutionId}"
+												rendered="#{commonBean.isActiveStudyInstitutionName}">
+												<p:ajax event="change" listener="#{commonBean.loadOthers}"
+													update="registration_form:registration_study_institution" />
+												<p:ajax event="change"
+													listener="#{registrationBean.changeArea}"
+													update="registration_form:registration_study_institution" />
+												<f:selectItem itemLabel="#{registration['select']}"
+													itemValue="" noSelectionOption="true" />
+												<f:selectItems value="#{commonBean.institutions}"
+													var="institution" itemLabel="#{institution.description}"
+													itemValue="#{institution.id}" />
+												<f:selectItem itemLabel="#{registration['others']}"
+													itemValue="others" />
+											</p:selectOneMenu>
+
+											<p:inputText id="nameOfInstitutionInputText"
+												rendered="#{commonBean.isActiveStudyInstitution}"
+												style="margin-top:5px;"
+												value="#{registrationBean.applicantInformation.institutionOthers}" />
+											<p:watermark for="nameOfInstitutionInputText"
+												rendered="#{commonBean.isActiveStudyInstitution}"
+												value="#{registration['others']}"
+												id="nameOfInstitutionInputTextWatermark" />
+										</h:panelGroup>
+										<p:column></p:column>
+									</p:panelGrid>
+								</h:panelGroup>
+							</h:panelGroup>
+
+							<p:panelGrid columns="3"
+								columnClasses="ui-grid-col-3,ui-grid-col-5,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+								<p:column></p:column>
+								<p:column>
+									<p:selectBooleanCheckbox id="isNotStuding"
+										value="#{registrationBean.applicantInformation.isNotStuding}"
+										itemLabel="#{registration['currently']}">
+										<p:ajax event="change" update="studtInfoGroup" />
+									</p:selectBooleanCheckbox>
+								</p:column>
+								<p:column></p:column>
+							</p:panelGrid>
+
+							<p:panelGrid columns="3"
+								columnClasses="ui-grid-col-3,ui-grid-col-5,ui-grid-col-4"
+								layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+								<p:column>
+									<h:outputLink id="helpInfoD" value="#" disabled="true"
+										styleClass="ax-pf-tooltip-icon">
+										<i class="ti-help"></i>
+									</h:outputLink>
+									<p:tooltip showEvent="click" id="toolTipD" for="helpInfoD"
+										position="left">
+										#{registration['telTooltip1']}
+												<div>#{registration['telTooltip2']}</div>
+									</p:tooltip>
+									<p:outputLabel for="homeTelNoCountryCode"
+										value="#{registration['homeTelNo']}" />
+								</p:column>
+								<h:panelGroup layout="block">
+									<p:inputNumber id="homeTelNoCountryCode"
+										style="display:inline;" inputStyle="width:100px;"
+										value="#{registrationBean.homeTel.countryCd}"
+										decimalPlaces="0" thousandSeparator="" />
+									<p:watermark for="homeTelNoCountryCode"
+										value="#{registration['countryCode']}"
+										id="homeTelNoCountryCodeWatermark" />
+
+									<p:inputNumber id="homeTelNoAreaCode"
+										style="display:inline; margin-left:3px"
+										inputStyle="width:100px;"
+										value="#{registrationBean.homeTel.areaCd}" decimalPlaces="0"
+										thousandSeparator="" />
+									<p:watermark for="homeTelNoAreaCode"
+										value="#{registration['areaCode']}"
+										id="homeTelNoAreaCodeWatermark" />
+
+									<p:inputNumber id="homeTelNo"
+										style="display:inline; margin-left:3px"
+										inputStyle="width:100px;"
+										value="#{registrationBean.homeTel.number}" decimalPlaces="0"
+										thousandSeparator="" />
+									<p:watermark for="homeTelNo" value="#{registration['number']}"
+										id="homeTelNoWatermark" />
+								</h:panelGroup>
+								<p:column></p:column>
+
+								<p:column>
+									<h:outputLink id="helpInfoE" value="#" disabled="true"
+										styleClass="ax-pf-tooltip-icon">
+										<i class="ti-help"></i>
+									</h:outputLink>
+									<p:tooltip showEvent="click" id="toolTipE" for="helpInfoE"
+										position="left">
+										#{registration['telTooltip1']}
+												<div>#{registration['telTooltip2']}</div>
+									</p:tooltip>
+									<p:outputLabel for="mobilePhoneNoCountryCode"
+										value="#{registration['mobilePhoneNo']}">
+									<span style="color: red;">*</span>
+									</p:outputLabel>
+								</p:column>
+								<h:panelGroup layout="block" style="width:100%;">
+									<p:inputNumber id="mobilePhoneNoCountryCode"
+										style="display:inline;" inputStyle="width:100px;"
+										value="#{registrationBean.mobileTel.countryCd}"
+										decimalPlaces="0" thousandSeparator="" />
+									<p:watermark for="mobilePhoneNoCountryCode"
+										value="#{registration['countryCode']}"
+										id="mobilePhoneNoCountryCodeWatermark" />
+
+									<p:inputNumber id="mobilePhoneNoAreaCode"
+										style="display:inline; margin-left:3px"
+										inputStyle="width:100px;"
+										value="#{registrationBean.mobileTel.areaCd}" decimalPlaces="0"
+										thousandSeparator="" />
+									<p:watermark for="mobilePhoneNoAreaCode"
+										value="#{registration['areaCode']}"
+										id="mobilePhoneNoAreaCodeWatermark" />
+
+									<p:inputNumber id="mobilePhoneNo"
+										style="display:inline; margin-left:3px"
+										inputStyle="width:100px;"
+										value="#{registrationBean.mobileTel.number}" decimalPlaces="0"
+										thousandSeparator="" />
+									<p:watermark for="mobilePhoneNo"
+										value="#{registration['number']}" id="mobilePhoneNoWatermark" />
+								</h:panelGroup>
+								<p:column></p:column>
+								<p:column></p:column>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="2"
+								columnClasses="ui-grid-col-3,ui-grid-col-9" layout="grid"
+								styleClass="ui-panelgrid-blank ui-fluid">
+								<p:column></p:column>
+								<p:selectBooleanCheckbox
+									value="#{registrationBean.applicantInformation.receiveInfoFlag}"
+									itemLabel="#{registration['receiveInfoText']}"
+									style="margin-top:8px; font-weight:bold" />
+							</p:panelGrid>
+							<div class="hr"></div>
+							<div class="ax-btn-set">
+								<p:commandButton value="#{registration['submit']}"
+									action="#{registrationBean.save()}" update="registration_form" />
+								<div class="ax-button type-a">
+									<p:commandButton value="#{registration['cancel']}"
+										onclick="window.location='#{request.contextPath}/hku/index/login.xhtml'" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</h:form>
+		</f:view>
+	</ui:define>
+</ui:composition>

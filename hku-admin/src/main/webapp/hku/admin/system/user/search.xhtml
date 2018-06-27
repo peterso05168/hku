@@ -1,0 +1,154 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	template="./user.xhtml">
+
+	<ui:define name="breadcrumb-3">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.system-user.usermanage" var="user" />
+			<li><a title="">#{user['result']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.system-user.usermanage" var="usermanage" />
+			<f:loadBundle basename="i18n.system-user.usermanage" var="userResult" />
+			<div>
+				<p:panel id="toggleable" header="#{usermanage['searchUser']}" toggleable="true" toggleSpeed="200" closeSpeed="200"
+					widgetVar="panel">
+					<h:form id="userForm">
+						<div>
+							<input type="checkbox" id="basicAdvance" name="basicAdvance" class="basicAdvance hidden-checkbox" />
+							<div>
+								<p:panelGrid columns="1" layout="grid" columnClasses="ui-grid-col-12" styleClass="ui-panelgrid-blank ui-fluid" rendered="#{!userBean.divStatus}">
+									<p:inputText value="#{userBean.staffInformationVo.combination}" />
+									<p:column>
+										<label for="basicAdvance" class="basicAdvanceLabel advance"
+											style="margin-top: -0.3%; float: right; margin-right: 3px;"> <i class="ti-search"></i> 
+											<p:commandLink action="#{userBean.clickSearch('true')}" update="userForm"> 
+											#{usermanage['advancedSearch']}
+											</p:commandLink>
+										</label>
+										<div class="note" style="margin-top: -0.6%; margin-bottom: -1%;">#{usermanage['idUserNameEmail']}</div>
+									</p:column>
+								</p:panelGrid>
+							</div>
+							<div>
+								<p:panelGrid columns="4" rendered="#{userBean.divStatus}" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" layout="grid"
+									styleClass="ui-panelgrid-blank ui-fluid">
+
+									<p:outputLabel for="userName" value="#{usermanage['userName']}" />
+									<p:inputText id="userName" value="#{userBean.staffInformationVo.username}" />
+
+									<p:outputLabel for="email" value="#{usermanage['email']}" />
+									<p:inputText id="email" value="#{userBean.staffInformationVo.email}" />
+
+									<p:outputLabel for="status" value="#{usermanage['status']}" />
+									<p:selectOneMenu id="status" value="#{userBean.staffInformationVo.status}">
+										<f:selectItem itemLabel="#{usermanage['all']}" itemValue="" />
+										<f:selectItem itemLabel="#{usermanage['active']}" itemValue="TRUE" />
+										<f:selectItem itemLabel="#{usermanage['inactive']}" itemValue="FALSE" />
+									</p:selectOneMenu>
+								</p:panelGrid>
+								<p:panelGrid rendered="#{userBean.divStatus}" columns="6" columnClasses="ui-grid-col-12" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+									<p:column styleClass="ui-grid-col-12">
+										<label for="basicAdvance" class="basicAdvanceLabel advance" style="margin-top: -0.3%; float: right; margin-right: 3px;">
+										<i class="ti-search"></i>
+										<p:commandLink action="#{userBean.clickSearch('false')}" update="userForm">
+											#{usermanage['basicSearch']}
+										</p:commandLink>
+										</label>
+									</p:column>
+								</p:panelGrid>
+							</div>
+						</div>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{usermanage['search']}" update="formUserResult" action="#{userBean.search}" />
+							<p:commandButton value="#{usermanage['reset']}" styleClass="ui-priority-secondary"
+								update="toggleable formUserResult" action="#{userBean.reset}" />
+							<p:commandButton value="#{usermanage['user']}" icon="ti-plus" styleClass="ui-priority-primary"
+								onclick="_ACTION('create')" update="saveUser" action="#{userBean.createNewUser}" />
+						</div>
+					</h:form>
+				</p:panel>
+				<p:dialog header="#{usermanage['createUser']}" height="360" widgetVar="createDialog" modal="true" width="520"
+					minHeight="50">
+					<h:form id="saveUser">
+						<p:growl id="growlMsg" showDetail="true" />
+						<div class="ui-fluid">
+							<p:panelGrid columns="1" columnClasses="ui-grid-col-12" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+								<p:column>
+									<p:outputLabel for="userName" value="#{usermanage['userName']}" style="text-align:left;">
+										<span style="color: red;">*</span>
+									</p:outputLabel>
+									<p:inputText id="userName" value="#{userBean.saveStaffVo.username}" />
+								</p:column>
+
+								<p:column>
+									<p:outputLabel for="staffNo" value="#{usermanage['staffNo']}" style="text-align:left;">
+										<span style="color: red;">*</span>
+									</p:outputLabel>
+									<p:inputText id="staffNo" value="#{userBean.saveStaffVo.staffHkuNo}" />
+								</p:column>
+
+								<p:column>
+									<p:outputLabel for="staffEmail" value="#{usermanage['email']}" style="text-align:left;">
+										<span style="color: red;">*</span>
+									</p:outputLabel>
+									<p:inputText id="staffEmail" value="#{userBean.saveStaffVo.email}" />
+								</p:column>
+							</p:panelGrid>
+						</div>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{usermanage['create']}" action="#{userBean.save}"
+								update="toggleable formUserResult saveUser" />
+							<p:commandButton value="#{usermanage['cancel']}" styleClass="ui-priority-secondary"
+								onclick="_ACTION('create-cancel')" />
+						</div>
+					</h:form>
+				</p:dialog>
+				<h:form id="formUserResult">
+					<p:dataTable rendered="#{userBean.status}" var="staffInformation" value="#{userBean.lazyDataModel}" rows="15"
+						reflow="true" paginator="true" paginatorPosition="bottom" rowKey="#{staffInformation.id}" lazy="true"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+						<f:facet name="header">#{userResult['searchResult']}</f:facet>
+
+						<p:column headerText="#{userResult['userName']}" width="31%">
+							<p:commandLink href="javascript:void(0)" action="#{userBean.formEdit(staffInformation.id)}"
+								onclick="_ACTION('edit')" style="font-style: normal;font-size: 12px !important;">
+								<h:outputText value="#{staffInformation.username}" />
+							</p:commandLink>
+						</p:column>
+
+						<p:column headerText="#{userResult['email']}" width="30%">
+							<h:outputText value="#{staffInformation.email}" />
+						</p:column>
+
+						<p:column headerText="#{userResult['status']}" width="30%">
+							<h:outputText rendered="#{staffInformation.isActive}" value="#{userResult['active']}"
+								styleClass="status-label green" />
+							<h:outputText rendered="#{!staffInformation.isActive}" value="#{userResult['inactive']}"
+								styleClass="status-label gray" />
+						</p:column>
+
+						<p:column headerText="#{userResult['action']}" styleClass="ax-action-w" width="9%">
+							<p:menuButton value="#{userResult['action']}">
+								<p:menuitem value="#{userResult['edit']}" onclick="_ACTION('edit')"
+									action="#{userBean.formEdit(staffInformation.id)}" />
+								<p:menuitem value="#{userResult['delete']}" action="#{userBean.delete(staffInformation.id)}">
+									<p:confirm header="#{userResult['prompt']}" message="#{userResult['deleteMessage']}" icon="ui-icon-alert" />
+								</p:menuitem>
+							</p:menuButton>
+						</p:column>
+					</p:dataTable>
+
+					<!-- delete confirmDialog-->
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+						<p:commandButton value="#{userResult['yes']}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+						<p:commandButton value="#{userResult['no']}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</p:confirmDialog>
+				</h:form>
+			</div>
+		</f:view>
+	</ui:define>
+</ui:composition>

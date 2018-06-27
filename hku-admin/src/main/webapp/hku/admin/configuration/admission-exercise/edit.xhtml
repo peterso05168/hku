@@ -1,0 +1,221 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="../admission-setup.xhtml">
+
+	<ui:define name="breadcrumb-3">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.configuration.admissionexe" var="adm" />
+			<li><a title="">#{adm['edit']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+
+	<ui:define name="title">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.configuration.admissionexe"
+				var="admission" />
+			<a class="ax-back-icon-url" onclick="_ACTION('result')"
+				href="javascript:void(0)"> <i class="ax-icon ti-arrow-left"></i>
+				#{admission['admissionExercise']}
+			</a>
+		</f:view>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.configuration.admissionexe"
+				var="admissionexe" />
+			<p:growl id="growlMsg" showDetail="true" />
+			<div>
+				<p:panel id="toggleable"
+					header="#{admissionexe['basicInformation']}" toggleable="true"
+					toggleSpeed="200" closeSpeed="200" widgetVar="panel">
+					<h:form id="formAdmissionYear">
+						<p:panelGrid columns="4"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+							layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+
+							<p:outputLabel value="#{admissionexe['admissionYear']}" />
+							<p:inputText id="admissionYear"
+								value="#{editAdmissionExerciseBean.exeVo.admissionYear}" />
+							<p:column></p:column>
+							<p:column></p:column>
+
+							<p:outputLabel value="#{admissionexe['appStartDate']}" />
+							<p:calendar id="applicationStartDate"
+								mindate="#{commonBean.minDate}" maxdate="#{commonBean.maxDate}"
+								value="#{editAdmissionExerciseBean.exeVo.applicationStartDate}"
+								yearRange="c-35:c+35"
+								onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+								navigator="true" maxlength="10" locale="de" pattern="dd-MM-yyyy"
+								readonlyInput="true" showOn="button">
+							</p:calendar>
+
+							<p:outputLabel value="#{admissionexe['appEndDate']}" />
+							<p:calendar id="applicationEndtDate"
+								mindate="#{commonBean.minDate}" maxdate="#{commonBean.maxDate}"
+								value="#{editAdmissionExerciseBean.exeVo.applicationEndDate}"
+								yearRange="c-35:c+35"
+								onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+								navigator="true" maxlength="10" locale="de" pattern="dd-MM-yyyy"
+								readonlyInput="true" showOn="button">
+							</p:calendar>
+
+							<p:outputLabel value="#{admissionexe['progChoiceEndDate']}" />
+							<p:calendar id="programmeChoiceEndDate"
+								mindate="#{commonBean.minDate}" maxdate="#{commonBean.maxDate}"
+								value="#{editAdmissionExerciseBean.exeVo.programmeChoiceEndDate}"
+								yearRange="c-35:c+35"
+								onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+								navigator="true" maxlength="10" locale="de" pattern="dd-MM-yyyy"
+								readonlyInput="true" showOn="button">
+							</p:calendar>
+
+							<p:outputLabel value="#{admissionexe['schemeEndDate']}" />
+							<p:calendar id="schemeEndDate" mindate="#{commonBean.minDate}"
+								maxdate="#{commonBean.maxDate}"
+								value="#{editAdmissionExerciseBean.exeVo.mfExcellentScheEndDate}"
+								yearRange="c-35:c+35"
+								onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+								navigator="true" maxlength="10" locale="de" pattern="dd-MM-yyyy"
+								readonlyInput="true" showOn="button">
+							</p:calendar>
+
+							<p:outputLabel value="#{admissionexe['cycleEndDate']}" />
+							<p:calendar id="cycleEndDate" mindate="#{commonBean.minDate}"
+								maxdate="#{commonBean.maxDate}"
+								value="#{editAdmissionExerciseBean.exeVo.admCycleEndDate}"
+								yearRange="c-35:c+35"
+								onkeydown="return (event.which gt 48 and event.which lt 57 or event.which eq 8 or event.which eq 46)"
+								navigator="true" maxlength="10" locale="de" pattern="dd-MM-yyyy"
+								readonlyInput="true" showOn="button">
+							</p:calendar>
+
+
+							<p:outputLabel for="cycleEndDate" style="text-align:left;">
+									#{admissionexe['display6']}&#160;<sup>th</sup>&#160;#{admissionexe['programmeChoice']}
+							</p:outputLabel>
+							<p:column>
+								<p:selectBooleanCheckbox
+									value="#{editAdmissionExerciseBean.exeVo.displaySixthChoice}" />
+							</p:column>
+						</p:panelGrid>
+					</h:form>
+				</p:panel>
+
+				<h:form id="formProgrammes">
+					<p:dataTable reflow="true"
+						value="#{editAdmissionExerciseBean.formProgVos}" var="formProgVo">
+						<f:facet name="header">#{admissionexe['programmes']}</f:facet>
+						<p:column headerText="#{admissionexe['progName']}">
+							<p:commandLink resetValues="true"
+								action="#{editAdmissionExerciseBean.editFormProgramme(formProgVo.id)}"
+								oncomplete="PF('createDialog').show()"
+								update="formEditProgramme"
+								style="font-style: normal; font-size: 12px !important;">
+								<h:outputText value="#{formProgVo.programmeTitle}" />
+							</p:commandLink>
+						</p:column>
+
+						<p:column headerText="#{admissionexe['offerQuotaLocal']}">
+							<h:outputLabel value="#{formProgVo.quotaLocal}" />
+						</p:column>
+
+						<p:column headerText="#{admissionexe['offerQuotaOverseas']}">
+							<h:outputLabel value="#{formProgVo.quotaOverseas}" />
+						</p:column>
+
+						<p:column headerText="#{admissionexe['offerQuotaMainland']}">
+							<h:outputLabel value="#{formProgVo.quotaMainland}" />
+						</p:column>
+
+						<p:column headerText="#{admissionexe['action']}"
+							styleClass="ax-action-w">
+							<p:menuButton value="#{admissionexe['action']}">
+								<p:menuitem value="#{admissionexe['addRequirement']}" />
+							</p:menuButton>
+						</p:column>
+					</p:dataTable>
+				</h:form>
+
+				<div class="ax-btn-set">
+					<p:commandButton value="#{admissionexe['programme']}"
+						icon="ti-plus" styleClass="ui-priority-primary" resetValues="true"
+						action="#{editAdmissionExerciseBean.editFormProgramme('')}"
+						update="formEditProgramme" oncomplete="PF('createDialog').show()" />
+				</div>
+
+				<p:dialog header="#{admissionexe['programmes']}"
+					widgetVar="createDialog" modal="true" width="520" height="450">
+					<h:form id="formEditProgramme">
+						<p:growl id="growlProgMsg" showDetail="true" />
+						<div class="ui-fluid">
+							<p:panelGrid columns="1" columnClasses="ui-grid-col-12"
+								layout="grid" styleClass="ui-panelgrid-blank ui-fluid">
+								<p:column>
+									<p:outputLabel for="programme"
+										value="#{admissionexe['programme']}" style="text-align:left;">
+										<span style="color: red;">*</span>
+									</p:outputLabel>
+									<p:selectOneMenu id="programme"
+										value="#{editAdmissionExerciseBean.formProgVo.appHkuProgrammeId}">
+										<f:selectItem itemLabel="#{admissionexe['select']}"
+											itemValue="" />
+										<f:selectItems
+											value="#{editAdmissionExerciseBean.hkuProgrammeVos}"
+											var="hkuProgrammeVo"
+											itemLabel="#{hkuProgrammeVo.hkuProgrammeDesc}"
+											itemValue="#{hkuProgrammeVo.id}"
+											itemDisabled="#{hkuProgrammeVo.hkuProgDisabled}" />
+									</p:selectOneMenu>
+								</p:column>
+
+								<p:column>
+									<p:outputLabel value="#{admissionexe['offerQuotaLocal']}"
+										style="text-align:left;" for="offerQuotaLocal">
+										<span style="color: red;">*</span>
+									</p:outputLabel>
+									<p:inputNumber id="offerQuotaLocal" thousandSeparator=""
+										decimalSeparator="." decimalPlaces="0" minValue="0"
+										maxValue="9999"
+										value="#{editAdmissionExerciseBean.formProgVo.local}" />
+								</p:column>
+
+								<p:column>
+									<p:outputLabel value="#{admissionexe['offerQuotaOverseas']}"
+										style="text-align:left;" for="offerQuotaOverseas">
+										<span style="color: red;">*</span>
+									</p:outputLabel>
+									<p:inputNumber id="offerQuotaOverseas" thousandSeparator=""
+										decimalSeparator="." decimalPlaces="0" minValue="0"
+										maxValue="9999"
+										value="#{editAdmissionExerciseBean.formProgVo.overseas}" />
+								</p:column>
+
+								<p:column>
+									<p:outputLabel value="#{admissionexe['offerQuotaMainland']}"
+										style="text-align:left;" for="offerQuotaMainland">
+										<span style="color: red;">*</span>
+									</p:outputLabel>
+									<p:inputNumber id="offerQuotaMainland" thousandSeparator=""
+										decimalSeparator="." decimalPlaces="0" minValue="0"
+										maxValue="9999"
+										value="#{editAdmissionExerciseBean.formProgVo.mainland}" />
+								</p:column>
+							</p:panelGrid>
+						</div>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{admissionexe['save']}" role="button"
+								action="#{editAdmissionExerciseBean.saveFormProgramme()}"
+								update=":formProgrammes :formEditProgramme" />
+							<p:commandButton value="#{admissionexe['cancel']}"
+								onclick="PF('createDialog').hide()"
+								styleClass="ui-priority-secondary" />
+						</div>
+					</h:form>
+				</p:dialog>
+			</div>
+		</f:view>
+	</ui:define>
+</ui:composition>

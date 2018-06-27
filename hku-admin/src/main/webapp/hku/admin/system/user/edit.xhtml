@@ -1,0 +1,153 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"
+	template="./user.xhtml">
+
+	<ui:define name="breadcrumb-3">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.system-user.usermanage" var="edit" />
+			<li><a title="">#{edit['edit']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+
+	<ui:define name="title">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.system-user.usermanage" var="editTitle" />
+			<a class="ax-back-icon-url" onclick="_ACTION('search')" href="javascript:void(0)"> <i
+				class="ax-icon ti-arrow-left"></i> #{editTitle['userManagement']}
+			</a>
+		</f:view>
+	</ui:define>
+
+	<ui:define name="main-content">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.system-user.usermanage" var="editContent" />
+			<div class="extra-info aR">
+				<button type="button" class="info-btn" data-toggle="popover" data-trigger="focus" data-placement="left">
+					<i class="ti-more-alt"></i>
+				</button>
+				<div id="info-box-01" style="display: none">
+					<div class="info-popover">
+						<div>
+							<b>#{editContent['createdBy']}</b>Mary Lee
+						</div>
+						<div>
+							<b>#{editContent['createdDate']}</b>2016-09-02 18:55:16
+						</div>
+						<div>
+							<b>#{editContent['modifiedBy']}</b>Winnie Chan
+						</div>
+						<div>
+							<b>#{editContent['modifiedDate']}</b>2017-05-10 15:45:12
+						</div>
+					</div>
+				</div>
+				<script>
+					_axPopover({
+						content : 'info-box-01'
+					});
+				</script>
+			</div>
+			<div class="ax-basic-info">
+				<div class="ax-thumbnail-img">
+					<img src="#{request.contextPath}/resources/hku/images/resource/profile-icon-dummy.png" />
+				</div>
+				<div class="ax-text">
+					<h2>Mary Chan</h2>
+					<div>Super Admin</div>
+				</div>
+			</div>
+			<p:tabView activeIndex="0" id="userTabView">
+				<p:tab title="#{editContent['basicInfo']}" titleStyle="margin-right: 3px;">
+					<h:form id="formStaffInfo">
+						<p:growl id="growlMsg" showDetail="true" />
+						<p:panelGrid columns="4" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" layout="grid"
+							styleClass="ui-panelgrid-blank ui-fluid">
+
+							<p:outputLabel for="staffNo" value="#{editContent['staffNo']}">
+								<span style="color: red;">*</span>
+							</p:outputLabel>
+							<p:inputText id="staffNo" value="#{editUserBean.staffInformationVo.staffHkuNo}" />
+
+							<p:outputLabel for="email" value="#{editContent['email']}">
+								<span style="color: red;">*</span>
+							</p:outputLabel>
+							<p:inputText id="email" value="#{editUserBean.staffInformationVo.email}" />
+
+							<p:outputLabel for="username" value="#{editContent['userName']}">
+								<span style="color: red;">*</span>
+							</p:outputLabel>
+							<p:inputText id="username" value="#{editUserBean.staffInformationVo.username}" />
+
+							<p:outputLabel for="status" value="#{editContent['status']}">
+								<span style="color: red;">*</span>
+							</p:outputLabel>
+							<p:selectOneMenu id="status" value="#{editUserBean.staffInformationVo.isActive}">
+								<f:selectItem itemLabel="#{editContent['select']}" itemValue="" />
+								<f:selectItem itemLabel="#{editContent['active']}" itemValue="true" />
+								<f:selectItem itemLabel="#{editContent['inactive']}" itemValue="false" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{editContent['back']}" styleClass="ui-priority-secondary" icon="ti-arrow-left"
+								onclick="_ACTION('search')" />
+							<p:commandButton value="#{editContent['save']}" action="#{editUserBean.save}" update="formStaffInfo" />
+						</div>
+					</h:form>
+				</p:tab>
+
+				<p:tab title="#{editContent['role']}" titleStyle="margin-right: 3px;">
+					<h:form id="formRole">
+						<p:growl id="growlMsg1" showDetail="true" />
+						<p:dataTable var="role" value="#{editUserBean.roles}" reflow="true">
+
+							<p:column width="3.4%;">
+								<p:selectBooleanCheckbox value="#{role.isRoleId}" />
+								<h:inputHidden value="#{role.id}" />
+							</p:column>
+
+							<p:column headerText="#{editContent['roleName']}">
+								<h:outputText value="#{role.roleName}" />
+							</p:column>
+
+							<p:column headerText="#{editContent['description']}">
+								<h:outputText value="#{role.description}" />
+							</p:column>
+
+						</p:dataTable>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{editContent['back']}" styleClass="ui-priority-secondary" icon="ti-arrow-left"
+								onclick="_ACTION('search')" />
+							<p:commandButton value="#{editContent['save']}" action="#{editUserBean.saveRoleRel}" update="formRole" />
+						</div>
+					</h:form>
+				</p:tab>
+
+				<p:tab title="#{editContent['dataAccess']}" titleStyle="margin-right: 3px;">
+					<h:form id="formProgamme">
+						<p:growl id="growlMsg2" showDetail="true" />
+						<p:dataTable var="hkuProgramme" value="#{editUserBean.hkuProgrammes}" reflow="true">
+
+							<p:column width="3.4%;">
+								<p:selectBooleanCheckbox value="#{hkuProgramme.isHkuProgrammeId}" />
+							</p:column>
+
+							<p:column headerText="#{editContent['progammeCode']}" width="35%;">
+								<h:outputText value="#{hkuProgramme.hkuProgrammeCd}" />
+							</p:column>
+
+							<p:column headerText="#{editContent['progammeTitle']}">
+								<h:outputText value="#{hkuProgramme.hkuProgrammeDesc}" />
+							</p:column>
+
+						</p:dataTable>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{editContent['back']}" styleClass="ui-priority-secondary" icon="ti-arrow-left"
+								onclick="_ACTION('search')" />
+							<p:commandButton value="#{editContent['save']}" action="#{editUserBean.saveProg}" update="formProgamme" />
+						</div>
+					</h:form>
+				</p:tab>
+			</p:tabView>
+		</f:view>
+	</ui:define>
+</ui:composition>

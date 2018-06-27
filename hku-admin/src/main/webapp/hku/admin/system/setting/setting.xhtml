@@ -1,0 +1,158 @@
+<!DOCTYPE html [
+    <!ENTITY bull "&#8226;">
+]>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" template="../system.xhtml">
+
+	<ui:define name="head">
+		<script>
+			function _ACTION(_type) {
+				switch (_type) {
+				case 'result1':
+					_popup('popup.html#/cp-cert-create', {
+						size : 22,
+						title : 'Create Certificate',
+						iframe : 'true'
+					});
+					break;
+				case 'create':
+					PF('createCourse').show();
+					break;
+				case 'edit':
+					PF('documentDialog').show();
+					break;
+				case 'save':
+					window.location = 'config.xhtml';
+					break;
+				case 'create-save':
+					window.location = 'course-info.xhtml';
+					break;
+				case 'search':
+					window.location = "search.xhtml";
+					break;
+				case 'result':
+					window.location = "result.xhtml";
+					break;
+				default:
+					console.log('default cp-breadcrumb.html');
+				}
+			}
+		</script>
+	</ui:define>
+	<ui:define name="breadcrumb-2">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.system-setting.setting" var="setting" />
+			<li><a title="">#{setting['sysSetting']}</a><i
+				class="ti-angle-right"></i></li>
+			<li><a title="">#{setting['edit']}</a><i class="ti-angle-right"></i></li>
+		</f:view>
+	</ui:define>
+	<ui:define name="title">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.system-setting.setting" var="setting" />
+        #{setting['sysSetting']}
+        </f:view>
+	</ui:define>
+	<ui:define name="main-content">
+		<f:view locale="#{language.locale}">
+			<f:loadBundle basename="i18n.system-setting.setting" var="setting" />
+			<div class="extra-info aR">
+				<button type="button" class="info-btn" data-toggle="popover"
+					data-trigger="focus" data-placement="left">
+					<i class="ti-more-alt"></i>
+				</button>
+				<div id="info-box-01" style="display: none">
+					<div class="info-popover">
+						<div>
+							<b>#{setting['createdBy']}</b>
+						</div>
+						<div>
+							<b>#{setting['createdDate']}</b>
+						</div>
+						<div>
+							<b>#{setting['modifiedBy']}</b>
+						</div>
+						<div>
+							<b>#{setting['modifiedDate']}</b>
+						</div>
+					</div>
+				</div>
+				<script>
+					_axPopover({
+						content : 'info-box-01'
+					});
+				</script>
+			</div>
+			<p:tabView activeIndex="0">
+				<p:tab title="#{setting['parameters']}"
+					titleStyle="margin-right:4px;">
+					<h:form id="formA">
+						<div class="ui-fluid">
+							<p:panelGrid columns="2"
+								columnClasses="ui-grid-col-3,ui-grid-col-5" layout="grid"
+								styleClass="ui-panelgrid-blank ui-fluid">
+								<p:outputLabel for="session" value="#{setting['sessionTime']}" />
+								<p:column>
+									<p:inputText id="session" style="width:90%" />
+									<span class="note">#{setting['min']}</span>
+								</p:column>
+
+								<p:outputLabel for="recordsPerPage"
+									value="#{setting['noOfRecord']}" />
+								<p:column>
+									<p:inputText id="recordsPerPage" style="width:90%" />
+								</p:column>
+							</p:panelGrid>
+							<p:panelGrid columns="2"
+								columnClasses="ui-grid-col-3,ui-grid-col-9" layout="grid"
+								styleClass="ui-panelgrid-blank ui-fluid">
+								<p:outputLabel value="#{setting['suspensionMsg']}" />
+								<p:column>
+									<p:selectBooleanCheckbox />
+									<span class="note"></span>
+
+									<p:calendar id="dateFrom" showOn="button" readonlyInput="true"
+										mindate="#{commonBean.minDate}"
+										placeholder="#{setting['from']}"
+										maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35" />
+
+									<p:calendar id="dateTo" showOn="button" readonlyInput="true"
+										mindate="#{commonBean.minDate}" placeholder="#{setting['to']}"
+										maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35" />
+								</p:column>
+
+								<p:outputLabel value="#{setting['myInbox']}" />
+								<p:column>
+									<p:selectBooleanCheckbox />
+									<span class="note"></span>
+
+									<p:inputText id="myInbox" style="width:80%" />
+								</p:column>
+
+								<p:outputLabel value="#{setting['supDocDate']}" />
+								<p:column>
+									<p:calendar id="supDocDate" showOn="button"
+										readonlyInput="true" mindate="#{commonBean.minDate}"
+										maxdate="#{commonBean.maxDate}" yearRange="c-35:c+35" />
+								</p:column>
+							</p:panelGrid>
+						</div>
+						<div class="ax-btn-set">
+							<p:commandButton value="#{setting['save']}" />
+						</div>
+					</h:form>
+				</p:tab>
+				<p:tab title="#{setting['other']}">
+					<h:form id="formB" enctype="multipart/form-data">
+						<div style="height: 300px"></div>
+					</h:form>
+				</p:tab>
+			</p:tabView>
+		</f:view>
+	</ui:define>
+</ui:composition>
+
+
